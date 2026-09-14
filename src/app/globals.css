@@ -1,26 +1,357 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ═══════════════════════════════════════════════════════════════════════
+   FONTS
+   `@theme inline` is required for these specifically. next/font exposes
+   each family as a CSS-module className that declares the variable, so the
+   token has to inline the var() reference rather than snapshot its value.
+   ═══════════════════════════════════════════════════════════════════════ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair), Newsreader, "Source Serif 4", Georgia, serif;
+  --font-sans: var(--font-outfit), Questrial, "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Every hex below was sampled from the design renders — see
+   .planning/quick/quick-kayinleong-001/DESIGN-SPEC.md §1.1 for the sample
+   location behind each one. Declared in a plain (non-inline) `@theme` so
+   that opacity modifiers such as `bg-surface-card/70` can compile a static
+   hex fallback alongside the color-mix() output.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* Drop Tailwind's stock palette entirely. The design uses a narrow, exact
+     set of colours, and several of its token names (rose-500, green-500,
+     violet-500, blue-300) would otherwise sit alongside Tailwind's own
+     versions of the same name — making "is this the right blue?"
+     unanswerable at a glance. With the namespace cleared, any colour class
+     that is not from the design system simply fails to compile. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-inherit: inherit;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ── Brand blue ─────────────────────────────────────────────────────── */
+  --color-blue-fill: #2b5fd9;          /* filled primary buttons, play button */
+  --color-blue-ink: #1450df;           /* links, eyebrows, active underline */
+  --color-blue-icon: #3d80e1;          /* 1.5-2px icon strokes on light tints */
+  --color-blue-300: #7db6f9;           /* decorative arcs, gradient start */
+  --color-blue-200: #a3ace9;           /* emphasised card border */
+  --color-blue-100: #b5c0ec;           /* outlined pill border, blue variant */
+  --color-blue-tint-50: #eef5fd;
+  --color-blue-tint-100: #e6eef7;
+  --color-blue-wash: #edf2fe;          /* inline status pills */
+  --color-blue-banner: #f0f3fc;
+  --color-blue-banner-faint: #f8f9fc;
+
+  /* ── Teal / green ───────────────────────────────────────────────────── */
+  --color-green-ink: #1f8a55;
+  --color-green-500: #3ea876;
+  --color-green-icon: #62b291;
+  --color-teal-400: #6abdb9;
+  --color-green-300: #82bea2;
+  --color-green-tint-50: #edf4ef;
+  --color-green-tint-100: #e8f4ed;
+
+  /* ── Pink / rose ────────────────────────────────────────────────────── */
+  --color-rose-ink: #e12a5e;           /* use for CTA labels — rose-500 fails AA */
+  --color-rose-500: #e8467c;
+  --color-rose-400: #f5538c;
+  --color-rose-300: #e278a7;
+  --color-rose-200: #faafb0;
+  --color-rose-tint-50: #fcf4f7;
+  --color-rose-tint-100: #fbeaeb;
+
+  /* ── Purple / violet ────────────────────────────────────────────────── */
+  --color-violet-ink: #6c4fa6;
+  --color-violet-500: #8172d8;
+  --color-violet-400: #9c88b4;
+  --color-violet-tint-50: #f2f2fc;
+  --color-violet-tint-100: #f0ecf4;
+
+  /* ── Ink ────────────────────────────────────────────────────────────── */
+  --color-ink-900: #0f2648;            /* serif display headlines */
+  --color-ink-800: #0b1b3c;            /* sans headings, card titles, nav */
+  --color-ink-600: #4a5872;            /* default body */
+  --color-ink-500: #566273;            /* secondary body inside cards */
+  --color-ink-400: #7c859c;            /* meta only — 3.5:1, never body text */
+
+  /* ── Surfaces ───────────────────────────────────────────────────────── */
+  --color-surface-card: #fefefe;       /* the standard card is not pure white */
+  --color-surface-card-elevated: #ffffff;
+  --color-surface-card-warm: #fdfcfa;
+  --color-surface-inner-rose: #fcf4f7;
+  --color-surface-inner-blue: #edf2fe;
+  --color-bg-base: #f8f9fc;
+
+  /* ── Borders, hairlines, tracks ─────────────────────────────────────── */
+  --color-hairline: #e6e8ec;
+  --color-hairline-faint: #eff2f9;
+  --color-border-neutral: #c6d0e6;
+  --color-border-blue: #b5c0ec;
+  --color-border-blue-strong: #a3ace9;
+  --color-border-blue-cta: #6b8bec;
+  --color-border-rose: #eb8ba5;
+  --color-track: #e7e8ec;
+
+  /* ── Type scale ─────────────────────────────────────────────────────────
+     Desktop values are those measured at the deck's 1448px reference width.
+     Display roles are fluid so they survive down to 375px without a pile of
+     breakpoint overrides; each clamp reaches its measured desktop value at
+     roughly 1000-1100px and holds there. */
+  --text-eyebrow: 0.875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.16em;
+  --text-eyebrow--font-weight: 600;
+
+  --text-h1: clamp(2.25rem, 1.5rem + 3.2vw, 3.5rem);
+  --text-h1--line-height: 1.1;
+
+  --text-h2: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  --text-h2--line-height: 1.15;
+
+  --text-h3: clamp(1.5rem, 1.2rem + 1.2vw, 1.9375rem);
+  --text-h3--line-height: 1.22;
+
+  --text-lead-serif: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  --text-lead-serif--line-height: 1.22;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-lead--line-height: 1.5;
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.62;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
+
+  --text-card-title: 1.0625rem;
+  --text-card-title--line-height: 1.3;
+  --text-card-title--font-weight: 600;
+
+  --text-card-body: 0.875rem;
+  --text-card-body--line-height: 1.55;
+
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+
+  --text-nav: 1rem;
+  --text-nav--line-height: 1;
+
+  --text-btn: 1.0625rem;
+  --text-btn--line-height: 1;
+  --text-btn--font-weight: 500;
+
+  --text-btn-sm: 0.9375rem;
+  --text-btn-sm--line-height: 1;
+  --text-btn-sm--font-weight: 500;
+
+  --text-wordmark: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
+  --text-wordmark--line-height: 1;
+  --text-wordmark--letter-spacing: -0.005em;
+
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.2;
+  --text-micro--letter-spacing: 0.14em;
+  --text-micro--font-weight: 600;
+
+  --text-scroll: 0.8125rem;
+  --text-scroll--line-height: 1;
+  --text-scroll--letter-spacing: 0.14em;
+  --text-scroll--font-weight: 600;
+
+  /* ── Radii ──────────────────────────────────────────────────────────── */
+  --radius-card: 20px;
+  --radius-card-lg: 24px;
+  --radius-media: 14px;
+  --radius-inner: 16px;
+  --radius-squircle: 28px;
+
+  /* ── Shadows ────────────────────────────────────────────────────────────
+     Measured at roughly 1% darkening at peak; nothing in the deck exceeds
+     ~6% opacity. Every shadow is tinted with the ink-900 navy hue — a grey
+     shadow reads as dirt against this palette. */
+  --shadow-card:
+    0 1px 2px rgb(15 38 72 / 0.03), 0 4px 12px rgb(15 38 72 / 0.04),
+    0 12px 32px rgb(15 38 72 / 0.035);
+  --shadow-card-elevated:
+    0 2px 4px rgb(15 38 72 / 0.04), 0 10px 28px rgb(15 38 72 / 0.06),
+    0 24px 56px rgb(15 38 72 / 0.05);
+  --shadow-node: 0 2px 10px rgb(15 38 72 / 0.05);
+  --shadow-pill:
+    0 1px 3px rgb(43 95 217 / 0.18), 0 6px 16px rgb(43 95 217 / 0.14);
+
+  /* ── Containers ─────────────────────────────────────────────────────── */
+  --container-narrow: 1152px;
+  --container-wide: 1360px;
+
+  /* ── Motion ─────────────────────────────────────────────────────────────
+     One ease-out curve for the whole site, mirrored in
+     src/components/motion/ease.ts so JS and CSS cannot drift apart. */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-drift-slow: drift-slow 26s ease-in-out infinite alternate;
+  --animate-drift-slower: drift-slow 38s ease-in-out infinite alternate;
+
+  @keyframes drift-slow {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-2.5%, -1.5%, 0);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══════════════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════════════ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* The sticky header must not cover an anchored section's heading. */
+    scroll-padding-top: 96px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    /* The page ground is a low-saturation wash that shifts cool -> warm ->
+       cool across the viewport, measured from the deck's four corners. */
+    background-color: var(--color-bg-base);
+    background-image:
+      radial-gradient(120% 90% at 78% 30%, #fdfcfa 0%, rgb(253 252 250 / 0) 60%),
+      linear-gradient(160deg, #f7f8fd 0%, #f8f9fc 55%, #f5f6fb 100%);
+    background-attachment: fixed;
+    color: var(--color-ink-600);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-ink-900);
+    text-wrap: balance;
+  }
+
+  /* Visible focus for keyboard users, suppressed for pointer users. */
+  :focus-visible {
+    outline: 2px solid var(--color-blue-ink);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Gradient headline runs.
+ *
+ * Highlighted phrases in the deck are a single continuous left-to-right
+ * gradient, NOT per-word solid colours — confirmed by column-scanning glyph
+ * cores (within the word `are.` the ink travels teal -> mauve -> rose across
+ * 110px). One shared six-stop ramp is reused across all eight headlines.
+ *
+ * The ramp always terminates on rose at its right edge and never ends on
+ * blue. `inline-block` with `pb`/`-mb` keeps serif descenders from being
+ * clipped by the background-clip box.
+ */
+@utility grad-text {
+  background-image: linear-gradient(
+    90deg,
+    #2f6bee 0%,
+    #5aa2d8 20%,
+    #6abdb9 40%,
+    #79c3ae 55%,
+    #9c88b4 72%,
+    #f5538c 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/**
+ * Hero-only ramp. The supplied hero JPEG runs warmer and more violet than
+ * the deck ramp — blue -> cyan -> indigo -> purple -> magenta.
+ */
+@utility grad-text-hero {
+  background-image: linear-gradient(
+    90deg,
+    #1663da 0%,
+    #0f8fcb 26%,
+    #295a9d 48%,
+    #7a4b81 72%,
+    #c56f97 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/** The `TRUST & APPROACH` eyebrow runs the ramp backwards, then wraps. */
+@utility grad-text-reverse {
+  background-image: linear-gradient(
+    90deg,
+    #3ea876 0%,
+    #5aa2d8 22%,
+    #9c88b4 44%,
+    #e8467c 62%,
+    #9c88b4 82%,
+    #2f6bee 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/** 2px blue -> teal -> rose divider rule, used twice in the Connected section. */
+@utility grad-rule {
+  background-image: linear-gradient(90deg, #3b82f0, #6abdb9, #f5538c);
+}
+
+/** The hero trust strip. Alpha was solved from the aurora visible through it. */
+@utility surface-translucent {
+  background-color: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   Complements MotionConfig reducedMotion="user" in the root layout: this
+   block covers the CSS-driven animation (the drifting aurora), the provider
+   covers the Motion-driven reveals.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

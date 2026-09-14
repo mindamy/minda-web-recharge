@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 
 import { MotionProvider } from "@/components/motion/MotionProvider";
 
@@ -18,10 +18,16 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-/** DM Sans carries body and UI text: geometric, large x-height, legible small. */
-const dmSans = DM_Sans({
+/**
+ * Outfit carries body and UI text. The deck's sans was identified from its
+ * letterforms rather than guessed: double-storey `a` with no tail, single-
+ * storey `g` with an open hook descender, flat angle-cut `t`, measured
+ * x-height 0.51em. Outfit is the closest widely available match; Questrial
+ * and Hanken Grotesk are the runners-up and sit in the fallback stack.
+ */
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-outfit",
   display: "swap",
 });
 
@@ -36,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
       <body>
         <MotionProvider>{children}</MotionProvider>
       </body>
