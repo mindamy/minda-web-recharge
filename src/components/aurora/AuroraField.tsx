@@ -274,7 +274,21 @@ export function AuroraField({
       focusable="false"
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio={preserveAspectRatio}
-      className={cn("pointer-events-none absolute inset-0 h-full w-full", className)}
+      className={cn(
+        "pointer-events-none absolute inset-0 h-full w-full",
+        /*
+         * Damped on small screens. The field scales with
+         * `preserveAspectRatio="none"`, so a bundle tuned at the deck's
+         * 1448px reference gets squeezed to roughly a quarter of that width
+         * on a phone — which packs the same stroke count into a quarter of
+         * the horizontal space and turns a whisper into a visible ribbon.
+         * DESIGN-SPEC §4 asks for decoration to be simplified at these
+         * widths; damping the whole field is the least destructive way,
+         * since it keeps the geometry and the caustic nodes intact.
+         */
+        "opacity-45 sm:opacity-70 lg:opacity-100",
+        className,
+      )}
       style={style}
     >
       {(gradients.length > 0 || masks.length > 0) && (
