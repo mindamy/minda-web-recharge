@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Fragment, type ComponentType } from "react";
 
+import { TrustAurora } from "@/components/aurora";
 import { AskRechargeApproach } from "@/components/chrome/AskRecharge";
 import {
   HandshakeHeart,
@@ -176,7 +177,7 @@ function PortraitArc() {
 export function Trust() {
   return (
     <Section id={SECTION_IDS.trust}>
-      {/* aurora: <TrustAurora /> mounted by the page */}
+      <TrustAurora />
 
       <Container width="narrow">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,46fr)_minmax(0,54fr)] lg:items-start lg:gap-10">

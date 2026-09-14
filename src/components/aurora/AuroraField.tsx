@@ -122,16 +122,23 @@ export type AuroraBundle = Omit<BundleSpec, "width" | "height"> & {
    */
   drift?: "slow" | "slower" | "none";
   /**
-   * Fraction of the span at each end over which the bundle fades to fully
-   * transparent, via a mask.
+   * Fraction of the span over which the bundle fades to fully transparent, via
+   * a mask. A single number fades both ends; `[start, end]` fades them
+   * independently, and `0` on one side leaves it at full strength.
    *
    * Needed whenever a bundle *ends* inside the viewBox. The geometry's
    * amplitude taper collapses every stroke onto the axis at the span's ends,
    * which stacks the entire bundle into one hard, fully-opaque line — barely
    * noticeable off-canvas, glaring on-canvas. Fading the paint out over the
-   * same region is what actually makes a ribbon dissolve.
+   * same region is what actually makes a ribbon dissolve, so the fade wants to
+   * be at least as wide as `taper` (0.26 by default).
+   *
+   * Use the tuple form for a bundle that ends inside the box at one end and
+   * bleeds off an edge at the other, which is most of them: a symmetric fade
+   * would dim the bleeding edge, and a field that fades out before it reaches
+   * the viewport edge stops reading as something that continues past it.
    */
-  fade?: number;
+  fade?: number | readonly [number, number];
 };
 
 export type AuroraFieldProps = {
@@ -232,7 +239,13 @@ export function AuroraField({
     const resolvedHue = resolveStops(bundle.hue);
     const gradientId = "ramp" in resolvedHue ? `${id}-b${index}` : undefined;
     const [x0, x1] = bundleSpan(spec);
-    const fade = clamp(bundle.fade ?? 0, 0, 0.5);
+    const [fadeIn, fadeOut] = Array.isArray(bundle.fade)
+      ? [clamp(bundle.fade[0], 0, 0.5), clamp(bundle.fade[1], 0, 0.5)]
+      : [
+          clamp((bundle.fade as number) ?? 0, 0, 0.5),
+          clamp((bundle.fade as number) ?? 0, 0, 0.5),
+        ];
+    const fade = fadeIn > 0 || fadeOut > 0;
 
     return {
       key: `${id}-b${index}`,
@@ -243,10 +256,9 @@ export function AuroraField({
         "ramp" in resolvedHue && gradientId
           ? { id: gradientId, x0, x1, stops: resolvedHue.ramp }
           : undefined,
-      mask:
-        fade > 0
-          ? { id: `${id}-m${index}`, x0, x1, fade, width, height }
-          : undefined,
+      mask: fade
+        ? { id: `${id}-m${index}`, x0, x1, fadeIn, fadeOut, height }
+        : undefined,
       opacity: clamp(bundle.opacity ?? 0.14, MIN_OPACITY, MAX_OPACITY),
       strokeWidth: clamp(bundle.strokeWidth ?? 0.75, MIN_STROKE, MAX_STROKE),
       driftClass: DRIFT_CLASS[bundle.drift ?? "none"],
@@ -289,7 +301,20 @@ export function AuroraField({
           ))}
 
           {masks.map((m) => (
-            <mask key={m.id} id={m.id} maskUnits="userSpaceOnUse">
+            /* The mask *region* is declared explicitly. `maskUnits` only
+               governs x/y/width/height, whose defaults are -10%/-10%/120%/120%
+               — under `userSpaceOnUse` that resolves against the viewport and
+               would clip a bundle at 110% of the viewBox width, which several
+               of these deliberately exceed. */
+            <mask
+              key={m.id}
+              id={m.id}
+              maskUnits="userSpaceOnUse"
+              x={m.x0}
+              y={-m.height}
+              width={m.x1 - m.x0}
+              height={m.height * 3}
+            >
               <linearGradient
                 id={`${m.id}-ramp`}
                 gradientUnits="userSpaceOnUse"
@@ -298,14 +323,18 @@ export function AuroraField({
                 x2={m.x1}
                 y2={0}
               >
-                <stop offset="0%" stopColor="#fff" stopOpacity={0} />
-                <stop offset={`${(m.fade * 100).toFixed(2)}%`} stopColor="#fff" stopOpacity={1} />
+                <stop offset="0%" stopColor="#fff" stopOpacity={m.fadeIn > 0 ? 0 : 1} />
                 <stop
-                  offset={`${((1 - m.fade) * 100).toFixed(2)}%`}
+                  offset={`${(m.fadeIn * 100).toFixed(2)}%`}
                   stopColor="#fff"
                   stopOpacity={1}
                 />
-                <stop offset="100%" stopColor="#fff" stopOpacity={0} />
+                <stop
+                  offset={`${((1 - m.fadeOut) * 100).toFixed(2)}%`}
+                  stopColor="#fff"
+                  stopOpacity={1}
+                />
+                <stop offset="100%" stopColor="#fff" stopOpacity={m.fadeOut > 0 ? 0 : 1} />
               </linearGradient>
               {/* Covers the whole span, not just the viewBox, so the ramp is
                   anchored to the bundle and unaffected by the drift transform. */}

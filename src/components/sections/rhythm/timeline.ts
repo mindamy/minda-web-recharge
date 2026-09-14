@@ -8,19 +8,25 @@
  * at runtime and nothing is animated by these numbers.
  *
  * Units are the deck's own 1448px reference pixels. The horizontal rail is
- * drawn in a viewBox whose x origin is shifted to 84 — the left edge of the
- * `wide` container's content box at that reference width — so a node's spec
- * x-centre can be written down verbatim and still land in the right place.
+ * drawn in a viewBox whose x origin is shifted to the left edge of the `wide`
+ * container's content box at that reference width, so a node's spec x-centre
+ * can be written down verbatim and still land in the right place.
  */
 
 /* -------------------------------------------------------------------------- */
 /* Horizontal rail — lg and up                                                */
 /* -------------------------------------------------------------------------- */
 
-/** Left edge of the `wide` container content box at the 1448px reference. */
-const VIEW_X = 84;
-/** Content box width at that reference: 1360 max-width less 2 x 40px padding. */
-export const VIEW_W = 1280;
+/**
+ * The `wide` container's content box at the 1448px reference — §1.7 puts it
+ * at 1360px, centred, so it runs from x 44 to x 1404.
+ *
+ * Node positions are emitted as percentages of this box, so if the container
+ * width ever changes the timeline scales proportionally and stays centred:
+ * the six spec x-centres are themselves symmetric about the page centre.
+ */
+const VIEW_X = 44;
+export const VIEW_W = 1360;
 /** Tall enough for the largest node plus its two label lines. */
 export const VIEW_H = 224;
 

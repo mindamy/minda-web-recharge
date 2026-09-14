@@ -62,7 +62,7 @@ const CARDS: readonly PillarCard[] = [
 export function FragmentedStack() {
   return (
     <div>
-      <MicroEyebrow className="text-ink-400">FRAGMENTED SUPPORT</MicroEyebrow>
+      <MicroEyebrow className="text-ink-500">FRAGMENTED SUPPORT</MicroEyebrow>
       <p className="mt-3 text-card-body text-ink-500">
         <span className="block">Help can come from many</span>
         <span className="block">places, but rarely works together.</span>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ComponentType } from "react";
 
+import { MomentsAurora, MomentsCardAurora } from "@/components/aurora";
 import { AskRechargeBanner } from "@/components/chrome/AskRecharge";
 import { ScrollCue } from "@/components/chrome/ScrollCue";
 import {
@@ -117,7 +118,7 @@ const MOMENTS: readonly Moment[] = [
 export function Moments() {
   return (
     <Section id={SECTION_IDS.moments}>
-      {/* aurora: <MomentsAurora /> mounted by the page */}
+      <MomentsAurora />
 
       <Container width="wide">
         {/* Two-zone header: copy left, the reassurance card pinned top-right
@@ -141,8 +142,7 @@ export function Moments() {
 
           <Reveal delay={0.1}>
             <div className="rounded-card bg-surface-card shadow-card relative overflow-hidden p-6 sm:p-7">
-              {/* aurora: the faint green bundle that bleeds off this card's
-                  right edge is mounted by the page, not drawn here. */}
+              <MomentsCardAurora />
               <div className="flex items-start gap-4">
                 <span className="flex size-[46px] shrink-0 items-center justify-center rounded-full bg-[#f6fbf9]">
                   <Heart className="size-5.5 text-green-icon" strokeWidth={1.8} />

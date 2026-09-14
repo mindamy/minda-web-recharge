@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import type { ComponentType } from "react";
 
+import { RhythmAurora } from "@/components/aurora";
 import { AskRechargePersonal } from "@/components/chrome/AskRecharge";
 import { ChartUp, Heart, PersonCircle, type IconProps } from "@/components/icons";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
@@ -59,11 +60,11 @@ const STRIP: readonly StripCell[] = [
 export function Rhythm() {
   return (
     <Section id={SECTION_IDS.rhythm}>
-      {/* aurora: <RhythmAurora /> mounted by the page */}
+      <RhythmAurora />
 
       <Container width="wide">
         <Reveal>
-          <div className="max-w-[720px]">
+          <div className="max-w-[768px]">
             <Eyebrow>PERSONAL TO YOUR RHYTHM</Eyebrow>
 
             <h2 className="text-h2 mt-5">

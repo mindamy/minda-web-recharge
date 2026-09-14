@@ -54,7 +54,7 @@ const SEGMENTS: readonly Segment[] = [
     // RECONNECT -> apex. Blue #99BFFA, fading in where it leaves the node.
     id: "r3-arc-reconnect",
     d: "M133 62C170 26 230 5 285 5",
-    bundle: ["M133 62C170 22 230 1 285 5", "M133 62C171 30 230 9 285 5"],
+    bundle: ["M133 62C170 23 230 2 285 5", "M133 62C171 29 230 8 285 5"],
     axis: [133, 62, 285, 5],
     stops: [
       { offset: "0%", color: "#C9DCFC", opacity: 0.3 },
@@ -68,7 +68,7 @@ const SEGMENTS: readonly Segment[] = [
     // Apex -> REALIGN. The blue hands off to green #9ED3B6 at the top vertex.
     id: "r3-arc-realign",
     d: "M285 5C330 5 370 26 395 44",
-    bundle: ["M285 5C330 1 374 24 395 44", "M285 5C330 9 367 29 395 44"],
+    bundle: ["M285 5C330 2 373 24 395 44", "M285 5C330 8 368 28 395 44"],
     axis: [285, 5, 395, 44],
     stops: [
       { offset: "0%", color: "#9FD2DF" },
@@ -81,7 +81,7 @@ const SEGMENTS: readonly Segment[] = [
     // REALIGN -> RECHARGE. Green neutralises almost immediately into rose.
     id: "r3-arc-recharge",
     d: "M426 172C406 214 365 233 312 233",
-    bundle: ["M426 172C410 216 366 237 312 233", "M426 172C402 211 364 229 312 233"],
+    bundle: ["M426 172C409 215 366 236 312 233", "M426 172C403 212 364 230 312 233"],
     axis: [426, 172, 312, 233],
     stops: [
       { offset: "0%", color: "#C6D2CC", opacity: 0.45 },
@@ -96,7 +96,7 @@ const SEGMENTS: readonly Segment[] = [
     // back to the pale blue it started from.
     id: "r3-arc-return",
     d: "M244 233C180 233 131 212 103 170",
-    bundle: ["M244 233C180 237 127 214 103 170", "M244 233C180 229 134 209 103 170"],
+    bundle: ["M244 233C180 236 128 213 103 170", "M244 233C180 230 133 210 103 170"],
     axis: [244, 233, 103, 170],
     stops: [
       { offset: "0%", color: "#FCA8CC" },
@@ -171,7 +171,7 @@ export function LoopArcs({ className }: { className?: string }) {
               key={index}
               d={d}
               strokeWidth={0.8}
-              strokeOpacity={0.55}
+              strokeOpacity={0.45}
               variants={stroke(segment.delay)}
             />
           ))}

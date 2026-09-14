@@ -16,9 +16,10 @@
  * with `φᵢ` advancing linearly across the bundle over a total spread of
  * 0.5π-0.9π. This is a *one-sided nested ribbon*: the strokes never cross the
  * axis together, they flow the same way and the sheet's thickness breathes.
- * Thickness is `2·A·sin(Δφ/2)·|cos(k·x + phase + Δφ/2)|`, so it narrows to a
- * waist every `wavelength / 2` — at Δφ = 0.6π the waist is about a quarter of
- * the widest fan, which is the 3.4:1 ratio measured on p-8's lower band.
+ * Thickness is `2·A·sin(Δφ/2)·|cos θ_mid|` while the φ window stays monotonic,
+ * and collapses to `A·(1 - cos(Δφ/2))` once the window straddles a crest — so
+ * the ribbon narrows to a waist every `wavelength / 2`. At Δφ = 0.6π that is a
+ * 3.9:1 fan-to-waist ratio, against the 3.4:1 measured on p-8's lower band.
  *
  * `clustering` is what makes the rims and knots bright. Stroke density goes as
  * `dt/dy = 1 / (A·cos(θ + φ)·dφ/dt)`. Spacing `φ` *uniformly* across the bundle
@@ -81,9 +82,9 @@ export type BundleSpec = {
   wavelength: number;
   /**
    * Total φ spread across the bundle, in radians. DESIGN-SPEC.md §2.5 says
-   * 0.5π-0.9π and that range is right: it sets the waist-to-fan ratio, which
-   * is `1 / cos(Δφ/2)` divided into `1`. 0.6π gives 3.9:1 (p-8 measures 3.4:1);
-   * at π the waist vanishes entirely and the ribbon degenerates into a
+   * 0.5π-0.9π and that range is right: it sets the fan-to-waist ratio, which
+   * is `2·sin(Δφ/2) / (1 - cos(Δφ/2))`. 0.6π gives 3.9:1 and p-8 measures
+   * 3.4:1; at π the ratio falls to 2:1 and the ribbon degenerates into a
    * symmetric bowtie that crosses itself at every node.
    */
   phaseSpread: number;
@@ -95,7 +96,16 @@ export type BundleSpec = {
   clustering?: number;
   /** Shallow drift of the axis across the span, in degrees. */
   tilt?: number;
-  /** Points sampled per stroke before Catmull-Rom smoothing. Default 56. */
+  /**
+   * Points sampled per stroke before Catmull-Rom smoothing. Default 34.
+   *
+   * Catmull-Rom error falls as `h^4`, so for a sine of wavelength L sampled at
+   * spacing h the peak deviation is about `A·(2πh/L)^4 / 384`. At the field
+   * presets' numbers (L ~ 1200, A ~ 100, span ~ 1900) 34 samples is a 0.004px
+   * error and 64 would be 0.0002px — both invisible, but 34 halves the markup.
+   * A bundle is 30-45 of these paths and a page carries several bundles, so the
+   * DOM weight is the real constraint here, not the curve fit.
+   */
   samples?: number;
   /** Span start. Default `-0.18 * width` so the bundle bleeds off the left. */
   x0?: number;
@@ -148,7 +158,7 @@ export type BundleSpec = {
   seed?: number;
 };
 
-const DEFAULT_SAMPLES = 56;
+const DEFAULT_SAMPLES = 34;
 const DEFAULT_TAPER = 0.26;
 const DEFAULT_HARMONIC = 0.16;
 
@@ -180,12 +190,18 @@ export function bundleSpan(spec: Pick<BundleSpec, "width" | "x0" | "x1">): [numb
 /**
  * Solves the phase that puts a caustic waist at `nodeAt`.
  *
- * Bundle thickness goes as `|cos(k·x + phase + Δφ/2)|`, so a waist needs that
- * cosine at zero: `phase = π/2 - Δφ/2 - k·x`.
+ * Where the middle stroke's φ window `[θ - Δφ/2, θ + Δφ/2]` stays monotonic,
+ * bundle thickness is `2·A·sin(Δφ/2)·|cos θ|` — widest at a zero crossing. Once
+ * the window straddles a crest or trough the sine saturates at ±1 and the
+ * thickness collapses instead, which is the waist. So a waist sits where the
+ * middle stroke peaks, `θ = ±π/2`, giving `phase = π/2 - k·x`.
+ *
+ * (An earlier version solved `cos(θ + Δφ/2) = 0` and put every waist
+ * `Δφ / 2k` — about 170px at these wavelengths — downstream of `nodeAt`.)
  */
 function solvePhase(spec: BundleSpec, k: number): number {
   if (spec.nodeAt === undefined) return spec.phase ?? 0;
-  return Math.PI / 2 - spec.phaseSpread / 2 - k * spec.nodeAt;
+  return Math.PI / 2 - k * spec.nodeAt;
 }
 
 /**
@@ -196,8 +212,8 @@ export function bundleNodes(spec: BundleSpec): number[] {
   const k = (2 * Math.PI) / spec.wavelength;
   const phase = solvePhase(spec, k);
   const half = spec.wavelength / 2;
-  // cos(k·x + phase + Δφ/2) = 0  =>  x = (π/2 + nπ - phase - Δφ/2) / k
-  const first = (Math.PI / 2 - phase - spec.phaseSpread / 2) / k;
+  // cos(k·x + phase) = 0  =>  x = (π/2 + nπ - phase) / k
+  const first = (Math.PI / 2 - phase) / k;
   const out: number[] = [];
   const n0 = Math.ceil((0 - first) / half);
   for (let n = n0; ; n++) {

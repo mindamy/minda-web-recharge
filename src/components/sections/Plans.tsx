@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 
+import { PlansAurora } from "@/components/aurora";
 import { AskRechargePlans } from "@/components/chrome/AskRecharge";
 import {
   ArrowRight,
@@ -132,7 +133,7 @@ const PLANS: readonly Plan[] = [
 export function Plans() {
   return (
     <Section id={SECTION_IDS.plans}>
-      {/* aurora: <PlansAurora /> mounted by the page */}
+      <PlansAurora />
 
       <Container width="narrow">
         <Reveal className="text-center">
@@ -189,7 +190,7 @@ export function Plans() {
                   {CTA.tryFree}
                 </Button>
 
-                <p className="text-meta text-ink-400 md:text-right">{CTA.trialMeta}</p>
+                <p className="text-meta text-ink-500 md:text-right">{CTA.trialMeta}</p>
               </div>
             </div>
           </div>
@@ -309,7 +310,7 @@ export function Plans() {
             <AskRechargePlans />
           </div>
 
-          <p className="text-meta mt-11 text-center text-ink-400">
+          <p className="text-meta mt-11 text-center text-ink-500">
             Working plan details. Names, prices and usage limits to be confirmed.
           </p>
         </Reveal>

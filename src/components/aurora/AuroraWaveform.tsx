@@ -18,18 +18,45 @@ import { waveformPaths, type WaveformSpec } from "./geometry";
  * line rather than nothing.
  */
 
-/** Lobe hues, measured left -> right off p-3. */
+/**
+ * Lobe hues as measured left -> right off p-3. Exported for reference; see
+ * {@link WAVEFORM_CORE} for what actually gets painted, and `CORE_HUES` in
+ * `AuroraField.tsx` for the full argument.
+ */
 export const WAVEFORM_HUES = {
   blue: "#A9BEF2",
   rose: "#F06E9A",
   green: "#8CC9AE",
 } as const;
 
-/** Fractions of width. Index 0 and 4 are the bounded ends. */
-const NODES = [0, 0.16, 0.42, 0.68, 1] as const;
+/**
+ * The stroke colours. Same solve as `CORE_HUES`: inside a lens lobe the
+ * contours are nested, so only about two strokes overlap, and at alpha 0.16
+ * that is 29% coverage. Working backwards from the darkest measured pixel in
+ * each lobe (#C0D0FC, #F9BED0, #C1E2D0) over the card's own ground:
+ *
+ *     blue   rgb(55, 119, 250)   green  rgb(49, 161, 100)
+ *
+ * The rose solves to #EF3A70, which is within a few units of the #F06E9A the
+ * spec quotes — so that one measurement happened to land on a spot where a
+ * single stroke sat alone, while the blue and green samples did not.
+ */
+export const WAVEFORM_CORE = {
+  blue: "#3777FA",
+  rose: "#EF3A70",
+  green: "#31A164",
+} as const;
 
-/** Per-lobe peak: flat lead-in, blue, rose (tallest), green (shortest). */
-const LOBE_AMPLITUDES = [0.05, 0.88, 1, 0.62] as const;
+/**
+ * Node fractions. Index 0 and 5 are the bounded ends; the two real pinch nodes
+ * are at 0.40 and 0.635, which is where a 3x crop of the player card puts them
+ * (the spec quotes 42% and 68%). The wave is bracketed by a flat lead-in and a
+ * flat tail rather than running lobe-to-edge, because the deck's does.
+ */
+const NODES = [0, 0.155, 0.4, 0.635, 0.88, 1] as const;
+
+/** Per-lobe peak: lead-in, blue, rose (tallest), green, tail. */
+const LOBE_AMPLITUDES = [0.05, 0.9, 1, 0.66, 0.04] as const;
 
 export type AuroraWaveformProps = {
   /** Unique per mounted waveform — scopes the gradient and clip `<defs>` ids. */
@@ -61,7 +88,7 @@ export function AuroraWaveform({
     nodes: NODES,
     lobeAmplitudes: LOBE_AMPLITUDES,
     phaseSpread: Math.PI,
-    skew: 6,
+    skew: 10,
     jitter: 0.06,
     seed: 7,
   };
@@ -102,12 +129,12 @@ export function AuroraWaveform({
           x2={width}
           y2={0}
         >
-          <stop offset="0%" stopColor={WAVEFORM_HUES.blue} stopOpacity={0.66} />
-          <stop offset="25%" stopColor={WAVEFORM_HUES.blue} stopOpacity={0.8} />
-          <stop offset="45%" stopColor={WAVEFORM_HUES.rose} stopOpacity={1} />
-          <stop offset="63%" stopColor={WAVEFORM_HUES.rose} stopOpacity={1} />
-          <stop offset="74%" stopColor={WAVEFORM_HUES.green} stopOpacity={0.9} />
-          <stop offset="100%" stopColor={WAVEFORM_HUES.green} stopOpacity={0.8} />
+          <stop offset="0%" stopColor={WAVEFORM_CORE.blue} stopOpacity={0.6} />
+          <stop offset="18%" stopColor={WAVEFORM_CORE.blue} stopOpacity={0.8} />
+          <stop offset="38%" stopColor={WAVEFORM_CORE.rose} stopOpacity={1} />
+          <stop offset="58%" stopColor={WAVEFORM_CORE.rose} stopOpacity={1} />
+          <stop offset="70%" stopColor={WAVEFORM_CORE.green} stopOpacity={0.95} />
+          <stop offset="100%" stopColor={WAVEFORM_CORE.green} stopOpacity={0.8} />
         </linearGradient>
         <clipPath id={clipId}>
           <rect x={node1} y={0} width={width - node1} height={height} />

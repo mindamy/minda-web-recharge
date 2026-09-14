@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { CtaAurora } from "@/components/aurora";
 import { AskRechargeStart } from "@/components/chrome/AskRecharge";
 import { ArrowRight } from "@/components/icons";
 import { Reveal } from "@/components/motion/Reveal";
@@ -101,7 +102,7 @@ function PortraitArc() {
 export function Start() {
   return (
     <Section id={SECTION_IDS.start}>
-      {/* aurora: <CtaAurora /> mounted by the page */}
+      <CtaAurora />
 
       <Container width="wide">
         <div className="grid items-center gap-14 lg:grid-cols-[42fr_58fr] lg:gap-12">
@@ -133,7 +134,7 @@ export function Start() {
               {CTA.tryFree}
             </Button>
 
-            <p className="text-btn-sm mt-5 font-normal text-ink-400">{CTA.trialMeta}</p>
+            <p className="text-btn-sm mt-5 font-normal text-ink-500">{CTA.trialMeta}</p>
 
             <Button href="/plans" variant="ghost" size="none" className="group mt-5">
               Explore Plans

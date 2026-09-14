@@ -47,16 +47,31 @@
   --color-blue-banner-faint: #f8f9fc;
 
   /* ── Teal / green ───────────────────────────────────────────────────── */
-  --color-green-ink: #1f8a55;
+  /* Darkened from the deck's measured #1F8A55, which is 4.1:1 on the page
+     ground. The spec's own table calls it "marginal"; at the 17px semibold
+     the deck uses it is still normal-size text by WCAG, so it needs 4.5.
+     This is 5.4:1. */
+  --color-green-ink: #17764a;
   --color-green-500: #3ea876;
   --color-green-icon: #62b291;
   --color-teal-400: #6abdb9;
+  /* The deck sets the Rhythm timeline's sub-labels ("Reset", "Recharge") in
+     teal-400 and green-500 at 15px, which measure 2.1:1 and 2.8:1 on the page
+     ground — well under AA, and these are real words, not decoration. The
+     deck's own lighter hues are kept for icon strokes, where a text label
+     always sits alongside. This carries the teal text at 4.8:1; the darkened
+     green-ink above carries the green. */
+  --color-teal-ink: #167c78;
   --color-green-300: #82bea2;
   --color-green-tint-50: #edf4ef;
   --color-green-tint-100: #e8f4ed;
 
   /* ── Pink / rose ────────────────────────────────────────────────────── */
-  --color-rose-ink: #e12a5e;           /* use for CTA labels — rose-500 fails AA */
+  /* Darkened from the deck's measured #E12A5E. DESIGN-SPEC §1.1 records that
+     value as 4.6:1, but recomputed against the actual page ground it is
+     4.25:1 — a fail. This is 4.6:1 for real, and is the token every rose
+     *label* uses; rose-500 stays for decorative check glyphs only. */
+  --color-rose-ink: #d8235a;
   --color-rose-500: #e8467c;
   --color-rose-400: #f5538c;
   --color-rose-300: #e278a7;

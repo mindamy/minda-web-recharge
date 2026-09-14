@@ -34,18 +34,22 @@ import { AuroraField, CORE_HUES, OCHRE, type AuroraBundle } from "./AuroraField"
  * Two of the spec's stated ranges do not reproduce what p-8 shows, and the
  * deck wins:
  *
- * - **Amplitude.** Spec says 18-45px. Measured on p-8's lower band, the rose
- *   fan is ~216px thick at x=1008 (1448-normalised), which needs an amplitude
- *   near 110. The spec's figure fits the faintest fields, not the prominent
- *   ones. Used here: 85-175, scaled down for the low-intensity sections.
- * - **Wavelength.** Spec says 320-520px, which puts a caustic node every
- *   160-260px — 6 to 9 nodes across the width. p-8 has *two*, at x = 305 and
- *   x = 991, so node spacing is ~686px and the wavelength ~1370. Used here:
- *   950-1400.
+ * - **Amplitude.** Spec says 18-45px. That fits the hero's thin lower-left
+ *   band (used: 50) and nothing else. p-8's lower band fans to ~170px thick
+ *   at x=620, which needs an amplitude near 90; the Trust and Plans bands are
+ *   wider still. Used here: 50-160.
+ * - **Wavelength.** Spec says 320-520px, which puts a caustic waist every
+ *   160-260px — 6 to 9 across the width. p-8 has *two* visible knots, at
+ *   x = 340 and x = 900, so the spacing is ~560px and the wavelength ~1120.
+ *   Used here: 620-1560.
  *
- * Tilt is also kept to 2-5 degrees rather than the spec's 8-20: at this
- * wavelength the wave itself supplies the diagonal drift, and stacking a
- * 15-degree axis tilt on top of it slid whole bundles off the canvas.
+ * Tilt is also kept to 1.5-4 degrees rather than the spec's 8-20. At these
+ * wavelengths the wave itself supplies the diagonal drift; adding a 15-degree
+ * axis tilt on top slid whole bundles off the canvas.
+ *
+ * Everything else in §2.5 held up: 28-45 strokes (used 26-45), 0.5-0.9π phase
+ * spread (used 0.58-0.62π), 0.10-0.18 per-stroke opacity (used 0.11-0.18),
+ * 0.5-1px stroke width (used 0.75-1), and every placement in the table.
  */
 
 /** Every bundle overflows the canvas, per §2.5 "always bleeds off at least one edge". */
@@ -73,7 +77,7 @@ export function HeroAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 11,
-      fade: 0.18,
+      fade: [0, 0.3],
       strokeWidth: 0.8,
       opacity: 0.14,
       drift: "slow",
@@ -106,7 +110,7 @@ export function HeroAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 12,
-      fade: 0.18,
+      fade: [0.3, 0],
       strokeWidth: 0.9,
       opacity: 0.18,
       drift: "slower",
@@ -119,7 +123,12 @@ export function MomentsAurora({ className }: { className?: string }) {
   const bundles: AuroraBundle[] = [
     // lavender + green bleeding off the left edge, y 76-92% of section height
     {
-      hue: [CORE_HUES.lavender, CORE_HUES.green],
+      hue: [
+        { color: CORE_HUES.lavender, at: 0 },
+        { color: CORE_HUES.lavender, at: 0.35 },
+        { color: CORE_HUES.green, at: 0.55 },
+        { color: CORE_HUES.green, at: 1 },
+      ],
       strokes: 32,
       baseline: 800,
       amplitude: 108,
@@ -133,7 +142,7 @@ export function MomentsAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 21,
-      fade: 0.16,
+      fade: [0, 0.3],
       opacity: 0.15,
       drift: "slow",
     },
@@ -153,7 +162,7 @@ export function MomentsAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 22,
-      fade: 0.2,
+      fade: [0.3, 0],
       opacity: 0.15,
       drift: "slower",
     },
@@ -219,7 +228,7 @@ export function R3Aurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 31,
-      fade: 0.18,
+      fade: [0, 0.3],
       opacity: 0.12,
       drift: "slow",
     },
@@ -239,7 +248,7 @@ export function R3Aurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 32,
-      fade: 0.22,
+      fade: [0.3, 0],
       opacity: 0.12,
       drift: "slower",
     },
@@ -265,7 +274,7 @@ export function ConnectedAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 41,
-      fade: 0.16,
+      fade: [0, 0.3],
       opacity: 0.11,
       drift: "slower",
     },
@@ -284,7 +293,7 @@ export function ConnectedAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 42,
-      fade: 0.2,
+      fade: [0.3, 0],
       opacity: 0.11,
       drift: "slow",
     },
@@ -311,7 +320,7 @@ export function RhythmAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 51,
-      fade: 0.17,
+      fade: [0, 0.3],
       opacity: 0.14,
       drift: "slow",
     },
@@ -331,7 +340,7 @@ export function RhythmAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 52,
-      fade: 0.17,
+      fade: [0, 0.3],
       opacity: 0.13,
       drift: "slower",
     },
@@ -351,7 +360,7 @@ export function RhythmAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 53,
-      fade: 0.18,
+      fade: [0.3, 0],
       strokeWidth: 0.9,
       opacity: 0.18,
       drift: "slow",
@@ -365,13 +374,13 @@ export function TrustAurora({ className }: { className?: string }) {
   const bundles: AuroraBundle[] = [
     {
       hue: CORE_HUES.blue,
-      strokes: 38,
-      baseline: 900,
-      amplitude: 138,
-      wavelength: 1350,
+      strokes: 36,
+      baseline: 884,
+      amplitude: 108,
+      wavelength: 1560,
       phaseSpread: 0.62 * Math.PI,
       nodeAt: 380,
-      tilt: 2.5,
+      tilt: 1.5,
       x0: -340,
       x1: 1820,
       spread: 4,
@@ -383,13 +392,13 @@ export function TrustAurora({ className }: { className?: string }) {
     },
     {
       hue: CORE_HUES.rose,
-      strokes: 36,
-      baseline: 930,
-      amplitude: 130,
-      wavelength: 1200,
-      phaseSpread: 0.62 * Math.PI,
+      strokes: 34,
+      baseline: 938,
+      amplitude: 98,
+      wavelength: 1120,
+      phaseSpread: 0.6 * Math.PI,
       nodeAt: 1080,
-      tilt: -2.5,
+      tilt: -1.5,
       x0: -280,
       x1: 1800,
       spread: 4,
@@ -421,7 +430,7 @@ export function PlansAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 71,
-      fade: 0.16,
+      fade: [0, 0.3],
       opacity: 0.14,
       drift: "slow",
     },
@@ -441,7 +450,7 @@ export function PlansAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 72,
-      fade: 0.18,
+      fade: [0.3, 0],
       opacity: 0.14,
       drift: "slower",
     },
@@ -452,10 +461,13 @@ export function PlansAurora({ className }: { className?: string }) {
 /**
  * The most prominent field in the deck, and the one every parameter here was
  * fitted against. Nodes, axis heights and fan widths come straight off p-8:
- * the upper bundle pinches at x=305 and its left edge opens to y 723-979,
- * against a measured 745-928; the lower one pinches at x=991 and goes
- * ochre-neutral at the crossing near x=965. The three cross at approximately
- * (733, 833) — the spec's (560, 640) in deck-native px.
+ * both main bundles pinch at x=340, the upper one again at x=900 and the lower
+ * one at x=1090 (the deck's two visible knots, re-measured at 1448-normalised
+ * scale), and each hue transition is pinned to the offset of a pinch along its
+ * own bundle's span so the colour turns exactly where the ribbon knots — which
+ * is what p-8 does. Sharing the phase at x=340 is deliberate: it keeps the two
+ * passes in step at the left edge, where the deck's are near-parallel, and lets
+ * them separate toward the right rather than weaving into a lattice.
  *
  * §2.5's placement table decomposes this field into "a blue bundle", "a green
  * bundle" and "a rose bundle", which reads as three differently-coloured
@@ -469,17 +481,17 @@ export function CtaAurora({ className }: { className?: string }) {
     // upper band: enters at the left edge, pinches at x=305, rises right
     {
       hue: [
-        { color: CORE_HUES.blue, at: 0, opacity: 0.72 },
-        { color: CORE_HUES.blue, at: 0.6, opacity: 0.72 },
-        { color: CORE_HUES.green, at: 0.68, opacity: 0.72 },
-        { color: OCHRE, at: 0.74, opacity: 0.85 },
-        { color: CORE_HUES.rose, at: 0.8, opacity: 1 },
+        { color: CORE_HUES.blue, at: 0, opacity: 0.75 },
+        { color: CORE_HUES.blue, at: 0.55, opacity: 0.75 },
+        { color: CORE_HUES.green, at: 0.62, opacity: 0.55 },
+        { color: OCHRE, at: 0.663, opacity: 0.7 },
+        { color: CORE_HUES.rose, at: 0.73, opacity: 1 },
         { color: CORE_HUES.rose, at: 1, opacity: 1 },
       ],
       strokes: 45,
       baseline: 812,
-      amplitude: 84,
-      wavelength: 1150,
+      amplitude: 88,
+      wavelength: 1120,
       phaseSpread: 0.6 * Math.PI,
       nodeAt: 340,
       tilt: -4,
@@ -490,26 +502,25 @@ export function CtaAurora({ className }: { className?: string }) {
       stagger: 0.07,
       seed: 81,
       strokeWidth: 1,
-      opacity: 0.18,
+      opacity: 0.14,
       drift: "slow",
     },
     // lower band: pinches at x=991, bleeding off the right and bottom
     {
       hue: [
-        { color: CORE_HUES.blue, at: 0, opacity: 0.72 },
-        { color: CORE_HUES.blue, at: 0.42, opacity: 0.72 },
-        { color: CORE_HUES.green, at: 0.52, opacity: 0.72 },
-        { color: CORE_HUES.green, at: 0.56, opacity: 0.75 },
-        { color: OCHRE, at: 0.6, opacity: 0.85 },
-        { color: CORE_HUES.rose, at: 0.66, opacity: 1 },
+        { color: CORE_HUES.blue, at: 0, opacity: 0.75 },
+        { color: CORE_HUES.blue, at: 0.46, opacity: 0.75 },
+        { color: CORE_HUES.green, at: 0.56, opacity: 0.55 },
+        { color: OCHRE, at: 0.652, opacity: 0.7 },
+        { color: CORE_HUES.rose, at: 0.73, opacity: 1 },
         { color: CORE_HUES.rose, at: 1, opacity: 1 },
       ],
       strokes: 45,
       baseline: 848,
-      amplitude: 88,
+      amplitude: 92,
       wavelength: 1500,
       phaseSpread: 0.62 * Math.PI,
-      nodeAt: 950,
+      nodeAt: 340,
       tilt: 2.5,
       x0: -200,
       x1: 1780,
@@ -518,15 +529,15 @@ export function CtaAurora({ className }: { className?: string }) {
       stagger: 0.07,
       seed: 82,
       strokeWidth: 1,
-      opacity: 0.18,
+      opacity: 0.14,
       drift: "slower",
     },
     // the third pass along the bottom, x 0-916, bleeding off the bottom
     {
       hue: [
         { color: CORE_HUES.blue, at: 0, opacity: 0.7 },
-        { color: CORE_HUES.green, at: 0.38, opacity: 0.75 },
-        { color: CORE_HUES.green, at: 1, opacity: 0.75 },
+        { color: CORE_HUES.green, at: 0.38, opacity: 0.55 },
+        { color: CORE_HUES.green, at: 1, opacity: 0.55 },
       ],
       strokes: 34,
       baseline: 902,
@@ -541,9 +552,9 @@ export function CtaAurora({ className }: { className?: string }) {
       jitter: 0.02,
       stagger: 0.07,
       seed: 83,
-      fade: 0.17,
+      fade: [0, 0.3],
       strokeWidth: 0.95,
-      opacity: 0.16,
+      opacity: 0.14,
       drift: "slow",
     },
   ];

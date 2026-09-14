@@ -14,6 +14,7 @@ export {
 } from "./AuroraField";
 export {
   AuroraWaveform,
+  WAVEFORM_CORE,
   WAVEFORM_HUES,
   type AuroraWaveformProps,
 } from "./AuroraWaveform";

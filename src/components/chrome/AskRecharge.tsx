@@ -63,7 +63,7 @@ export function TrialMeta({
         className,
       )}
     >
-      <span className="flex items-center gap-2.5 text-ink-400">
+      <span className="flex items-center gap-2.5 text-ink-500">
         <CheckCircle className="size-4.5 shrink-0" />
         {CTA.trialMeta}
       </span>
@@ -155,7 +155,7 @@ export function AskRechargePersonal({ className }: { className?: string }) {
             Ask Recharge
           </a>
         </p>
-        <p className="mt-0.5 text-xs text-ink-400">Website guide</p>
+        <p className="mt-0.5 text-xs text-ink-500">Website guide</p>
       </div>
     </div>
   );
@@ -201,7 +201,7 @@ export function AskRechargePlans({ className }: { className?: string }) {
           Help Me Choose
           <ArrowRight className="size-5 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
         </a>
-        <p className="text-meta mt-0.5 text-ink-400">Ask Recharge</p>
+        <p className="text-meta mt-0.5 text-ink-500">Ask Recharge</p>
       </div>
     </div>
   );
@@ -233,7 +233,7 @@ export function AskRechargeStart({ className }: { className?: string }) {
             Ask Recharge
           </a>
           <span className="text-ink-400"> &middot; </span>
-          <span className="text-ink-400">Website guide</span>
+          <span className="text-ink-500">Website guide</span>
         </p>
       </div>
     </div>

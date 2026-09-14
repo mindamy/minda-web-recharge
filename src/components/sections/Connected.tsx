@@ -1,3 +1,4 @@
+import { ConnectedAurora } from "@/components/aurora";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -40,7 +41,7 @@ import { WhyConnectionMatters } from "./connected/WhyConnectionMatters";
 export function Connected() {
   return (
     <Section id={SECTION_IDS.connected}>
-      {/* aurora: <ConnectedAurora /> mounted by the page */}
+      <ConnectedAurora />
 
       <Container width="narrow">
         <Reveal className="flex flex-col items-center text-center">

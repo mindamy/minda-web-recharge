@@ -65,7 +65,7 @@ export const LOOP_NODES: readonly LoopNode[] = [
     cy: 53,
     d: 67,
     iconWidth: "w-[58%]",
-    delay: 0.1,
+    delay: 0.05,
   },
   {
     id: "realign",
@@ -79,7 +79,7 @@ export const LOOP_NODES: readonly LoopNode[] = [
     cy: 60,
     d: 67,
     iconWidth: "w-[56%]",
-    delay: 0.72,
+    delay: 0.77,
   },
   {
     id: "recharge",
@@ -93,7 +93,7 @@ export const LOOP_NODES: readonly LoopNode[] = [
     cy: 226,
     d: 70,
     iconWidth: "w-[54%]",
-    delay: 1.15,
+    delay: 1.08,
   },
 ] as const;
 

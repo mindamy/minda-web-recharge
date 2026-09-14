@@ -762,7 +762,7 @@ export function HeadBrain(props: IconProps) {
   );
 }
 
-/** `Personalization with purpose.` — bust with a heart at the lower right. */
+/** `Personalisation with purpose.` — bust with a heart at the lower right. */
 export function PersonHeart(props: IconProps) {
   return (
     <svg

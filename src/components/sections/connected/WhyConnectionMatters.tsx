@@ -71,7 +71,7 @@ export function WhyConnectionMatters() {
     <RevealGroup className="rounded-card bg-surface-card/70 px-6 py-7 shadow-card sm:px-7 lg:px-8">
       <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,0.85fr)_repeat(4,minmax(0,1fr))] lg:gap-x-0">
         <RevealItem className="sm:col-span-2 lg:col-span-1 lg:pr-6">
-          <MicroEyebrow className="text-ink-400">WHY CONNECTION MATTERS</MicroEyebrow>
+          <MicroEyebrow className="text-ink-500">WHY CONNECTION MATTERS</MicroEyebrow>
           <p className="mt-3 text-meta text-ink-500">
             <span className="block">Support often lives in</span>
             <span className="block">different places.</span>

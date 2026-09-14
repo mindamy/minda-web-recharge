@@ -65,8 +65,8 @@ const NODES: readonly TimelineNode[] = [
     size: 122,
     src: "/images/rhythm-morning.jpg",
     alt: "A woman sitting up in bed, stretching her arms above her head beside a bright window",
-    ring: "border-blue-300",
-    ringInset: "-inset-[5px] lg:-inset-[6px]",
+    ring: "border-blue-100",
+    ringInset: "-inset-[4px] lg:-inset-[6px]",
     dot: "bg-blue-fill",
     label: "text-blue-ink",
   },
@@ -78,7 +78,7 @@ const NODES: readonly TimelineNode[] = [
     icon: Laptop,
     iconColor: "text-blue-icon",
     dot: "bg-blue-icon",
-    label: "text-blue-icon",
+    label: "text-blue-ink",
   },
   {
     kind: "icon",
@@ -88,7 +88,7 @@ const NODES: readonly TimelineNode[] = [
     icon: StressHead,
     iconColor: "text-teal-400",
     dot: "bg-teal-400",
-    label: "text-teal-400",
+    label: "text-teal-ink",
   },
   {
     kind: "icon",
@@ -98,7 +98,7 @@ const NODES: readonly TimelineNode[] = [
     icon: Lightning,
     iconColor: "text-green-500",
     dot: "bg-green-500",
-    label: "text-green-500",
+    label: "text-green-ink",
   },
   {
     kind: "photo",
@@ -107,10 +107,10 @@ const NODES: readonly TimelineNode[] = [
     size: 145,
     src: "/images/rhythm-after-work.jpg",
     alt: "A woman on a sofa holding a mug in the evening, a plant and a lamp behind her",
-    ring: "border-rose-400",
-    ringInset: "-inset-[5px] lg:-inset-[7px]",
+    ring: "border-rose-200",
+    ringInset: "-inset-[4px] lg:-inset-[7px]",
     dot: "bg-rose-400",
-    label: "text-rose-400",
+    label: "text-rose-ink",
   },
   {
     kind: "icon",
@@ -120,7 +120,7 @@ const NODES: readonly TimelineNode[] = [
     icon: MoonStars,
     iconColor: "text-rose-400",
     dot: "bg-rose-400",
-    label: "text-rose-400",
+    label: "text-rose-ink",
   },
 ];
 
