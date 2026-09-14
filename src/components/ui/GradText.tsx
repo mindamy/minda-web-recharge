@@ -45,3 +45,39 @@ export function RCubed() {
     </>
   );
 }
+
+/**
+ * A gradient run with explicit stops.
+ *
+ * The hero headline does not reuse the shared deck ramp — it carries three
+ * separate runs, each with its own measured range (`better sleep,` runs
+ * #1663DA -> #0F8FCB, `calmer mind,` runs #0A81B9 -> #295A9D -> #46397E, and
+ * so on). Rather than minting a one-off utility per run, this takes the stops
+ * directly.
+ *
+ * `pb`/`-mb` keep serif descenders from being clipped by the
+ * background-clip box.
+ */
+export function GradRun({
+  children,
+  stops,
+  className,
+}: {
+  children: ReactNode;
+  /** Comma-separated gradient stops, e.g. "#1663DA 0%, #0F8FCB 100%". */
+  stops: string;
+  className?: string;
+}) {
+  return (
+    <span
+      style={{ backgroundImage: `linear-gradient(90deg, ${stops})` }}
+      className={cn(
+        "inline-block bg-clip-text pb-[0.12em] -mb-[0.12em] text-transparent",
+        "[-webkit-text-fill-color:transparent]",
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
+}

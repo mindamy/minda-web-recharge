@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import {
   ArrowRight,
@@ -48,9 +48,16 @@ function BubbleCircle({
  * the trial meta. The whole string is one link and `Ask Recharge` is not
  * separately coloured here.
  */
-export function TrialMeta({ className }: { className?: string }) {
+export function TrialMeta({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
   return (
     <div
+      style={style}
       className={cn(
         "text-meta flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5",
         className,

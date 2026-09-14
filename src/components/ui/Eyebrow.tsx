@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -14,15 +14,18 @@ export function Eyebrow({
   children,
   gradient,
   className,
+  style,
   as: Tag = "p",
 }: {
   children: ReactNode;
   gradient?: "forward" | "reverse";
   className?: string;
+  style?: CSSProperties;
   as?: "p" | "span" | "h2";
 }) {
   return (
     <Tag
+      style={style}
       className={cn(
         "text-eyebrow uppercase",
         gradient === "forward" && "grad-text",

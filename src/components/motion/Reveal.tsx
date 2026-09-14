@@ -48,6 +48,7 @@ export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) 
 
   return (
     <motion.div
+      data-reveal
       className={className}
       variants={variants}
       initial="hidden"
@@ -89,6 +90,7 @@ export function RevealGroup({
 
   return (
     <motion.div
+      data-reveal
       className={className}
       variants={container}
       initial="hidden"
@@ -121,7 +123,7 @@ export function RevealItem({
   };
 
   return (
-    <motion.div className={className} variants={child}>
+    <motion.div data-reveal className={className} variants={child}>
       {children}
     </motion.div>
   );

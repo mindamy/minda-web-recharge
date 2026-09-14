@@ -3,35 +3,40 @@
  *
  * See `.planning/quick/quick-kayinleong-001/DESIGN-SPEC.md` §2.5. The deck's
  * decorative wave fields are bundles of 28-45 hairline curves that **pinch to a
- * caustic node** and **fan to a wide spindle** between nodes. Those nodes are
+ * caustic node** and **fan to a wide ribbon** between nodes. Those nodes are
  * the graphic's signature.
  *
- * ## The model
+ * ## Two related primitives, because the deck has two
  *
- * Every stroke in a bundle is
+ * {@link bundlePaths} — the section fields (p-8, p-2, p-7 ...). Every stroke is
  *
- *     θᵢ(x) = k·x + phase + skew·cᵢ
- *     yᵢ(x) = y₀(x) + A(x)·cᵢ·[ sin θᵢ + harmonic·sin(2θᵢ + 0.7) ]
+ *     θᵢ(x) = k·x + phase + φᵢ
+ *     yᵢ(x) = y₀(x) + A(x)·[ sin θᵢ + harmonic·sin 2θᵢ ]
  *
- * where `φᵢ` advances linearly across the bundle and `cᵢ = sin φᵢ` is the
- * stroke's *signed* amplitude coefficient.
+ * with `φᵢ` advancing linearly across the bundle over a total spread of
+ * 0.5π-0.9π. This is a *one-sided nested ribbon*: the strokes never cross the
+ * axis together, they flow the same way and the sheet's thickness breathes.
+ * Thickness is `2·A·sin(Δφ/2)·|cos(k·x + phase + Δφ/2)|`, so it narrows to a
+ * waist every `wavelength / 2` — at Δφ = 0.6π the waist is about a quarter of
+ * the widest fan, which is the 3.4:1 ratio measured on p-8's lower band.
  *
- * Two properties fall out of writing the family this way, and both were checked
- * against contrast-boosted 3x crops of `p-8` and `p-3`:
+ * `clustering` is what makes the rims and knots bright. Stroke density goes as
+ * `dt/dy = 1 / (A·cos(θ + φ)·dφ/dt)`. Spacing `φ` *uniformly* across the bundle
+ * leaves `dφ/dt` constant and `cos(θ + φ)` non-zero everywhere inside a fan of
+ * spread < π — so a uniform bundle has no caustic at all, just even hatching,
+ * and measures about half the deck's peak density no matter how many strokes
+ * or how much alpha you throw at it. Easing `φ` with `(1 - cos πt)/2` drives
+ * `dφ/dt` to zero at both edges of the spread, which piles the outermost
+ * strokes onto the envelope within a pixel or two. That is the bright rim, and
+ * at a waist the same pile-up lands in the core and reads as the caustic knot.
  *
- * 1. **Exact caustic nodes.** Every stroke shares `sin(k·x + phase)`, so all of
- *    them cross `y₀` at the same x — the bundle pinches to a point every
- *    `wavelength / 2` and fans to `2·amplitude` between pinches. A plain phase
- *    offset (`sin(k·x + φᵢ)`, no shared zero) cannot do this: at a φ spread of
- *    0.9π its tightest waist is still ~40% of its widest fan, which reads as a
- *    lumpy ribbon rather than the deck's knotted spindles.
- * 2. **Bright envelope edges.** `cᵢ = sin φᵢ` clusters near ±1 as φ sweeps a
- *    ~π range, so strokes pile up along the spindle's outer envelope exactly
- *    the way the deck's fans have a brighter rim than interior.
- *
- * `skew` shifts each stroke along x in proportion to its own amplitude, which
- * shears the spindles slightly and makes strokes cross near the nodes — the
- * last thing needed to stop the fans looking like nested contour lines.
+ * {@link waveformPaths} — the bounded p-3 player waveform. There the nodes are
+ * *exact* and identical for every stroke, and the lobes are symmetric lenses
+ * about a fixed axis, so it is a standing wave (shared `sin`, per-stroke signed
+ * amplitude) rather than a travelling one. Using the ribbon model for it
+ * produces lumpy waists instead of true pinches; using the standing-wave model
+ * for a section field produces symmetric bowties instead of ribbons. Both were
+ * tried against 3x contrast-boosted crops; they are not interchangeable.
  *
  * ## Determinism
  *
@@ -75,11 +80,19 @@ export type BundleSpec = {
   /** Distance between successive crests. Node spacing is half of this. */
   wavelength: number;
   /**
-   * Total φ spread across the bundle, in radians. π gives a fully symmetric
-   * spindle (strokes reach both +A and -A); below π the spindle goes one-sided
-   * and the bundle reads as a leaning ribbon.
+   * Total φ spread across the bundle, in radians. DESIGN-SPEC.md §2.5 says
+   * 0.5π-0.9π and that range is right: it sets the waist-to-fan ratio, which
+   * is `1 / cos(Δφ/2)` divided into `1`. 0.6π gives 3.9:1 (p-8 measures 3.4:1);
+   * at π the waist vanishes entirely and the ribbon degenerates into a
+   * symmetric bowtie that crosses itself at every node.
    */
   phaseSpread: number;
+  /**
+   * 0-1 easing of the φ distribution toward both edges of the spread, which is
+   * what produces the bright caustic rim and the knot at each waist. Default 1
+   * (fully eased). 0 spaces φ evenly and the bundle reads as flat hatching.
+   */
+  clustering?: number;
   /** Shallow drift of the axis across the span, in degrees. */
   tilt?: number;
   /** Points sampled per stroke before Catmull-Rom smoothing. Default 56. */
@@ -89,8 +102,9 @@ export type BundleSpec = {
   /** Span end. Default `1.18 * width` so the bundle bleeds off the right. */
   x1?: number;
   /**
-   * Pin a caustic node to this x. Solves `phase` so `sin(k·x + phase) = 0`
-   * there; further nodes land every `wavelength / 2` either side.
+   * Pin a caustic waist to this x. Solves `phase` so the bundle's thickness
+   * term `cos(k·x + phase + Δφ/2)` is zero there; further waists land every
+   * `wavelength / 2` either side.
    */
   nodeAt?: number;
   /** Phase offset in radians. Ignored when `nodeAt` is given. Default 0. */
@@ -100,8 +114,6 @@ export type BundleSpec = {
    * ribbons dissolve instead of stopping dead. Default 0.26.
    */
   taper?: number;
-  /** Per-stroke x shear, in radians of θ. Default 0.22. Set 0 for nested fans. */
-  skew?: number;
   /**
    * Relative weight of the 2nd harmonic, which sharpens one flank of each
    * crest so the wave does not read as a textbook sine. Default 0.16. It is
@@ -138,7 +150,6 @@ export type BundleSpec = {
 
 const DEFAULT_SAMPLES = 56;
 const DEFAULT_TAPER = 0.26;
-const DEFAULT_SKEW = 0.22;
 const DEFAULT_HARMONIC = 0.16;
 
 /** Smoothstep-based end taper: 0 at both span ends, 1 across the middle. */
@@ -167,15 +178,26 @@ export function bundleSpan(spec: Pick<BundleSpec, "width" | "x0" | "x1">): [numb
 }
 
 /**
- * x positions of the caustic nodes that fall inside `[0, width]`. Useful for
- * placing a hue transition on a node, and for eyeballing a field in dev.
+ * Solves the phase that puts a caustic waist at `nodeAt`.
+ *
+ * Bundle thickness goes as `|cos(k·x + phase + Δφ/2)|`, so a waist needs that
+ * cosine at zero: `phase = π/2 - Δφ/2 - k·x`.
+ */
+function solvePhase(spec: BundleSpec, k: number): number {
+  if (spec.nodeAt === undefined) return spec.phase ?? 0;
+  return Math.PI / 2 - spec.phaseSpread / 2 - k * spec.nodeAt;
+}
+
+/**
+ * x positions of the caustic waists that fall inside `[0, width]`. Useful for
+ * placing a hue transition on a waist, and for eyeballing a field in dev.
  */
 export function bundleNodes(spec: BundleSpec): number[] {
   const k = (2 * Math.PI) / spec.wavelength;
-  const phase = spec.nodeAt === undefined ? (spec.phase ?? 0) : -k * spec.nodeAt;
+  const phase = solvePhase(spec, k);
   const half = spec.wavelength / 2;
-  // sin(k·x + phase) = 0  =>  x = (nπ - phase) / k
-  const first = -phase / k;
+  // cos(k·x + phase + Δφ/2) = 0  =>  x = (π/2 + nπ - phase - Δφ/2) / k
+  const first = (Math.PI / 2 - phase - spec.phaseSpread / 2) / k;
   const out: number[] = [];
   const n0 = Math.ceil((0 - first) / half);
   for (let n = n0; ; n++) {
@@ -201,11 +223,10 @@ export function bundlePaths(spec: BundleSpec): string[] {
     amplitude,
     wavelength,
     phaseSpread,
+    clustering = 1,
     tilt = 0,
     samples = DEFAULT_SAMPLES,
-    nodeAt,
     taper = DEFAULT_TAPER,
-    skew = DEFAULT_SKEW,
     harmonic = DEFAULT_HARMONIC,
     spread = 0,
     jitter = 0,
@@ -217,7 +238,7 @@ export function bundlePaths(spec: BundleSpec): string[] {
   const m = Math.max(8, Math.round(samples));
   const [x0, x1] = bundleSpan(spec);
   const k = (2 * Math.PI) / wavelength;
-  const phase = nodeAt === undefined ? (spec.phase ?? 0) : -k * nodeAt;
+  const phase = solvePhase(spec, k);
   const slope = Math.tan((tilt * Math.PI) / 180);
   const midX = width / 2;
 
@@ -230,9 +251,10 @@ export function bundlePaths(spec: BundleSpec): string[] {
   const out: string[] = [];
   for (let i = 0; i < n; i++) {
     const t = i / (n - 1);
-    // φ walks linearly across the bundle; c = sin φ clusters at ±1, which is
-    // what puts the bright rim on the spindle envelope.
-    const c = Math.sin((t - 0.5) * phaseSpread);
+    // φ walks across the bundle, centred so `nodeAt` lands on the middle
+    // stroke, and eased toward both edges so the envelope gets a caustic.
+    const eased = (1 - Math.cos(Math.PI * t)) / 2;
+    const phi = (t + (eased - t) * clustering - 0.5) * phaseSpread;
     const ampJitter = 1 + (rand() - 0.5) * 2 * jitter;
     const axisOffset = (t - 0.5) * spread;
 
@@ -249,12 +271,12 @@ export function bundlePaths(spec: BundleSpec): string[] {
       // Taper is measured against the *bundle's* span, not the stroke's, so
       // staggered strokes stay in step with the bundle envelope.
       const env = endTaper((x - x0) / (x1 - x0), taper);
-      const theta = k * x + phase + skew * c;
+      const theta = k * x + phase + phi;
       const osc = Math.sin(theta) + harmonic * Math.sin(2 * theta);
       const y =
         baseline +
         slope * (x - midX) +
-        env * (axisOffset + amplitude * ampJitter * c * osc);
+        env * (axisOffset + amplitude * ampJitter * osc);
       pts[s] = [x, clamp(y, yLo, yHi)];
     }
     out.push(toPath(pts));

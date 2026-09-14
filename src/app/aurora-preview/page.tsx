@@ -26,7 +26,13 @@ const SECTIONS = [
 
 export default function AuroraPreview() {
   return (
-    <main>
+    <main
+      style={{
+        backgroundColor: "#f8f9fc",
+        backgroundImage:
+          "radial-gradient(120% 90% at 78% 30%, #fdfcfa 0%, rgb(253 252 250 / 0) 60%), linear-gradient(160deg, #f7f8fd 0%, #f8f9fc 55%, #f5f6fb 100%)",
+      }}
+    >
       {SECTIONS.map((s) => (
         <section
           key={s.name}

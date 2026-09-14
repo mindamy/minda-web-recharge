@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { ChevronDown } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
@@ -20,14 +22,16 @@ export function ScrollCue({
   variant = "bare",
   label = "Scroll to explore",
   className,
+  style,
 }: {
   variant?: "bare" | "circled" | "plain";
   label?: string;
   className?: string;
+  style?: CSSProperties;
 }) {
   if (variant === "plain") {
     return (
-      <div className={cn("flex justify-center", className)} aria-hidden>
+      <div className={cn("flex justify-center", className)} style={style} aria-hidden>
         <ChevronDown className="h-3 w-[22px] text-blue-ink" strokeWidth={1.8} />
       </div>
     );
@@ -36,6 +40,7 @@ export function ScrollCue({
   return (
     <div
       className={cn("flex items-center justify-center gap-5.5", className)}
+      style={style}
       aria-hidden
     >
       {variant === "circled" ? (

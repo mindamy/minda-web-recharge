@@ -47,21 +47,26 @@ export const HUES = {
  * as. Treating it as the stroke colour caps the whole field at roughly a third
  * of the deck's contrast, which is exactly what the first render did.
  *
- * These are solved backwards from the deck's peak accumulations instead. For
- * the blue rim of p-8's lower band, measured #A1AEF7 over a #F8F9FC ground with
- * ~6 strokes overlapping at 0.15 (coverage `1 - 0.85^6 = 0.623`):
+ * These are solved backwards from the deck's peak accumulations instead. The
+ * blue rim of p-8's lower band measures #A1AEF7; in a nested ribbon only about
+ * three strokes overlap there, so at alpha 0.18 the coverage is
+ * `1 - 0.82^3 = 0.449` and
  *
- *     stroke = ground - (ground - measured) / 0.623  =>  rgb(108, 129, 244)
+ *     stroke = ground - (ground - measured) / 0.449  =>  rgb(56, 83, 241)
  *
- * which is #6C81F4 — within a hair of the design system's own
- * `border-blue-cta` #6B8BEC. The same solve on #F6A9BD gives #F57E9B (the
- * deck's own rose-400 neighbourhood) and on #C8E4D9 gives #8ECBAF.
+ * The answer lands on the project's own `blue-fill` / `blue-ink` pair, and the
+ * same solve on #F6A9BD gives the `rose-400`/`rose-500` neighbourhood. That is
+ * the actual technique behind the graphic: hairlines in the *brand* colours at
+ * ~15% opacity, where two or three overlapping strokes render as the pale
+ * values in `HUES`. These values are deliberately a step back from fully
+ * saturated brand colour, because the deck's fans overlap more than three deep
+ * in places and full saturation turns those spots into ink.
  */
 export const CORE_HUES = {
-  blue: "#6C81F4",
-  green: "#79C3A4",
-  rose: "#F57E9B",
-  lavender: "#9AA6EE",
+  blue: "#3A57EE",
+  green: "#5FB894",
+  rose: "#F04A78",
+  lavender: "#6E77E8",
 } as const;
 
 /**
@@ -273,7 +278,12 @@ export function AuroraField({
               y2={0}
             >
               {g.stops.map((stop, i) => (
-                <stop key={i} offset={stop.offset} stopColor={stop.color} />
+                <stop
+                  key={i}
+                  offset={stop.offset}
+                  stopColor={stop.color}
+                  stopOpacity={stop.opacity}
+                />
               ))}
             </linearGradient>
           ))}

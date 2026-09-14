@@ -195,6 +195,26 @@
   --animate-drift-slow: drift-slow 26s ease-in-out infinite alternate;
   --animate-drift-slower: drift-slow 38s ease-in-out infinite alternate;
 
+  /* Mount reveal for above-the-fold content.
+     Deliberately CSS rather than Motion: Motion serialises its `initial`
+     state into the server HTML as an inline `opacity:0`, so if scripting is
+     unavailable — or hydration fails, or IntersectionObserver never fires —
+     the content stays invisible. A CSS animation cannot fail that way, and
+     `both` fill-mode combined with the reduced-motion override below lands
+     straight on the final state instead of hiding anything. */
+  --animate-rise: rise 0.72s var(--ease-soft) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   @keyframes drift-slow {
     from {
       transform: translate3d(0, 0, 0);
@@ -342,6 +362,18 @@
    block covers the CSS-driven animation (the drifting aurora), the provider
    covers the Motion-driven reveals.
    ═══════════════════════════════════════════════════════════════════════ */
+/*
+ * Motion writes its `initial` variant into the server HTML as an inline
+ * opacity:0. Where scripting is unavailable the reveal never runs, so the
+ * content would never appear. Force it visible in that case.
+ */
+@media (scripting: none) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
