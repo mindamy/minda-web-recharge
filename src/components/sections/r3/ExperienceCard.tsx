@@ -17,8 +17,10 @@ import { cn } from "@/lib/cn";
  *
  * Copy is verbatim from §3.3. The agreed British standardisation covers the
  * card *title* only, so this card genuinely carries both spellings: the title
- * reads `Personalised Recharge Experiences` and the body line beneath it keeps
- * the deck's `Personalized audio experiences designed`. That looks like a typo
+ * reads `Personalised Recharge Experiences`, and so does the body line beneath
+ * it. The deck spells that line `Personalized`; the agreed standardisation is
+ * British across the whole site, so both read the same way here rather than
+ * carrying two spellings inside one card.
  * and is not one — widening the change to the body line was considered and
  * rejected, because the brief scopes the deviation to the title and says
  * everything else is unchanged. Changing the body copy is a copy decision, not
@@ -97,7 +99,7 @@ export function ExperienceCard({ className }: { className?: string }) {
       <h3 className="text-h3 mt-3">Feel better in the moment.</h3>
 
       <p className="mt-3.5 text-[0.9375rem] leading-[1.6] text-ink-600">
-        Personalized audio experiences designed <br className="hidden sm:inline" />
+        Personalised audio experiences designed <br className="hidden sm:inline" />
         to support the state you need.
       </p>
 

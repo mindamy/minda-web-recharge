@@ -1,4 +1,3 @@
-import { Header } from "@/components/chrome/Header";
 import { Connected } from "@/components/sections/Connected";
 import { Hero } from "@/components/sections/Hero";
 import { Moments } from "@/components/sections/Moments";
@@ -15,18 +14,15 @@ import { Trust } from "@/components/sections/Trust";
  */
 export default function HomePage() {
   return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <Moments />
-        <R3Loop />
-        <Connected />
-        <Rhythm />
-        <Trust />
-        <Plans />
-        <Start />
-      </main>
-    </>
+    <main>
+      <Hero />
+      <Moments />
+      <R3Loop />
+      <Connected />
+      <Rhythm />
+      <Trust />
+      <Plans />
+      <Start />
+    </main>
   );
 }

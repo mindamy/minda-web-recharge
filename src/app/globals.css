@@ -387,6 +387,15 @@
     opacity: 1 !important;
     transform: none !important;
   }
+  /*
+   * The R³ loop's arcs draw themselves via Motion's `pathLength`, which
+   * serialises as `stroke-dasharray="0 1"` — an invisible stroke. Same class
+   * of failure as the reveals above, so it gets the same net.
+   */
+  [data-draw] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -168,6 +168,7 @@ export function LoopArcs({ className }: { className?: string }) {
         <g key={segment.id} stroke={`url(#${segment.id})`} strokeLinecap="round">
           {segment.bundle.map((d, index) => (
             <motion.path
+              data-draw
               key={index}
               d={d}
               strokeWidth={0.8}
@@ -175,7 +176,12 @@ export function LoopArcs({ className }: { className?: string }) {
               variants={stroke(segment.delay)}
             />
           ))}
-          <motion.path d={segment.d} strokeWidth={1.9} variants={stroke(segment.delay)} />
+          <motion.path
+            data-draw
+            d={segment.d}
+            strokeWidth={1.9}
+            variants={stroke(segment.delay)}
+          />
         </g>
       ))}
     </motion.svg>

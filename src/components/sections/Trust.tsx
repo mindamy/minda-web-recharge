@@ -197,24 +197,28 @@ export function Trust() {
             </p>
           </Reveal>
 
-          {/* The portrait bleeds off the top and right edges of the section at
-              `lg` — the inner layer runs 50vw past the container and the
-              section's own `overflow-hidden` does the clipping. Below `lg` it
-              loses the bleed and becomes a contained rounded block (§4.2). */}
-          <Reveal delay={0.1} className="lg:-mt-30">
-            <div className="rounded-card-lg relative aspect-16/10 overflow-hidden lg:aspect-auto lg:h-[440px] lg:overflow-visible lg:rounded-none">
-              <div className="absolute inset-0 lg:-right-[50vw]">
+          {/*
+            The deck's photo region here is a wide 2.4:1 room scene with the
+            blue-to-rose arc drawn over it. Excluding that arc — so it can be
+            redrawn as SVG and stay crisp — forced the crop down to a 620x762
+            portrait, because the arc's legs come down level with the subject's
+            head on both sides. So the frame follows the asset's own 4:5
+            proportion instead of the deck's landscape bleed.
+
+            The earlier attempt kept the deck's bleed (the inner layer running
+            50vw past the container), which stretched the box to roughly 3.6:1.
+            `object-cover` from a 0.81:1 source then cropped everything but a
+            thin horizontal band across the subject's chin.
+          */}
+          <Reveal delay={0.1}>
+            <div className="rounded-card-lg relative mx-auto aspect-4/5 w-full max-w-[360px] overflow-hidden lg:mr-0 lg:ml-auto lg:max-w-[400px]">
+              <div className="absolute inset-0">
                 <Image
                   src="/images/trust-portrait.jpg"
                   alt="A woman in a cream cable-knit sweater sitting on a pale sofa, holding a mug in both hands and looking up."
                   fill
-                  sizes="(min-width: 1024px) 62vw, 100vw"
-                  className="object-cover object-[50%_28%]"
-                />
-                {/* Soft lower fade so the photo dissolves into the card row. */}
-                <div
-                  aria-hidden
-                  className="to-bg-base absolute inset-x-0 bottom-0 hidden h-28 bg-linear-to-b from-transparent lg:block"
+                  sizes="(min-width: 1024px) 400px, (min-width: 640px) 360px, 100vw"
+                  className="object-cover object-[50%_35%]"
                 />
               </div>
 

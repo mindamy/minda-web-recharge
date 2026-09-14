@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 
+import { Footer } from "@/components/chrome/Footer";
+import { Header } from "@/components/chrome/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 
 import "./globals.css";
@@ -44,7 +46,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
       <body>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <Header />
+          {children}
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );
