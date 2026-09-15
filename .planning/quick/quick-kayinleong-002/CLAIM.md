@@ -50,6 +50,42 @@ Served as one cached `/logo-mark.svg` rather than inlined: the lockup appears in
 header, the footer and the Connected section, and inlining ~16 KB of path data three times
 costs more than one same-origin request.
 
+## Logo — superseded within the session
+
+The first pass traced the two images pasted into the chat. Those turn out to have been
+**colour-degraded by the chat pipeline**: the trace produced blue `#36A9D8`, pink `#E86E92`,
+green `#63B792`, grey `#8E949B`.
+
+The design owner then supplied `LOGO.zip`, containing the mark, two lockups and — critically
+— a **colour code sheet**. The real values are much more vivid:
+
+| Element | Official | First trace | Delta |
+|---------|----------|-------------|-------|
+| Blue | `#35C1FC` | `#36A9D8` | markedly brighter, more cyan |
+| Pink | `#FC7E9E` | `#E86E92` | lighter, warmer |
+| Green | `#61E1A3` | `#63B792` | much more saturated |
+| Grey | `#AAABB1` | `#8E949B` | lighter |
+
+Sampling `Logo_without_text.png` confirmed the sheet: its actual fills read `#31BEFC`,
+`#FC7791`, `#66E3A4`, `#A8A8AE` — the sheet's values modulo anti-aliasing. The mark was
+re-traced from that file and the fills **snapped to the sheet's hexes** rather than to
+sampled values, since the sheet is authoritative.
+
+Verified side by side against the pack source at 300px, as an inverted overlay, and at
+24/44/54/78px, with the superseded trace in frame for comparison — the difference in
+vividness is obvious.
+
+Two further consequences:
+
+- The wordmark now uses the brand's soft-black `#222222` (`--color-brand-ink`) rather than the
+  deck-sampled `ink-900` `#0F2648`. The wordmark is part of the logo, so the brand guide wins.
+- Brand colours are documented as tokens but kept **separate from the UI palette**, with a
+  note that they are not interchangeable: brand blue `#35C1FC` is far brighter than the UI
+  `blue-fill` `#2B5FD9`, and it is the darker one that passes AA.
+
+The chat-derived copies previously committed to `.docs/` were removed in favour of
+`.docs/brand/`.
+
 ## Motion
 
 Every effect has a named purpose; nothing was added because it looked busy.

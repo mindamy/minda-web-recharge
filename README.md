@@ -14,6 +14,33 @@ Each PDF page is a single flattened raster image, so photography is cropped out 
 re-renders into `public/images/` rather than extracted as layers. The decorative "aurora wave"
 line-art is rebuilt as SVG rather than cropped, so it stays crisp and can be animated.
 
+## Brand
+
+The authoritative brand assets live in `.docs/brand/`, from the supplied `LOGO.zip`:
+
+| Element | Hex | RGB |
+|---------|-----|-----|
+| Blue | `#35C1FC` | 53, 193, 252 |
+| Pink | `#FC7E9E` | 252, 126, 158 |
+| Green | `#61E1A3` | 97, 225, 163 |
+| Grey | `#AAABB1` | 170, 171, 177 |
+| Soft-black text | `#222222` | 34, 34, 34 |
+| Soft-white text | `#F5F5F0` | 245, 245, 240 |
+
+`public/logo-mark.svg` is a vector trace of `logo-mark.png` with those exact fills. It also
+drives the favicon, `icon.svg` and `apple-icon.png`.
+
+> **The brand palette and the UI palette are different things, and are not interchangeable.**
+> Brand blue `#35C1FC` is far brighter than the UI blue `blue-fill` `#2B5FD9` that the deck
+> uses for buttons and links — and it is the darker one that passes WCAG AA on the page
+> ground. Only the logo and the wordmark use brand values; everything else uses the
+> deck-sampled scales in `src/app/globals.css`.
+
+The header lockup is horizontal (mark + live text), matching the deck. The supplied lockup
+PNGs are stacked vertically; that arrangement is used in the Connected section. The wordmark
+is live text in the display serif rather than baked into the image, so it stays selectable,
+translatable and searchable.
+
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) + **React 19**
@@ -130,10 +157,10 @@ rely on that net at all — its entrance is a CSS keyframe.
 
 ## Known deviations
 
-- **The logo's colours differ from the design spec.** The mark is a vector trace of the brand
-  asset supplied by the design owner (`.docs/logo-mark.webp`), so its fills are the real ones:
-  blue `#36A9D8`, grey `#8E949B`, pink `#E86E92`, green `#63B792`. DESIGN-SPEC §2.1 records
-  lighter, less saturated values because it measured them off the soft deck render.
+- **The logo's colours differ from the design spec.** The mark is a vector trace of
+  `.docs/brand/logo-mark.png` from the supplied logo pack, with fills taken from that pack's
+  colour sheet. DESIGN-SPEC §2.1 records much duller values because it measured them off the
+  soft, low-resolution deck page.
 - **Typefaces are inferred, not identified.** The design spec measured letterforms and ranked
   candidates rather than asserting a match. Body is Outfit (the deck's sans has a
   double-storey `a` with no tail and a single-storey `g`); display is Playfair Display, which

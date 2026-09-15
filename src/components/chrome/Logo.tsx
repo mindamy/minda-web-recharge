@@ -5,16 +5,15 @@ import { cn } from "@/lib/cn";
 /**
  * The Recharge brand mark.
  *
- * This is a vector trace of the asset supplied by the design owner
- * (`.docs/logo-mark.webp`) — not a hand reconstruction. The earlier version of
- * this component approximated the mark with uniform-width SVG strokes, which
- * could not reproduce the tapering crescents the real mark is built from.
+ * A vector trace of `.docs/brand/logo-mark.png` from the supplied logo pack.
+ * Its fills are the authoritative hexes from that pack's colour sheet —
+ * blue #35C1FC, pink #FC7E9E, green #61E1A3, grey #AAABB1 — not values
+ * sampled off a render.
  *
- * The trace segments the source into its four flat fills, takes the modal
- * colour of each (blue #36A9D8, grey #8E949B, pink #E86E92, green #63B792) and
- * fits smooth cubic Béziers to the region contours. Note those values are more
- * saturated and more cyan than the ones DESIGN-SPEC §2.1 records for the logo —
- * the spec measured them off the soft, low-resolution deck render.
+ * Worth knowing if you compare against DESIGN-SPEC §2.1: the spec's logo
+ * colours are much duller, because it measured them from the soft,
+ * low-resolution deck page. The brand blue is also far brighter than the UI
+ * blue (`blue-fill` #2B5FD9); the two are not interchangeable.
  *
  * Served as one cached file rather than inlined, because the lockup appears in
  * the header, the footer and the Connected section, and inlining ~16 KB of path
@@ -69,7 +68,7 @@ export function Logo({
   return (
     <span className={cn("inline-flex items-center gap-3", className)}>
       <RechargeMark className={cn("size-11 lg:size-[54px]", markClassName)} />
-      <span className={cn("text-wordmark font-display text-ink-900", wordmarkClassName)}>
+      <span className={cn("text-wordmark font-display text-brand-ink", wordmarkClassName)}>
         Recharge
       </span>
     </span>

@@ -86,6 +86,21 @@
   --color-violet-tint-50: #f2f2fc;
   --color-violet-tint-100: #f0ecf4;
 
+  /* ── Brand ──────────────────────────────────────────────────────────────
+     The authoritative brand palette, from `.docs/brand/colour-code.png` in
+     the supplied logo pack. Distinct from the `ink-*`/`blue-*` scales above,
+     which were sampled from the design deck and govern UI rather than brand.
+
+     The mark's four fills — blue #35C1FC, pink #FC7E9E, green #61E1A3,
+     grey #AAABB1 — live inside public/logo-mark.svg and are recorded here for
+     reference only; nothing in CSS should need them.
+
+     Note the brand blue is markedly brighter than the deck's UI blue
+     (blue-fill #2B5FD9). They are not interchangeable: the deck uses the
+     darker blue for buttons and links, which is also the one that passes AA. */
+  --color-brand-ink: #222222;   /* soft-black — the wordmark */
+  --color-brand-paper: #f5f5f0; /* soft-white — the wordmark on dark grounds */
+
   /* ── Ink ────────────────────────────────────────────────────────────── */
   --color-ink-900: #0f2648;            /* serif display headlines */
   --color-ink-800: #0b1b3c;            /* sans headings, card titles, nav */
