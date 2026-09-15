@@ -66,7 +66,11 @@ export function UnifiedCircle({ className }: { className?: string }) {
           axis, the mark size and the gap are all retuned here rather than
           duplicating the lockup.
         */}
-        <Logo className="flex-col [&>span]:-mt-2 [&>span]:text-h3 [&>svg]:size-[62px] lg:[&>svg]:size-[78px]" />
+        <Logo
+          className="flex-col"
+          markClassName="size-[62px] lg:size-[78px]"
+          wordmarkClassName="text-h3 -mt-2"
+        />
 
         <h3 className="mt-6 text-h3 lg:mt-7">
           <span className="block">

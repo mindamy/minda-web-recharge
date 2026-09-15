@@ -2,6 +2,7 @@ import { R3Aurora } from "@/components/aurora";
 import { AskRechargeLoop } from "@/components/chrome/AskRecharge";
 import { ScrollCue } from "@/components/chrome/ScrollCue";
 import { Heart } from "@/components/icons";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -34,7 +35,9 @@ import { LoopDiagram } from "./r3/LoopDiagram";
 export function R3Loop() {
   return (
     <Section id={SECTION_IDS.r3Loop}>
-      <R3Aurora />
+      <ParallaxLayer distance={70}>
+        <R3Aurora />
+      </ParallaxLayer>
       <Container width="wide">
         <div className="grid items-start gap-x-10 gap-y-12 lg:grid-cols-2 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
           {/* Left: the copy block, then the loop diagram beneath it. */}

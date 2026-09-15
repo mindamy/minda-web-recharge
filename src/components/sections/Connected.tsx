@@ -1,4 +1,5 @@
 import { ConnectedAurora } from "@/components/aurora";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -41,7 +42,9 @@ import { WhyConnectionMatters } from "./connected/WhyConnectionMatters";
 export function Connected() {
   return (
     <Section id={SECTION_IDS.connected}>
-      <ConnectedAurora />
+      <ParallaxLayer distance={60}>
+        <ConnectedAurora />
+      </ParallaxLayer>
 
       <Container width="narrow">
         <Reveal className="flex flex-col items-center text-center">

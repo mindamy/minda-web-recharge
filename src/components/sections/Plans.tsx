@@ -12,6 +12,7 @@ import {
   WaveTilde,
   type IconProps,
 } from "@/components/icons";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Button, type ButtonVariants } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -86,7 +87,7 @@ const PLANS: readonly Plan[] = [
     ],
     ctaLabel: "Choose Essential",
     ctaVariant: "outlineRose",
-    cardClassName: "bg-surface-card-warm border-hairline shadow-card",
+    cardClassName: "bg-surface-card-warm border-hairline shadow-card card-lift",
     orderClassName: "order-2 lg:order-1",
     href: "/plans?plan=essential",
   },
@@ -105,7 +106,7 @@ const PLANS: readonly Plan[] = [
     ctaLabel: "Choose Rhythm",
     ctaVariant: "outlineBlueCta",
     cardClassName:
-      "bg-surface-card-elevated border-border-blue-strong shadow-card-elevated",
+      "bg-surface-card-elevated border-border-blue-strong shadow-card-elevated card-lift",
     orderClassName: "order-1 lg:order-2",
     featured: true,
     href: "/plans?plan=rhythm",
@@ -124,7 +125,7 @@ const PLANS: readonly Plan[] = [
     ],
     ctaLabel: "Choose Plus",
     ctaVariant: "outlineRose",
-    cardClassName: "bg-surface-card-warm border-hairline shadow-card",
+    cardClassName: "bg-surface-card-warm border-hairline shadow-card card-lift",
     orderClassName: "order-3",
     href: "/plans?plan=plus",
   },
@@ -133,7 +134,9 @@ const PLANS: readonly Plan[] = [
 export function Plans() {
   return (
     <Section id={SECTION_IDS.plans}>
-      <PlansAurora />
+      <ParallaxLayer distance={70}>
+        <PlansAurora />
+      </ParallaxLayer>
 
       <Container width="narrow">
         <Reveal className="text-center">

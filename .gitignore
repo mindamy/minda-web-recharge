@@ -26,6 +26,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Tooling caches (not project code)
+.serena/
+
 # Misc
 *.pem
 /coverage

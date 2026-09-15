@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { HeroAurora } from "@/components/aurora";
 import { TrialMeta } from "@/components/chrome/AskRecharge";
 import { ScrollCue } from "@/components/chrome/ScrollCue";
@@ -99,7 +100,9 @@ export function Hero() {
       className="flex min-h-[760px] flex-col justify-center pt-[clamp(0.5rem,1.6vh,2rem)] pb-[clamp(0.5rem,0.8vh,2.5rem)] md:min-h-svh"
     >
       <HeroPhoto />
-      <HeroAurora />
+      <ParallaxLayer distance={40}>
+        <HeroAurora />
+      </ParallaxLayer>
 
       <Container width="wide">
         <div className="max-w-[34rem]">

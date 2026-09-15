@@ -89,11 +89,51 @@ Each is flagged in its own source file:
   boilerplate.
 - **A branded 404**, for the links described above.
 
+## Motion
+
+Scroll behaviour is a deliberate, small set — every effect has a named purpose rather than
+existing because it looked busy.
+
+| Effect | Purpose | Where |
+|--------|---------|-------|
+| Scroll progress bar | Orientation — `/` is ~9,000px of continuous narrative behind a sticky header | Top of the viewport, carrying the aurora ramp |
+| Aurora parallax | Depth — separates the decorative plane from the content plane | All 8 sections, 40–80px of travel each |
+| Staggered reveals | Preventing a jarring change | Every section; card grids stagger their children |
+| Photo settle | Preventing a jarring change — a full-height portrait that simply appears reads as a jump | Trust and Start portraits, from `scale(1.04)` |
+| Arc draw | Explanation | The R³ loop's connecting arcs |
+| Card lift | Feedback | Moments, Trust and Plans cards; 3px, inside `@media (hover: hover)` |
+| Aurora drift | Ambience | CSS keyframes, 26s/38s, transform only |
+
+Two things are deliberately **not** animated:
+
+- **Gradient headline text.** Animating `background-position` under `background-clip: text`
+  repaints the text layer every frame and fringes sub-pixel-antialiased serif glyphs.
+- **The trust strip**, which carries the medical disclaimer.
+
+### Reduced motion
+
+`prefers-reduced-motion` is honoured in three layers: `MotionConfig reducedMotion="user"`
+drops transforms while keeping opacity; each primitive branches its animated *values* (never
+its JSX — `useReducedMotion` returns `null` during SSR, so branching markup would hand a
+hydration mismatch to exactly those visitors); and a CSS block collapses every animation and
+transition. Parallax collapses to zero travel outright, being the one effect here with real
+vestibular risk. The progress bar is intentionally exempt: it tracks the scrollbar
+one-to-one and initiates no motion of its own.
+
+### No-JavaScript safety
+
+Motion serialises its `initial` variant into the server HTML as an inline `opacity:0`, and
+the R³ arcs as `stroke-dasharray="0 1"`. Both would leave content invisible if scripting were
+unavailable, so every reveal wrapper carries `data-reveal`, every drawn path carries
+`data-draw`, and a `@media (scripting: none)` block force-reveals both. The hero does not
+rely on that net at all — its entrance is a CSS keyframe.
+
 ## Known deviations
 
-- **The logo is a hand reconstruction** traced from a 400 ppi re-render; no vector asset was
-  supplied. The deck's ring arcs taper along their length, which uniform-width SVG strokes
-  cannot reproduce. Replace with the real brand SVG before launch.
+- **The logo's colours differ from the design spec.** The mark is a vector trace of the brand
+  asset supplied by the design owner (`.docs/logo-mark.webp`), so its fills are the real ones:
+  blue `#36A9D8`, grey `#8E949B`, pink `#E86E92`, green `#63B792`. DESIGN-SPEC §2.1 records
+  lighter, less saturated values because it measured them off the soft deck render.
 - **Typefaces are inferred, not identified.** The design spec measured letterforms and ranked
   candidates rather than asserting a match. Body is Outfit (the deck's sans has a
   double-storey `a` with no tail and a single-storey `g`); display is Playfair Display, which

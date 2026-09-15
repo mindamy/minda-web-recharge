@@ -14,6 +14,7 @@ import {
   Refresh,
   type IconProps,
 } from "@/components/icons";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -118,7 +119,9 @@ const MOMENTS: readonly Moment[] = [
 export function Moments() {
   return (
     <Section id={SECTION_IDS.moments}>
-      <MomentsAurora />
+      <ParallaxLayer distance={70}>
+        <MomentsAurora />
+      </ParallaxLayer>
 
       <Container width="wide">
         {/* Two-zone header: copy left, the reassurance card pinned top-right
@@ -179,7 +182,7 @@ export function Moments() {
               key={title}
               className="w-[76vw] max-w-[300px] shrink-0 snap-center md:w-auto md:max-w-none"
             >
-              <article className="rounded-card bg-surface-card shadow-card flex h-full flex-col p-[5px] pb-8 text-center">
+              <article className="rounded-card bg-surface-card shadow-card card-lift flex h-full flex-col p-[5px] pb-8 text-center">
                 <div className="rounded-media relative aspect-7/6 overflow-hidden">
                   <Image
                     src={photo}

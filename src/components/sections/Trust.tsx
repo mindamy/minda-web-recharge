@@ -10,6 +10,8 @@ import {
   ShieldLock,
   type IconProps,
 } from "@/components/icons";
+import { ImageReveal } from "@/components/motion/ImageReveal";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -177,7 +179,9 @@ function PortraitArc() {
 export function Trust() {
   return (
     <Section id={SECTION_IDS.trust}>
-      <TrustAurora />
+      <ParallaxLayer distance={70}>
+        <TrustAurora />
+      </ParallaxLayer>
 
       <Container width="narrow">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,46fr)_minmax(0,54fr)] lg:items-start lg:gap-10">
@@ -210,7 +214,7 @@ export function Trust() {
             `object-cover` from a 0.81:1 source then cropped everything but a
             thin horizontal band across the subject's chin.
           */}
-          <Reveal delay={0.1}>
+          <ImageReveal delay={0.1}>
             <div className="rounded-card-lg relative mx-auto aspect-4/5 w-full max-w-[360px] overflow-hidden lg:mr-0 lg:ml-auto lg:max-w-[400px]">
               <div className="absolute inset-0">
                 <Image
@@ -224,7 +228,7 @@ export function Trust() {
 
               <PortraitArc />
             </div>
-          </Reveal>
+          </ImageReveal>
         </div>
 
         {/* 4-up at `lg`, 2-up at `md`, 1 column below. Cards keep their left
@@ -233,7 +237,7 @@ export function Trust() {
         <RevealGroup className="mt-14 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-4">
           {TRUST_CARDS.map(({ Icon, tint, stroke, title, body, wideTitleGap, accent }) => (
             <RevealItem key={title.join(" ")}>
-              <article className="rounded-card-lg bg-surface-card shadow-card flex h-full flex-col p-7">
+              <article className="rounded-card-lg bg-surface-card shadow-card card-lift flex h-full flex-col p-7">
                 <span
                   className={cn(
                     "flex size-[58px] items-center justify-center rounded-full",

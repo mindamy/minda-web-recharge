@@ -4,6 +4,7 @@ import { Outfit, Playfair_Display } from "next/font/google";
 import { Footer } from "@/components/chrome/Footer";
 import { Header } from "@/components/chrome/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 import "./globals.css";
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
       <body>
         <MotionProvider>
+          <ScrollProgress />
           <Header />
           {children}
           <Footer />

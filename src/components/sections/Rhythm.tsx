@@ -4,6 +4,7 @@ import type { ComponentType } from "react";
 import { RhythmAurora } from "@/components/aurora";
 import { AskRechargePersonal } from "@/components/chrome/AskRecharge";
 import { ChartUp, Heart, PersonCircle, type IconProps } from "@/components/icons";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -60,7 +61,9 @@ const STRIP: readonly StripCell[] = [
 export function Rhythm() {
   return (
     <Section id={SECTION_IDS.rhythm}>
-      <RhythmAurora />
+      <ParallaxLayer distance={80}>
+        <RhythmAurora />
+      </ParallaxLayer>
 
       <Container width="wide">
         <Reveal>

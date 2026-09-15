@@ -3,6 +3,8 @@ import Image from "next/image";
 import { CtaAurora } from "@/components/aurora";
 import { AskRechargeStart } from "@/components/chrome/AskRecharge";
 import { ArrowRight } from "@/components/icons";
+import { ImageReveal } from "@/components/motion/ImageReveal";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -102,7 +104,9 @@ function PortraitArc() {
 export function Start() {
   return (
     <Section id={SECTION_IDS.start}>
-      <CtaAurora />
+      <ParallaxLayer distance={80}>
+        <CtaAurora />
+      </ParallaxLayer>
 
       <Container width="wide">
         <div className="grid items-center gap-14 lg:grid-cols-[42fr_58fr] lg:gap-12">
@@ -155,7 +159,7 @@ export function Start() {
 
                 The top edge feathers into the page ground at `lg`, as rendered.
               */}
-              <div className="rounded-card-lg relative aspect-[4/5] w-full overflow-hidden lg:aspect-square lg:[mask-image:linear-gradient(to_bottom,transparent_0%,black_14%,black_100%)]">
+              <ImageReveal className="rounded-card-lg relative aspect-[4/5] w-full overflow-hidden lg:aspect-square lg:[mask-image:linear-gradient(to_bottom,transparent_0%,black_14%,black_100%)]">
                 <Image
                   src="/images/cta-portrait.jpg"
                   alt="A woman in loose cream linen sitting cross-legged beside a calm lake at sunrise, looking up towards the light"
@@ -163,7 +167,7 @@ export function Start() {
                   sizes="(min-width: 1024px) 58vw, (min-width: 640px) 34rem, 100vw"
                   className="object-cover object-[50%_28%]"
                 />
-              </div>
+              </ImageReveal>
 
               <PortraitArc />
             </div>

@@ -364,6 +364,31 @@
   background-image: linear-gradient(90deg, #3b82f0, #6abdb9, #f5538c);
 }
 
+/**
+ * Hover feedback for the content cards.
+ *
+ * Purpose: feedback. A 3px lift and a slightly deeper shadow — deliberately
+ * near-imperceptible, because a card row is seen constantly and anything
+ * showier becomes noise on the tenth pass.
+ *
+ * `translate` rather than `transform`: Tailwind v4 emits the individual
+ * `translate` property for its translate utilities, so a transition naming
+ * `transform` would not fire. Nested inside `@media (hover: hover)` so a touch
+ * device never latches the lifted state after a tap.
+ */
+@utility card-lift {
+  transition:
+    translate 220ms var(--ease-soft),
+    box-shadow 220ms var(--ease-soft);
+
+  @media (hover: hover) {
+    &:hover {
+      translate: 0 -3px;
+      box-shadow: var(--shadow-card-elevated);
+    }
+  }
+}
+
 /** The hero trust strip. Alpha was solved from the aurora visible through it. */
 @utility surface-translucent {
   background-color: rgb(255 255 255 / 0.7);
