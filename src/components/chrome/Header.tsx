@@ -167,7 +167,7 @@ export function Header() {
           <Logo wordmark={brand.wordmark} />
         </Link>
 
-        <nav aria-label={nav.landmarkMain} className="hidden lg:block">
+        <nav aria-label={nav.landmarkMain} className="hidden xl:block">
           <ul className="flex items-center gap-9">
             {NAV_ITEMS.map((item) => {
               const active = isHome
@@ -204,7 +204,7 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex xl:gap-6">
+        <div className="hidden items-center gap-6 xl:flex">
           {/* Sits with the CTA cluster rather than in the nav list: it is not
               a destination in the site's story, it is a control over how the
               story is read — the same category as Sign In. */}
@@ -223,7 +223,7 @@ export function Header() {
           aria-expanded={menuOpen}
           aria-controls="mobile-nav"
           aria-label={menuOpen ? nav.closeMenu : nav.openMenu}
-          className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-ink-800 transition-colors duration-150 hover:bg-white/60 lg:hidden"
+          className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-ink-800 transition-colors duration-150 hover:bg-white/60 xl:hidden"
         >
           <svg viewBox="0 0 24 24" className="size-6" fill="none" aria-hidden focusable="false">
             {menuOpen ? (
@@ -248,7 +248,7 @@ export function Header() {
       {menuOpen && (
         <div
           id="mobile-nav"
-          className="border-t border-hairline-faint bg-white/95 backdrop-blur-xl lg:hidden"
+          className="border-t border-hairline-faint bg-white/95 backdrop-blur-xl xl:hidden"
         >
           <nav aria-label={nav.landmarkMain} className="px-6 py-6 sm:px-8">
             <ul className="flex flex-col gap-1">
