@@ -161,16 +161,35 @@ export async function Plans() {
               <div className="flex flex-col gap-3 md:items-end">
                 {/*
                   The one serif button label in the deck — every other button is
-                  sans. Size and weight are set inline rather than by class so
-                  they win over the `size` variant's own type classes outright;
-                  the clamp covers the drop to 19px at `sm` (§4.2).
+                  sans. Size, weight AND family are set inline rather than by
+                  class so they win over the `size` variant's own type classes
+                  outright; the clamp covers the drop to 19px at `sm` (§4.2).
+
+                  The family has to be inline for a sharper reason than the
+                  other two. `Button`'s own cva base carries `font-sans`, and
+                  `.font-sans` and `.font-display` are both single-class
+                  utilities in Tailwind's `utilities` layer — so the winner is
+                  decided by their order in the compiled sheet, not by the
+                  order of the `class` attribute. `.font-sans` is emitted
+                  second, so the `font-display` class this used to carry never
+                  applied and the deck's one serif button has been rendering
+                  in Outfit. Invisible in English, where both faces at least
+                  read as Latin; on /zh-Hans and /zh-Hant it would have put
+                  this label in the 黑体 body gothic while the h3 directly
+                  above it sits in 宋体, breaking the serif/sans hierarchy in
+                  the one place it is most visible.
+
+                  `var(--font-display)` rather than a literal stack: the token
+                  resolves through `--stack-display`, so this inherits the
+                  per-script swap in globals.css instead of pinning Playfair.
                 */}
                 <Button
                   href={localePath(locale, "/plans")}
                   variant="primary"
                   size="lg"
-                  className="font-display w-full md:w-[276px]"
+                  className="w-full md:w-[276px]"
                   style={{
+                    fontFamily: "var(--font-display)",
                     fontSize: "clamp(1.1875rem, 1rem + 0.8vw, 1.375rem)",
                     fontWeight: 400,
                   }}

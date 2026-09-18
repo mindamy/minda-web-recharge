@@ -5,10 +5,27 @@
    `@theme inline` is required for these specifically. next/font exposes
    each family as a CSS-module className that declares the variable, so the
    token has to inline the var() reference rather than snapshot its value.
+
+   The families themselves live one level further out, in `--stack-sans` /
+   `--stack-display` (see PER-SCRIPT TYPOGRAPHY below). That indirection is
+   load-bearing, not tidiness: `@theme inline` inlines this token's *value*
+   into the utility, so it compiles to
+
+     .font-display { font-family: var(--stack-display) }
+
+   which is cascade-sensitive and therefore reachable from a `:lang()` block.
+   Naming the families directly here would compile the literal list into
+   `.font-display` / `.font-sans`, and a `:lang()` rule redefining
+   `--font-display` would then silently miss every element carrying those
+   utility classes — the Logo wordmark, the Hero serif lead, the Plans serif
+   CTA and every Button — while still swapping `body` and `h1,h2,h3`, which
+   do read the token through `var()`. That partial swap looks like it works
+   until someone opens the homepage. Verified against the compiled output:
+   see .planning/quick/quick-kayinleong-003/RESEARCH-typography.md §4.
    ═══════════════════════════════════════════════════════════════════════ */
 @theme inline {
-  --font-display: var(--font-playfair), Newsreader, "Source Serif 4", Georgia, serif;
-  --font-sans: var(--font-outfit), Questrial, "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--stack-display);
+  --font-sans: var(--stack-sans);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -256,6 +273,209 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   PER-SCRIPT TYPOGRAPHY
+
+   Neither Playfair Display nor Outfit contains a single Han glyph — both are
+   loaded `subsets: ["latin"]`, and the Google Fonts registry has no CJK
+   subset for either family at any setting. So on /zh-Hans and /zh-Hant every
+   Chinese character was falling through to whatever last-resort face the OS
+   happened to offer. This block chooses that face deliberately, per script.
+
+   Strategy: system CJK stacks, no webfont. A sliced `Noto Sans SC` costs a
+   measured 786 KB over 15 requests for a page of ~230 distinct characters
+   (`Noto Sans TC`: 979 KB), and adding a CJK serif for headlines takes
+   zh-Hant past 2.3 MB. System stacks cost zero bytes, zero requests and —
+   because no swap is involved — produce strictly *less* CLS on the Chinese
+   pages than the English ones. Measurements in RESEARCH-typography.md §2.
+
+   Everything here is unlayered on purpose. The compiled sheet emits
+   `@layer properties, theme, base, components, utilities`, and an unlayered
+   rule beats every layer regardless of specificity — so the token
+   redefinitions cannot be outranked by `@layer theme`, and the `font-style`
+   reset below beats Tailwind's `.italic` utility without an `!important`.
+
+   What unlayering cannot reach: an explicit `leading-*` utility. Those set
+   `--tw-leading`, and every `.text-*` utility resolves leading as
+   `var(--tw-leading, var(--text-X--line-height))` — so the fallback arm this
+   block redefines is never consulted. That is a different mechanism, not a
+   cascade contest, and the affected call sites need individual decisions;
+   they are listed in RESEARCH-typography.md §5 risk 8.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --stack-sans:
+    var(--font-outfit), Questrial, "Hanken Grotesk", "Helvetica Neue", Arial,
+    sans-serif;
+  --stack-display:
+    var(--font-playfair), Newsreader, "Source Serif 4", Georgia, serif;
+}
+
+/*
+ * `:lang(zh)` prefix-matches `zh-Hans` AND `zh-Hant`, so it must come FIRST
+ * and carry the Simplified stack only as the safety net for a bare
+ * `lang="zh"`; the Traditional rule below then overrides it. Reversing these
+ * two blocks silently serves every Traditional page the Simplified stack.
+ *
+ * The SC/TC split is not cosmetic. Han unification means one codepoint can
+ * carry different regional glyph shapes, so `PingFang SC` renders mainland
+ * forms and `PingFang TC` Taiwan forms for the *same* character — a
+ * difference Traditional readers notice immediately.
+ *
+ * `var(--font-outfit)` / `var(--font-playfair)` stay FIRST in every stack and
+ * must not be reordered. CSS font matching runs per character, so `Recharge`,
+ * `R³` and `AI` are found in the brand faces and matching stops there; only
+ * the codepoints those faces lack fall through to the CJK families. No spans,
+ * no `unicode-range` declarations, no markup changes.
+ *
+ * The trailing generic (`sans-serif` / `serif`) is load-bearing rather than
+ * decorative: Android's fonts.xml maps `serif` + `lang="zh-Hans"` /
+ * `lang="zh-Hant"` to the correct *regional* Noto Serif CJK, so the keyword
+ * resolves the Song face for us on the one platform that ships no named one.
+ */
+html:lang(zh) {
+  --stack-sans:
+    var(--font-outfit), "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei",
+    "Source Han Sans SC", "Noto Sans CJK SC", "Noto Sans SC",
+    "Hiragino Sans GB", "Heiti SC", sans-serif;
+
+  /* Display goes to Song (宋体), not to the body gothic. Song is the native
+     Han analogue of a Latin serif — modulated strokes, triangular 頓
+     terminals, real thick/thin contrast — and it is the only way to keep the
+     serif-display-against-sans-body hierarchy this whole design is built on.
+     Collapse both onto one gothic and every Chinese section reads flat.
+     宋 for display against 黑 for text is standard Chinese practice, not an
+     imported Western convention.
+
+     The memorial/officialese association attaches to *heavy* Song at large
+     size; at the `font-weight: 400` this design sets on h1/h2/h3 it reads
+     literary and unhurried. Do not let a later change push CJK headlines to
+     600/700 — that is where the association bites, and Android ships
+     NotoSerifCJK at weight 400 only, so it would be synthesised there. */
+  --stack-display:
+    var(--font-playfair), "Songti SC", "STSong",
+    "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC",
+    SimSun, NSimSun, serif;
+}
+
+html:lang(zh-Hant) {
+  --stack-sans:
+    var(--font-outfit), "PingFang TC", "PingFang HK",
+    "Microsoft JhengHei UI", "Microsoft JhengHei",
+    "Source Han Sans TC", "Noto Sans CJK TC", "Noto Sans TC",
+    "Heiti TC", sans-serif;
+  --stack-display:
+    var(--font-playfair), "Songti TC", "LiSong Pro", "Apple LiSung",
+    "Source Han Serif TC", "Noto Serif CJK TC", "Noto Serif TC",
+    PMingLiU, MingLiU, serif;
+}
+
+/* ── Han metrics ────────────────────────────────────────────────────────────
+   The type scale above is tuned to Outfit's measured 0.51em x-height: half
+   the em box is empty, which is what lets an h1 survive `line-height: 1.1`.
+   Han ink fills essentially the whole em box, so at 1.1 the h1 clamp ceiling
+   puts a 61.6px line box around ~56px of ink and adjacent lines nearly touch.
+   Width goes the other way — Chinese runs 40-70% shorter for the same
+   meaning — so every dimension tuned to Latin is wrong twice over.
+
+   Both scripts reach these through `var()`: the plain (non-inline) `@theme`
+   emits real custom properties and each `.text-*` utility compiles to
+   `line-height: var(--tw-leading, var(--text-h1--line-height))`, so
+   redefining the token here reaches every call site with no component edits.
+   The exception is an explicit `leading-*` utility, which sets `--tw-leading`
+   and therefore wins; those are listed in RESEARCH-typography.md §5 risk 8.
+
+   These numbers are typographic judgement, not measurement. They are the
+   right *shape* — looser leading, no tracking — and want a look with real
+   translated copy at real viewport widths before being treated as final. */
+html:lang(zh) {
+  --text-h1--line-height: 1.3;
+  --text-h2--line-height: 1.32;
+  --text-h3--line-height: 1.35;
+  --text-lead-serif--line-height: 1.4;
+  --text-lead--line-height: 1.7;
+  --text-body--line-height: 1.8;
+  --text-body-sm--line-height: 1.7;
+  --text-card-title--line-height: 1.5;
+  --text-card-body--line-height: 1.7;
+  --text-meta--line-height: 1.6;
+
+  /* The eyebrow's 1.2 assumed a single Latin line. `TRUST & APPROACH` already
+     wraps to two, and two Han lines at 1.2 collide. */
+  --text-eyebrow--line-height: 1.5;
+  --text-micro--line-height: 1.5;
+
+  /* Tracking goes to zero, not merely down. Han is already evenly set on a
+     fullwidth body, so +0.16em between glyphs reads as deliberate 疏排
+     spacing — which in Chinese signals something else entirely, not a kicker.
+     `uppercase` on the same elements is a no-op for Han, so the tracking is
+     doing all of the damage on its own. Secondary win: CSS adds tracking
+     after the final character too, which pushes a centred eyebrow (Plans)
+     visibly off-axis.
+
+     `--text-wordmark--letter-spacing` is deliberately NOT reset: the wordmark
+     is the brand token `Recharge`, which stays Latin in all three catalogues,
+     so its -0.005em optical correction is still the correct value here. */
+  --text-eyebrow--letter-spacing: 0em;
+  --text-micro--letter-spacing: 0em;
+  --text-scroll--letter-spacing: 0em;
+
+  /* 12px and 13px Han sit below the comfortable legibility floor — Han needs
+     more vertical resolution than Latin at the same nominal size, and the
+     hinting of whichever system face resolves is not ours to control. This
+     brings `--text-micro` level with `--text-eyebrow`; they are never
+     adjacent (micro is in-card, eyebrow above a section headline), and the
+     legibility is worth more than the 2px of hierarchy. */
+  --text-micro: 0.875rem;
+  --text-meta: 0.875rem;
+
+  /* There is no Han italic. Browsers fake one by shearing the glyphs, which
+     is the most recognisably wrong thing that can happen to Chinese type.
+     Inherited, so this covers the whole subtree. */
+  font-synthesis-style: none;
+}
+
+/*
+ * `font-synthesis-style` alone stops the shearing, but leaves `font-style:
+ * italic` computing as italic — so anything auditing the page still reads as
+ * italic, and a future face with a real italic would start shearing again by
+ * proxy. Kill the declaration too.
+ *
+ * Scoped, not global: Latin italic must keep working. The one call site is
+ * Trust's `grad-italic` mark (`<GradText className="italic">`), which is a
+ * gradient run *and* italic — losing the italic leaves the gradient, which is
+ * the stronger of the two emphasis devices anyway, so the line still reads as
+ * emphasised. The element defaults are here because Tailwind's preflight does
+ * not reset them, so an `<em>` in translated copy would otherwise shear.
+ */
+html:lang(zh) :is(.italic, i, em, cite, dfn, address, var) {
+  font-style: normal;
+}
+
+/*
+ * DELIBERATELY NOT SET: `html:lang(zh) p { text-wrap: pretty }`.
+ *
+ * It looks like the right call — a lone glyph stranded on the last line is a
+ * real Chinese fault and `pretty` is the property that names it — and it was
+ * written, shipped to a headless Chromium 153 and measured. It made things
+ * worse, because it overrode the `text-balance` the same paragraphs already
+ * carry and Chromium's `pretty` did nothing on Han. Hero's serif lead in a
+ * 544px measure:
+ *
+ *   zh-Hant   greedy [540, 60]   pretty [510, 90]   balance [300, 300]
+ *   zh-Hans   greedy [540, 90]   pretty [540, 90]   balance [330, 300]
+ *
+ * `pretty` left a 2-3 glyph orphan that `balance` removes outright. So the
+ * paragraphs keep `text-balance` and nothing is overridden here.
+ *
+ * `balance` is measurably *safe* on Han, which is the other half of the
+ * finding. On the hero h1 and the Trust h2 it produced line breaking
+ * byte-identical to greedy — Chinese has a break opportunity between nearly
+ * every character, so greedy is already near-optimal and the balancer has
+ * nothing to improve. It is never worse, sometimes much better, and does not
+ * need scoping away from CJK.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════
    BASE
    ═══════════════════════════════════════════════════════════════════════ */
 @layer base {
@@ -277,7 +497,11 @@
     color: var(--color-ink-600);
     font-family: var(--font-sans);
     font-size: var(--text-body);
-    line-height: 1.62;
+    /* Was the literal 1.62. Reading the token instead is the same value for
+       Latin and nothing else changes, but it means the looser Han leading set
+       under `:lang(zh)` reaches everything that merely inherits from `body`
+       rather than only the elements carrying a `.text-body` utility. */
+    line-height: var(--text-body--line-height);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -288,6 +512,9 @@
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-ink-900);
+    /* Holds for Han as well as Latin — measured, see the note above BASE.
+       Not scoped away from `:lang(zh)`: on Chinese headlines it is either an
+       improvement or an exact no-op, never a regression. */
     text-wrap: balance;
   }
 
