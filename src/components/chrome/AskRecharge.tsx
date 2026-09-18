@@ -9,7 +9,8 @@ import {
 } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
-import { CTA } from "@/lib/nav";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary, getLocale } from "@/lib/i18n/dictionaries";
 
 /**
  * The `Ask Recharge` affordance.
@@ -19,9 +20,18 @@ import { CTA } from "@/lib/nav";
  * which line carries the link. Rather than one component with a dozen props,
  * each layout is its own small export named for where it appears, so every
  * one can be checked against its row in DESIGN-SPEC §2.4 at a glance.
+ *
+ * Every export is an `async` Server Component reading `getDictionary()`
+ * directly. They are only ever rendered from Server Components (Hero,
+ * Moments, R3Loop, Rhythm, Trust, Plans, Start), so no slice has to cross the
+ * client boundary and no catalogue byte reaches the browser.
+ *
+ * The copy lives under `common.ask` rather than `chrome.ask`: these blocks are
+ * embedded *inside* sections, not in the header or footer, and several of
+ * their strings — `label`, `guide` — repeat across four of the seven
+ * placements. Storing them once means a translator writes `Ask Recharge` one
+ * time and the seven placements cannot drift.
  */
-
-const ASK_HREF = "/ask";
 
 /** The circular icon holder. Diameter, fill and ring all vary by placement. */
 function BubbleCircle({
@@ -44,17 +54,34 @@ function BubbleCircle({
 }
 
 /**
+ * The `Ask Recharge` destination, locale-prefixed.
+ *
+ * `/ask` is a bare literal like every other route slug — slugs stay English
+ * in all three locales — so this is a string prefix that cannot miss. It was
+ * previously a module-level `ASK_HREF` constant, which is exactly the shape
+ * that silently kept pointing at the unprefixed route.
+ */
+async function askHref(): Promise<string> {
+  return localePath(await getLocale(), "/ask");
+}
+
+/**
  * Hero — an inline meta link sitting right of a hairline divider, alongside
  * the trial meta. The whole string is one link and `Ask Recharge` is not
- * separately coloured here.
+ * separately coloured here, so `common.ask.hero` carries the entire sentence
+ * rather than being concatenated from the question and the label: a
+ * translation may well not end on the product name.
  */
-export function TrialMeta({
+export async function TrialMeta({
   className,
   style,
 }: {
   className?: string;
   style?: CSSProperties;
 }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div
       style={style}
@@ -65,17 +92,17 @@ export function TrialMeta({
     >
       <span className="flex items-center gap-2.5 text-ink-500">
         <CheckCircle className="size-4.5 shrink-0" />
-        {CTA.trialMeta}
+        {m.common.cta.trialMeta}
       </span>
 
       <span aria-hidden className="hidden h-4 w-px bg-hairline sm:block" />
 
       <a
-        href={ASK_HREF}
+        href={href}
         className="group flex items-center gap-2 text-ink-500 transition-colors duration-150 ease-soft hover:text-blue-ink"
       >
         <SpeechBubbleDots className="size-5 shrink-0 text-ink-400 transition-colors duration-150 group-hover:text-blue-ink" />
-        Not sure where to start? Ask Recharge
+        {m.common.ask.hero}
         <ArrowRight className="size-4 shrink-0 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
       </a>
     </div>
@@ -83,7 +110,10 @@ export function TrialMeta({
 }
 
 /** p-2 — the full-width tinted banner. */
-export function AskRechargeBanner({ className }: { className?: string }) {
+export async function AskRechargeBanner({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div
       className={cn(
@@ -95,22 +125,27 @@ export function AskRechargeBanner({ className }: { className?: string }) {
         <SpeechBubbleSparkle className="size-8 text-[#2B66E7]" />
       </BubbleCircle>
 
+      {/* An unconditional break: the deck sets the question and the answer on
+          separate lines at every width, and they are two catalogue entries,
+          so the break is structure rather than wrapping. */}
       <p className="text-[1.375rem] leading-snug font-semibold text-ink-800">
-        Not sure where to start?
+        {m.common.ask.bannerLead}
         <br />
-        <span className="text-blue-ink">Ask Recharge.</span>
+        <span className="text-blue-ink">{m.common.ask.labelDotted}</span>
       </p>
 
       <span aria-hidden className="hidden h-14 w-px shrink-0 bg-hairline md:block" />
 
-      <p className="text-body-sm flex-1 text-ink-500">
-        Our AI companion can help you make sense
-        <br className="hidden lg:inline" /> of how you feel and find what might help.
-      </p>
+      {/* This used to carry a `<br className="hidden lg:inline" />` after
+          "make sense". That was a responsive break — layout, not copy — and
+          the catalogue stores the sentence flat, with no split point, because
+          a Chinese translation wraps nowhere near the English clause. The
+          paragraph is `flex-1`, so it wraps on its own. */}
+      <p className="text-body-sm flex-1 text-ink-500">{m.common.ask.bannerBody}</p>
 
-      <Button href={ASK_HREF} variant="outlineBlue" size="lg" className="group shrink-0">
+      <Button href={href} variant="outlineBlue" size="lg" className="group shrink-0">
         <SpeechBubblePlain className="size-5" />
-        Ask Recharge
+        {m.common.ask.label}
         <ArrowRight className="size-5 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
       </Button>
     </div>
@@ -118,19 +153,22 @@ export function AskRechargeBanner({ className }: { className?: string }) {
 }
 
 /** p-3 — a two-line block where both lines are blue. */
-export function AskRechargeLoop({ className }: { className?: string }) {
+export async function AskRechargeLoop({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div className={cn("flex items-center gap-4", className)}>
       <BubbleCircle size={46} className="border border-[#DAE1FA] bg-[#EEF2FD]">
         <SpeechBubbleDots className="size-5.5 text-blue-ink" />
       </BubbleCircle>
       <div>
-        <p className="text-meta text-[#2B59F0]">Questions about the loop?</p>
+        <p className="text-meta text-[#2B59F0]">{m.common.ask.loop}</p>
         <a
-          href={ASK_HREF}
+          href={href}
           className="group text-btn-sm mt-0.5 flex items-center gap-2 font-semibold text-blue-ink"
         >
-          Ask Recharge
+          {m.common.ask.label}
           <ArrowRight className="size-5 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
         </a>
       </div>
@@ -139,7 +177,10 @@ export function AskRechargeLoop({ className }: { className?: string }) {
 }
 
 /** p-5 — one line with an inline link and a sub-caption. Green icon here. */
-export function AskRechargePersonal({ className }: { className?: string }) {
+export async function AskRechargePersonal({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div className={cn("flex items-center gap-4", className)}>
       <BubbleCircle size={46} className="bg-white">
@@ -147,34 +188,37 @@ export function AskRechargePersonal({ className }: { className?: string }) {
       </BubbleCircle>
       <div>
         <p className="text-body-sm text-ink-600">
-          How does Recharge become personal?{" "}
+          {m.common.ask.personal}{" "}
           <a
-            href={ASK_HREF}
+            href={href}
             className="font-medium text-blue-ink transition-colors duration-150 hover:text-blue-fill"
           >
-            Ask Recharge
+            {m.common.ask.label}
           </a>
         </p>
-        <p className="mt-0.5 text-xs text-ink-500">Website guide</p>
+        <p className="mt-0.5 text-xs text-ink-500">{m.common.ask.guide}</p>
       </div>
     </div>
   );
 }
 
 /** p-6 — a single line, transparent circle with a blue ring. */
-export function AskRechargeApproach({ className }: { className?: string }) {
+export async function AskRechargeApproach({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div className={cn("flex items-center gap-4", className)}>
       <BubbleCircle size={46} className="border border-[#A1BDE7] bg-transparent">
         <SpeechBubblePlain className="size-5.5 text-blue-ink" />
       </BubbleCircle>
       <p className="text-btn-sm font-normal text-ink-600">
-        Questions about our approach?{" "}
+        {m.common.ask.approach}{" "}
         <a
-          href={ASK_HREF}
+          href={href}
           className="group inline-flex items-center gap-1.5 font-semibold text-blue-ink transition-colors duration-150 hover:text-blue-fill"
         >
-          Ask Recharge
+          {m.common.ask.label}
           <ArrowRight className="size-5 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
         </a>
       </p>
@@ -186,29 +230,35 @@ export function AskRechargeApproach({ className }: { className?: string }) {
  * p-7 — the plans footer cluster. Note the inversion: here `Help Me Choose`
  * is the link and `Ask Recharge` is a label beneath it.
  */
-export function AskRechargePlans({ className }: { className?: string }) {
+export async function AskRechargePlans({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div className={cn("flex items-center gap-4", className)}>
       <BubbleCircle size={54} className="border border-[#C9D7F5] bg-transparent">
         <SpeechBubblePlain className="size-6.5 text-blue-ink" />
       </BubbleCircle>
       <div>
-        <p className="text-btn-sm text-ink-600">Not sure which plan fits you?</p>
+        <p className="text-btn-sm text-ink-600">{m.common.ask.plans}</p>
         <a
-          href={ASK_HREF}
+          href={href}
           className="group mt-0.5 flex items-center gap-2 text-[1.1875rem] font-medium text-blue-ink"
         >
-          Help Me Choose
+          {m.common.ask.plansCta}
           <ArrowRight className="size-5 transition-transform duration-150 ease-soft group-hover:translate-x-0.5" />
         </a>
-        <p className="text-meta mt-0.5 text-ink-500">Ask Recharge</p>
+        <p className="text-meta mt-0.5 text-ink-500">{m.common.ask.label}</p>
       </div>
     </div>
   );
 }
 
 /** p-8 — two lines, with a 1px blue-to-green gradient ring on the circle. */
-export function AskRechargeStart({ className }: { className?: string }) {
+export async function AskRechargeStart({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const href = await askHref();
+
   return (
     <div className={cn("flex items-center gap-4", className)}>
       {/* A gradient border needs a padded gradient background with an inner
@@ -222,18 +272,19 @@ export function AskRechargeStart({ className }: { className?: string }) {
         </span>
       </span>
       <div>
-        <p className="text-btn font-medium text-ink-800">
-          Still have a question before you begin?
-        </p>
+        <p className="text-btn font-medium text-ink-800">{m.common.ask.start}</p>
         <p className="text-btn mt-0.5">
           <a
-            href={ASK_HREF}
+            href={href}
             className="font-medium text-blue-ink transition-colors duration-150 hover:text-blue-fill"
           >
-            Ask Recharge
+            {m.common.ask.label}
           </a>
-          <span className="text-ink-400"> &middot; </span>
-          <span className="text-ink-500">Website guide</span>
+          <span className="text-ink-400" aria-hidden>
+            {" "}
+            &middot;{" "}
+          </span>
+          <span className="text-ink-500">{m.common.ask.guide}</span>
         </p>
       </div>
     </div>

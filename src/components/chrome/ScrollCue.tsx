@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 
 import { ChevronDown } from "@/components/icons";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 /**
  * The `SCROLL TO EXPLORE` affordance.
@@ -16,15 +17,23 @@ import { cn } from "@/lib/cn";
  *            line, with no label at all.
  *
  * Decorative and duplicated by the scrollbar itself, so it is hidden from
- * assistive technology rather than announced.
+ * assistive technology rather than announced. That is *not* a reason to leave
+ * the label as a literal: `aria-hidden` removes it from the accessibility
+ * tree, but it is still rendered text a reader of the page sees, so it comes
+ * from the catalogue like any other copy.
+ *
+ * A Server Component, so it reads `getDictionary()` directly — the `plain`
+ * variant returns before the label is used, and the await costs nothing
+ * because the catalogue is already resolved for the page.
  */
-export function ScrollCue({
+export async function ScrollCue({
   variant = "bare",
-  label = "Scroll to explore",
+  label,
   className,
   style,
 }: {
   variant?: "bare" | "circled" | "plain";
+  /** Overrides `chrome.scrollCue.label`; no caller needs to today. */
   label?: string;
   className?: string;
   style?: CSSProperties;
@@ -36,6 +45,8 @@ export function ScrollCue({
       </div>
     );
   }
+
+  const m = await getDictionary();
 
   return (
     <div
@@ -50,7 +61,7 @@ export function ScrollCue({
       ) : (
         <ChevronDown className="h-2.5 w-[18px] text-blue-fill" strokeWidth={2.2} />
       )}
-      <span className="text-scroll uppercase text-blue-ink">{label}</span>
+      <span className="text-scroll uppercase text-blue-ink">{label ?? m.chrome.scrollCue.label}</span>
     </div>
   );
 }

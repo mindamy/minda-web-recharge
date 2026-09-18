@@ -55,12 +55,37 @@ function RechargeMark({
  * `[&>svg]:size-[78px]`, which silently depended on the mark being a direct
  * child `<svg>` — a coupling that broke the moment the mark stopped being
  * inline SVG.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY THE WORDMARK IS A PROP AND NOT A `getDictionary()` CALL.
+ *
+ * This is the one chrome component rendered from **both** sides of the
+ * server/client boundary — `Header` is a Client Component, while `Footer`,
+ * `Connected` and `global-not-found` are Server Components. Making it `async`
+ * to read the catalogue itself would make it unrenderable from `Header`; and
+ * it cannot read `useMessages()` either, because `global-not-found` bypasses
+ * the layout and therefore has no `MessagesProvider` above it.
+ *
+ * So the value is injected: `Header` passes `brand.wordmark` from
+ * `useMessages()`, and a Server Component passes `m.common.brand.wordmark`.
+ * The default exists for `global-not-found`, which has no catalogue at all,
+ * and it is safe to hard-code because `Recharge` is a brand token that stays
+ * Latin in every locale — `common.brand.wordmark` is `"Recharge"` in all
+ * three catalogues, by the same rule that keeps `R³` and `AI` Latin.
+ *
+ * The mark's `alt` is deliberately empty and `aria-hidden`, so it needs no
+ * catalogue entry: the wordmark beside it already names the brand, and
+ * announcing it twice is worse than not announcing the image.
+ * ---------------------------------------------------------------------------
  */
 export function Logo({
+  wordmark = "Recharge",
   className,
   markClassName,
   wordmarkClassName,
 }: {
+  /** Defaults to the Latin brand token; see the note above. */
+  wordmark?: string;
   className?: string;
   markClassName?: string;
   wordmarkClassName?: string;
@@ -69,7 +94,7 @@ export function Logo({
     <span className={cn("inline-flex items-center gap-3", className)}>
       <RechargeMark className={cn("size-11 lg:size-[54px]", markClassName)} />
       <span className={cn("text-wordmark font-display text-brand-ink", wordmarkClassName)}>
-        Recharge
+        {wordmark}
       </span>
     </span>
   );

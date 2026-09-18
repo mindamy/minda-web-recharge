@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
-import { CTA, NAV_ITEMS, SPY_SECTION_IDS, type SectionId } from "@/lib/nav";
+import { localePath } from "@/lib/i18n/config";
+import { useMessages } from "@/lib/i18n/MessagesProvider";
+import { NAV_ITEMS, SPY_SECTION_IDS, splitLocalePath, type SectionId } from "@/lib/nav";
 
 import { Logo } from "./Logo";
 import { NavLabel } from "./NavLabel";
@@ -20,14 +22,58 @@ import { NavLabel } from "./NavLabel";
  * so it gains a faint translucent wash once the page has moved — without
  * that, nav labels collide with section content as it passes underneath.
  *
- * Active state has two sources. On `/` the whole narrative is one page, so an
- * IntersectionObserver tracks which section owns the viewport. On a
- * standalone section route there is nothing to observe, so the active item is
- * whichever one matches the pathname.
+ * Active state has two sources. On the narrative page the whole story is one
+ * document, so an IntersectionObserver tracks which section owns the
+ * viewport. On a standalone section route there is nothing to observe, so the
+ * active item is whichever one matches the route.
+ *
+ * ---------------------------------------------------------------------------
+ * THE ONLY CLIENT COMPONENT IN THE CHROME — and the only one that reads
+ * messages through `useMessages()`.
+ *
+ * It takes the `{ nav, localeSwitcher, cta, brand }` slice that the layout
+ * already selected and passed to `<MessagesProvider>`. It must never
+ * `import … from "@/messages/…"`: a static catalogue import from the client
+ * graph bundles **all three** locales into the browser chunk, with no error,
+ * no warning, and a site that still works perfectly in every language.
+ * ---------------------------------------------------------------------------
  */
 export function Header() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const { nav, cta, brand } = useMessages();
+
+  /**
+   * ---------------------------------------------------------------------
+   * LOCALE-AWARE ROUTE MATCHING.
+   *
+   * `pathname` is now `/en-GB`, `/zh-Hans/plans`, and so on. Every
+   * comparison below was previously against a bare literal:
+   *
+   *     const isHome = pathname === "/";              // permanently false
+   *     const active = pathname === item.href;        // permanently false
+   *
+   * Both compile, both typecheck, and both build green — `usePathname()`
+   * returns `string` and `"/"` is a `string`. The only symptom was chrome
+   * that never activated: the scroll-spy effect early-returned on `isHome`,
+   * so its IntersectionObserver was never constructed and the underline
+   * never lit anywhere on the narrative page, while on a standalone route
+   * the active item never matched either.
+   *
+   * So the locale is stripped once, here, and every comparison downstream is
+   * against `route` — the locale-free path that `NAV_ITEMS[].href` is
+   * already written in. The locale goes back on at render time through
+   * `localePath`, which keeps `nav.ts` free of locale knowledge.
+   * ---------------------------------------------------------------------
+   */
+  const { locale, route } = splitLocalePath(pathname);
+  const isHome = route === "/";
+
+  // `chrome.nav.items` is keyed by the five section ids that have nav
+  // entries; `SectionId` covers all eight. Widening to a partial record is
+  // what lets `hero`, `rhythm` and `start` be looked up without a cast, and
+  // `?? item.label` renders the English word rather than an empty link if a
+  // catalogue key is ever dropped.
+  const navLabels: Partial<Record<SectionId, string>> = nav.items;
 
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId | null>(null);
@@ -98,6 +144,10 @@ export function Header() {
     };
   }, [menuOpen]);
 
+  /** In-page anchor on the narrative page, locale-prefixed route elsewhere. */
+  const destination = (anchor: string, href: string) =>
+    isHome ? anchor : localePath(locale, href);
+
   return (
     <header
       className={cn(
@@ -108,27 +158,31 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-20 w-full max-w-none items-center justify-between px-6 sm:px-8 lg:h-28 lg:px-10">
-        <Link href="/" aria-label="Recharge — home" className="rounded-lg">
-          <Logo />
+        <Link
+          href={localePath(locale, "/")}
+          aria-label={brand.homeLabel}
+          className="rounded-lg"
+        >
+          <Logo wordmark={brand.wordmark} />
         </Link>
 
-        <nav aria-label="Main" className="hidden lg:block">
+        <nav aria-label={nav.landmarkMain} className="hidden lg:block">
           <ul className="flex items-center gap-9">
             {NAV_ITEMS.map((item) => {
               const active = isHome
                 ? activeSection === item.sectionId
-                : pathname === item.href;
+                : route === item.href;
               return (
                 <li key={item.href} className="relative">
                   <Link
-                    href={isHome ? item.anchor : item.href}
+                    href={destination(item.anchor, item.href)}
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       "text-nav relative inline-block py-2 transition-colors duration-150 ease-soft",
                       active ? "text-blue-ink" : "text-ink-800 hover:text-blue-ink",
                     )}
                   >
-                    <NavLabel item={item} />
+                    <NavLabel label={navLabels[item.sectionId] ?? item.label} />
                     {/*
                       A fixed 52px bar, not a label-width underline. Measured:
                       the `Trust & Approach` label is 123px wide but its bar is
@@ -150,11 +204,11 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-6 lg:flex">
-          <Button href="/sign-in" variant="outline" size="sm">
-            {CTA.signIn}
+          <Button href={localePath(locale, "/sign-in")} variant="outline" size="sm">
+            {cta.signIn}
           </Button>
-          <Button href="/plans" variant="primary" size="sm">
-            {CTA.tryFree}
+          <Button href={localePath(locale, "/plans")} variant="primary" size="sm">
+            {cta.tryFree}
           </Button>
         </div>
 
@@ -163,7 +217,7 @@ export function Header() {
           onClick={() => setMenuOpen((open) => !open)}
           aria-expanded={menuOpen}
           aria-controls="mobile-nav"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? nav.closeMenu : nav.openMenu}
           className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-ink-800 transition-colors duration-150 hover:bg-white/60 lg:hidden"
         >
           <svg viewBox="0 0 24 24" className="size-6" fill="none" aria-hidden focusable="false">
@@ -191,26 +245,36 @@ export function Header() {
           id="mobile-nav"
           className="border-t border-hairline-faint bg-white/95 backdrop-blur-xl lg:hidden"
         >
-          <nav aria-label="Main" className="px-6 py-6 sm:px-8">
+          <nav aria-label={nav.landmarkMain} className="px-6 py-6 sm:px-8">
             <ul className="flex flex-col gap-1">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <Link
-                    href={isHome ? item.anchor : item.href}
+                    href={destination(item.anchor, item.href)}
                     onClick={() => setMenuOpen(false)}
                     className="text-nav block rounded-xl px-3 py-3.5 text-ink-800 transition-colors duration-150 hover:bg-blue-tint-50 hover:text-blue-ink"
                   >
-                    <NavLabel item={item} />
+                    <NavLabel label={navLabels[item.sectionId] ?? item.label} />
                   </Link>
                 </li>
               ))}
             </ul>
             <div className="mt-6 flex flex-col gap-3">
-              <Button href="/plans" variant="primary" size="md" className="w-full">
-                {CTA.tryFree}
+              <Button
+                href={localePath(locale, "/plans")}
+                variant="primary"
+                size="md"
+                className="w-full"
+              >
+                {cta.tryFree}
               </Button>
-              <Button href="/sign-in" variant="outline" size="md" className="w-full">
-                {CTA.signIn}
+              <Button
+                href={localePath(locale, "/sign-in")}
+                variant="outline"
+                size="md"
+                className="w-full"
+              >
+                {cta.signIn}
               </Button>
             </div>
           </nav>
