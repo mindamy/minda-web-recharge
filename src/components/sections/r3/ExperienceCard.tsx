@@ -1,6 +1,8 @@
 import { PlayTriangle, Refresh, Waveform } from "@/components/icons";
 import { MicroEyebrow } from "@/components/ui/Eyebrow";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import type { Messages } from "@/lib/i18n/types";
 
 /**
  * The `Personalised Recharge Experiences` card — DESIGN-SPEC §3.3, right column.
@@ -25,14 +27,22 @@ import { cn } from "@/lib/cn";
  * rejected, because the brief scopes the deviation to the title and says
  * everything else is unchanged. Changing the body copy is a copy decision, not
  * an implementation one.
+ *
+ * All of that copy now lives in the catalogue — the card title and its sub
+ * are the shared `common.pillars.experiences` entry, the rest is
+ * `sections.r3Loop.experienceCard`. The play button's `aria-label` is copy
+ * too: it is the only description a screen-reader user gets of this control,
+ * so it is translated rather than pinned to English.
  */
 
+type CardCopy = Messages["sections"]["r3Loop"]["experienceCard"];
+
 /** The one non-functional control on the card. */
-function PlayButton() {
+function PlayButton({ label }: { label: string }) {
   return (
     <button
       type="button"
-      aria-label="Play Reset, an 8 minute recharge experience"
+      aria-label={label}
       className={cn(
         "bg-blue-fill shadow-pill flex size-[50px] shrink-0 items-center justify-center rounded-full text-white",
         "transition-[background-color,box-shadow,transform] duration-150 ease-soft",
@@ -46,7 +56,7 @@ function PlayButton() {
 }
 
 /** The suggested-experience row — inner card on `surface-inner-rose`. */
-function SuggestedRow() {
+function SuggestedRow({ track }: { track: CardCopy["track"] }) {
   return (
     <div className="rounded-inner bg-surface-inner-rose flex items-start gap-3.5 p-4">
       <span className="flex size-[50px] shrink-0 items-center justify-center rounded-full bg-[#FCEAF0]">
@@ -55,14 +65,11 @@ function SuggestedRow() {
 
       <div className="min-w-0 flex-1">
         <p className="text-btn">
-          <span className="font-semibold text-rose-400">Reset</span>
+          <span className="font-semibold text-rose-400">{track.name}</span>
           <span className="mx-1.5 text-ink-400">&middot;</span>
-          <span className="font-medium text-ink-800">8 min</span>
+          <span className="font-medium text-ink-800">{track.duration}</span>
         </p>
-        <p className="text-card-body mt-1.5 text-ink-500">
-          A moment to clear some mental noise <br className="hidden xl:inline" />
-          and make space to reset.
-        </p>
+        <p className="text-card-body mt-1.5 text-balance text-ink-500">{track.body}</p>
       </div>
 
       {/* Purely decorative, so it is the first thing to go when the row runs
@@ -82,7 +89,11 @@ function SuggestedRow() {
   );
 }
 
-export function ExperienceCard({ className }: { className?: string }) {
+export async function ExperienceCard({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const pillar = m.common.pillars.experiences;
+  const copy = m.sections.r3Loop.experienceCard;
+
   return (
     <article
       className={cn(
@@ -90,25 +101,22 @@ export function ExperienceCard({ className }: { className?: string }) {
         className,
       )}
     >
-      <MicroEyebrow className="text-rose-400">RECHARGE</MicroEyebrow>
+      <MicroEyebrow className="text-rose-400">{pillar.label}</MicroEyebrow>
 
-      <p className="mt-3.5 text-[0.9375rem] font-semibold text-ink-800">
-        Personalised Recharge Experiences
-      </p>
+      <p className="mt-3.5 text-[0.9375rem] font-semibold text-ink-800">{pillar.titleLong}</p>
 
-      <h3 className="text-h3 mt-3">Feel better in the moment.</h3>
+      <h3 className="text-h3 mt-3">{pillar.sub}</h3>
 
-      <p className="mt-3.5 text-[0.9375rem] leading-[1.6] text-ink-600">
-        Personalised audio experiences designed <br className="hidden sm:inline" />
-        to support the state you need.
+      <p className="mt-3.5 text-[0.9375rem] leading-[1.6] text-balance text-ink-600">
+        {copy.body}
       </p>
 
       <hr className="bg-hairline-faint my-6 h-px border-0" />
 
-      <p className="text-body-sm font-semibold text-ink-800">Suggested for this moment</p>
+      <p className="text-body-sm font-semibold text-ink-800">{copy.suggestedLabel}</p>
 
       <div className="mt-3.5">
-        <SuggestedRow />
+        <SuggestedRow track={copy.track} />
       </div>
 
       {/* The player. The thumb sits flush to the track's left end at 0%, and
@@ -118,7 +126,7 @@ export function ExperienceCard({ className }: { className?: string }) {
             what moves below the track at `sm` (§4.2), so it is the only child
             of the wrapper that reflows. */}
         <div className="flex items-center gap-4 sm:flex-1">
-          <PlayButton />
+          <PlayButton label={copy.playLabel} />
           <div className="bg-track relative h-1 flex-1 rounded-full">
             <div className="bg-blue-ink h-full w-0 rounded-full" />
             <span
@@ -127,7 +135,7 @@ export function ExperienceCard({ className }: { className?: string }) {
             />
           </div>
         </div>
-        <p className="text-body-sm shrink-0 tabular-nums text-ink-500">0:00 / 8:00</p>
+        <p className="text-body-sm shrink-0 tabular-nums text-ink-500">{copy.track.time}</p>
       </div>
 
       {/* waveform: <AuroraWaveform /> mounted by the page */}

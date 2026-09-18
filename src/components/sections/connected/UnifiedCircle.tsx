@@ -1,6 +1,7 @@
 import { Logo } from "@/components/chrome/Logo";
-import { GradText } from "@/components/ui/GradText";
+import { HardLines, RichText } from "@/components/ui/RichText";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 /**
  * Zone D — the unified circle: the right-hand term of the section's argument.
@@ -46,7 +47,10 @@ const RING_MASK = [
   "transparent 100%)",
 ].join(" ");
 
-export function UnifiedCircle({ className }: { className?: string }) {
+export async function UnifiedCircle({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const copy = m.sections.connected.unifiedCircle;
+
   return (
     <div className={cn("relative mx-auto aspect-square w-[300px] lg:w-[400px]", className)}>
       <div
@@ -72,19 +76,15 @@ export function UnifiedCircle({ className }: { className?: string }) {
           wordmarkClassName="text-h3 -mt-2"
         />
 
+        {/* Headline 4c — same single-word `connected` run as 4b, broken
+            across the catalogue's two lines. */}
         <h3 className="mt-6 text-h3 lg:mt-7">
-          <span className="block">
-            One <GradText>connected</GradText>
-          </span>
-          <span className="block">experience</span>
+          <RichText value={copy.headline} where="sections.connected.unifiedCircle.headline" />
         </h3>
 
         <div className="grad-rule mt-4 h-0.5 w-12 rounded-full" aria-hidden />
 
-        <p className="mt-4 text-body-sm text-ink-500">
-          <span className="block">Insights. Guidance. Experiences.</span>
-          <span className="block">Working together around you.</span>
-        </p>
+        <HardLines value={[copy.caption]} paragraphClassName="mt-4 text-body-sm text-ink-500" />
       </div>
     </div>
   );

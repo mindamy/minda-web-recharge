@@ -18,9 +18,11 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { GradText } from "@/components/ui/GradText";
+import { HardLines, RichText } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import type { Messages } from "@/lib/i18n/types";
 import { SECTION_IDS } from "@/lib/nav";
 
 /**
@@ -39,18 +41,28 @@ import { SECTION_IDS } from "@/lib/nav";
  * its 7:6 aspect and pushes the two-line body onto four lines.
  */
 
+/**
+ * The catalogue key for a card's copy. Deriving it from `Messages` rather
+ * than restating the six names means a renamed or misspelt key is a `tsc`
+ * error here, not a card that renders with a blank title.
+ */
+type MomentKey = keyof Messages["sections"]["moments"]["cards"];
+
+/**
+ * A card's *presentation*. Copy — title, the two body lines and the photo's
+ * alt text — is not here: it is read from `sections.moments.cards[key]`. The
+ * alt text in particular is copy, and the §3.2 table it comes from carries
+ * editorial meaning, so it is translated like anything else a reader
+ * receives.
+ */
 type Moment = {
+  key: MomentKey;
   photo: string;
-  /** Photo subject, per the §3.2 table — the images carry editorial meaning. */
-  alt: string;
   Icon: ComponentType<IconProps>;
   /** Pastel circle fill. */
   tint: string;
   /** 2px icon stroke hue. */
   stroke: string;
-  title: string;
-  /** Two hard lines, as rendered in the deck. */
-  body: readonly [string, string];
 };
 
 /**
@@ -58,65 +70,60 @@ type Moment = {
  * measured hex; every substitution is within ~1% (e.g. card 2's measured
  * #EAF5F0 against `green-tint-100` #E8F4ED). Using tokens keeps the six
  * cards answerable against §1.1 rather than against six loose hexes.
+ *
+ * Order is the deck's reading order and belongs to layout, which is why the
+ * sequence lives in this array rather than in the catalogue: a translator
+ * cannot accidentally reorder the carousel.
  */
 const MOMENTS: readonly Moment[] = [
   {
+    key: "focus",
     photo: "/images/moment-focus.jpg",
-    alt: "A young man at a desk writing beside a laptop, a bright window behind him.",
     Icon: Crosshair,
     tint: "bg-blue-tint-50",
     stroke: "text-blue-icon",
-    title: "I need to focus",
-    body: ["I want to be clear,", "productive and in flow."],
   },
   {
+    key: "reset",
     photo: "/images/moment-reset.jpg",
-    alt: "A woman reclining on a sofa under a knit throw with her eyes closed.",
     Icon: Refresh,
     tint: "bg-green-tint-100",
     stroke: "text-green-icon",
-    title: "I need a reset",
-    body: ["I feel overwhelmed", "and need to reset."],
   },
   {
+    key: "runningLow",
     photo: "/images/moment-running-low.jpg",
-    alt: "A woman outdoors in a green jacket holding a water bottle.",
     Icon: BatteryLow,
     tint: "bg-rose-tint-50",
     stroke: "text-rose-300",
-    title: "I’m running low",
-    body: ["I feel drained and", "need to recharge."],
   },
   {
+    key: "switchOff",
     photo: "/images/moment-switch-off.jpg",
-    alt: "A man at a table at night by a warm lamp, one hand at his temple.",
     Icon: Moon,
     tint: "bg-violet-tint-50",
     stroke: "text-violet-500",
-    title: "I can’t switch off",
-    body: ["My mind is busy", "and I need to unwind."],
   },
   {
+    key: "stuck",
     photo: "/images/moment-stuck.jpg",
-    alt: "A woman seated indoors, chin resting on her hand, looking away.",
     Icon: Atom,
     tint: "bg-violet-tint-50",
     stroke: "text-violet-500",
-    title: "I feel stuck",
-    body: ["I need a shift in", "perspective."],
   },
   {
+    key: "clarity",
     photo: "/images/moment-clarity.jpg",
-    alt: "A man outdoors at dusk beside a lake, mountains behind him.",
     Icon: Compass,
     tint: "bg-blue-tint-50",
     stroke: "text-blue-icon",
-    title: "I want more clarity",
-    body: ["I’m looking for direction", "and inner clarity."],
   },
 ];
 
-export function Moments() {
+export async function Moments() {
+  const m = await getDictionary();
+  const copy = m.sections.moments;
+
   return (
     <Section id={SECTION_IDS.moments}>
       <ParallaxLayer distance={70}>
@@ -128,19 +135,20 @@ export function Moments() {
             at `lg` and stacked directly beneath the lead below that (§4.2). */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,483px)] lg:items-start lg:gap-14">
           <Reveal>
-            <Eyebrow>RECOGNISE YOUR MOMENT</Eyebrow>
+            <Eyebrow>{copy.eyebrow}</Eyebrow>
 
+            {/* Two catalogue lines, so the break between them is a real
+                `<br />` in every locale — the deck breaks here unconditionally.
+                The gradient on line 2 is the shared deck ramp, which
+                `defaultMarks` already supplies as `grad`. */}
             <h2 className="text-h2 mt-5">
-              What do you need right now?
-              <br />
-              <GradText>Your moment matters.</GradText>
+              <RichText value={copy.headline} where="sections.moments.headline" />
             </h2>
 
-            <p className="text-body mt-6 text-ink-600">
-              We all move through different moments. Recognising how you feel
-              <br className="hidden sm:inline" /> is the first step to finding what can
-              help.
-            </p>
+            {/* The deck's `sm:` break here fell mid-sentence between two
+                English words. That is layout, not copy, so the catalogue
+                stores the lead flat and the wrap is left to `text-balance`. */}
+            <p className="text-body mt-6 text-balance text-ink-600">{copy.lead}</p>
           </Reveal>
 
           <Reveal delay={0.1}>
@@ -151,12 +159,9 @@ export function Moments() {
                   <Heart className="size-5.5 text-green-icon" strokeWidth={1.8} />
                 </span>
                 <div>
-                  <p className="text-card-title text-green-ink">
-                    It&rsquo;s normal to have ups and downs.
-                  </p>
-                  <p className="text-card-body mt-2.5 text-ink-500">
-                    Recharge is here to support you, wherever
-                    <br className="hidden sm:inline" /> you are in your day.
+                  <p className="text-card-title text-green-ink">{copy.reassurance.title}</p>
+                  <p className="text-card-body mt-2.5 text-balance text-ink-500">
+                    {copy.reassurance.body}
                   </p>
                 </div>
               </div>
@@ -177,16 +182,16 @@ export function Moments() {
             "xl:grid-cols-6",
           )}
         >
-          {MOMENTS.map(({ photo, alt, Icon, tint, stroke, title, body }) => (
+          {MOMENTS.map(({ key, photo, Icon, tint, stroke }) => (
             <RevealItem
-              key={title}
+              key={key}
               className="w-[76vw] max-w-[300px] shrink-0 snap-center md:w-auto md:max-w-none"
             >
               <article className="rounded-card bg-surface-card shadow-card card-lift flex h-full flex-col p-[5px] pb-8 text-center">
                 <div className="rounded-media relative aspect-7/6 overflow-hidden">
                   <Image
                     src={photo}
-                    alt={alt}
+                    alt={copy.cards[key].alt}
                     fill
                     sizes="(min-width: 1280px) 212px, (min-width: 768px) 30vw, 76vw"
                     className="object-cover"
@@ -204,13 +209,14 @@ export function Moments() {
                 </span>
 
                 <h3 className="text-card-title mt-5 px-4 font-sans text-ink-800">
-                  {title}
+                  {copy.cards[key].title}
                 </h3>
-                <p className="text-card-body mt-3 px-4 text-ink-500">
-                  {body[0]}
-                  <br />
-                  {body[1]}
-                </p>
+                {/* Two hard lines, as rendered in the deck — an unconditional
+                    break, so it is a catalogue line rather than a `<br>` here. */}
+                <HardLines
+                  value={[copy.cards[key].body]}
+                  paragraphClassName="text-card-body mt-3 px-4 text-ink-500"
+                />
               </article>
             </RevealItem>
           ))}

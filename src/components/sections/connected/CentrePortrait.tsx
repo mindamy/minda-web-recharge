@@ -1,7 +1,8 @@
 import Image from "next/image";
 
-import { GradText } from "@/components/ui/GradText";
+import { RichText } from "@/components/ui/RichText";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 /**
  * Zone C — the centre portrait and the `One person.` caption.
@@ -30,7 +31,10 @@ import { cn } from "@/lib/cn";
 
 const OVAL_MASK = "radial-gradient(closest-side, #000 94%, transparent 100%)";
 
-export function CentrePortrait({ className }: { className?: string }) {
+export async function CentrePortrait({ className }: { className?: string }) {
+  const m = await getDictionary();
+  const copy = m.sections.connected.centrePortrait;
+
   return (
     <div className={cn("flex flex-col items-center text-center", className)}>
       <div
@@ -39,23 +43,22 @@ export function CentrePortrait({ className }: { className?: string }) {
       >
         <Image
           src="/images/connected-portrait.jpg"
-          alt="A woman sitting indoors beside a houseplant, looking up into soft window light."
+          alt={copy.alt}
           fill
           sizes="(min-width: 1024px) 320px, 240px"
           className="scale-105 object-cover"
         />
       </div>
 
+      {/* Headline 4b. Two catalogue lines; the run is the single word
+          `connected`, wrapped once, which is the shared `grad` mark. */}
       <h3 className="mt-2 text-h3">
-        <span className="block">One person.</span>
-        <span className="block">
-          One <GradText>connected</GradText> experience.
-        </span>
+        <RichText value={copy.headline} where="sections.connected.centrePortrait.headline" />
       </h3>
 
       <div className="grad-rule mt-4 h-0.5 w-12 rounded-full" aria-hidden />
 
-      <p className="mt-4 text-body-sm text-ink-500">Recharge connects the journey.</p>
+      <p className="mt-4 text-body-sm text-ink-500">{copy.caption}</p>
     </div>
   );
 }

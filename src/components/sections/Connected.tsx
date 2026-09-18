@@ -3,7 +3,9 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { HardLines, RichText } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SECTION_IDS } from "@/lib/nav";
 
 import { CentrePortrait } from "./connected/CentrePortrait";
@@ -33,13 +35,19 @@ import { WhyConnectionMatters } from "./connected/WhyConnectionMatters";
  * Server Component throughout. The only motion is decorative drift and scroll
  * reveals, which come from `motion/react-client` and the pre-marked `Reveal`
  * family; nothing here needs a hook, so nothing here needs `"use client"`.
+ * That is also why every part of this section reads the catalogue directly
+ * with `getDictionary()` — there is no client boundary to prop-drill across,
+ * and no catalogue bytes reach the browser.
  *
  * Responsive (DESIGN-SPEC §4.2): the diagram cannot reflow, so below `lg` it
  * becomes a vertical narrative — stack, connector, portrait, connector,
  * circle — and the mini-card scatter, the curves and the endpoint dots are
  * dropped outright. They are pure decoration and unreadable compressed.
  */
-export function Connected() {
+export async function Connected() {
+  const m = await getDictionary();
+  const copy = m.sections.connected;
+
   return (
     <Section id={SECTION_IDS.connected}>
       <ParallaxLayer distance={60}>
@@ -48,19 +56,16 @@ export function Connected() {
 
       <Container width="narrow">
         <Reveal className="flex flex-col items-center text-center">
-          <Eyebrow gradient="forward">MORE CONNECTED</Eyebrow>
+          <Eyebrow gradient="forward">{copy.eyebrow}</Eyebrow>
 
+          {/* Headline 4a is the only headline in the deck with no gradient run
+              at all, which is why it needs no `marks` override: the catalogue
+              gives it two unmarked lines and both render as `ink-900`. */}
           <h2 className="mt-5 text-h2 text-ink-900">
-            <span className="block">Wellbeing support</span>
-            <span className="block">shouldn’t feel fragmented.</span>
+            <RichText value={copy.headline} where="sections.connected.headline" />
           </h2>
 
-          <p className="mt-6 text-body text-ink-600">
-            <span className="block">
-              Recharge brings personal insights, AI-guided coaching and
-            </span>
-            <span className="block">Recharge Experiences together around you.</span>
-          </p>
+          <HardLines value={[copy.lead]} paragraphClassName="mt-6 text-body text-ink-600" />
         </Reveal>
       </Container>
 

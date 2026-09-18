@@ -1,9 +1,12 @@
 import * as m from "motion/react-client";
+import { Fragment } from "react";
 
 import { RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { PersonCircle } from "@/components/icons";
 import { MicroEyebrow } from "@/components/ui/Eyebrow";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import type { Messages } from "@/lib/i18n/types";
 
 import { LoopArcs } from "./LoopArcs";
 import {
@@ -14,6 +17,7 @@ import {
   pctX,
   pctY,
   type LoopNode,
+  type PillarKey,
 } from "./loopNodes";
 
 /**
@@ -33,7 +37,45 @@ import {
  * matching the type scale used everywhere else on the page. Positioned HTML
  * keeps the arcs fluid and the type fixed, and keeps the labels selectable and
  * reachable by find-in-page.
+ *
+ * This component is also where the diagram's copy enters. `loopNodes` carries
+ * geometry and hues only — it is imported by `LoopArcs`, which is a
+ * `"use client"` file, so it must never reach for the catalogue. Both forms
+ * below receive their strings from here instead.
  */
+
+/** What a node's label block renders, resolved from `common.pillars`. */
+type NodeCopy = { label: string; title: string; sub: string };
+
+/** The copy both forms of the diagram need, resolved once by `LoopDiagram`. */
+type DiagramCopy = {
+  nodes: Record<PillarKey, NodeCopy>;
+  you: Messages["sections"]["r3Loop"]["you"];
+};
+
+/**
+ * Resolves pillar copy for the three outer nodes.
+ *
+ * The RECHARGE node is the one that takes `titleLong` — the diagram has room
+ * for `Personalised Recharge Experiences` where the fragmented stack's card
+ * shows the short form. That choice is layout, so it is made here.
+ */
+function resolveCopy(m: Messages): DiagramCopy {
+  const pillars = m.common.pillars;
+
+  return {
+    nodes: {
+      insights: pillars.insights,
+      coaching: pillars.coaching,
+      experiences: {
+        label: pillars.experiences.label,
+        title: pillars.experiences.titleLong,
+        sub: pillars.experiences.sub,
+      },
+    },
+    you: m.sections.r3Loop.you,
+  };
+}
 
 /**
  * §5 #11 — node pop, with the slight overshoot from #5. Reduced motion is
@@ -89,14 +131,22 @@ function LoopCircle({ node, className }: { node: LoopNode; className?: string })
   );
 }
 
-function NodeLabels({ node, className }: { node: LoopNode; className?: string }) {
+function NodeLabels({
+  node,
+  copy,
+  className,
+}: {
+  node: LoopNode;
+  copy: NodeCopy;
+  className?: string;
+}) {
   return (
     <div className={className}>
-      <MicroEyebrow className={node.labelClass}>{node.label}</MicroEyebrow>
+      <MicroEyebrow className={node.labelClass}>{copy.label}</MicroEyebrow>
       <p className="mt-1.5 text-[0.9375rem] leading-tight font-semibold text-ink-800">
-        {node.title}
+        {copy.title}
       </p>
-      <p className="text-card-body mt-1 text-ink-500">{node.sub}</p>
+      <p className="text-card-body mt-1 text-ink-500">{copy.sub}</p>
     </div>
   );
 }
@@ -108,13 +158,16 @@ function NodeLabels({ node, className }: { node: LoopNode; className?: string })
  * no tailwind-merge, so a `px-*` here could not be overridden by a call site —
  * whichever class Tailwind happens to emit later in the sheet would win.
  */
-function StatusPill({ className }: { className?: string }) {
+function StatusPill({ pill, className }: { pill: readonly string[]; className?: string }) {
   return (
     <div className={cn("bg-surface-inner-blue rounded-full py-1.5 text-center", className)}>
       <p className="text-[0.6875rem] leading-[1.5] font-medium text-blue-ink xl:text-xs">
-        {YOU_NODE.pill[0]}
-        <br />
-        {YOU_NODE.pill[1]}
+        {pill.map((line, index) => (
+          <Fragment key={index}>
+            {index > 0 ? <br /> : null}
+            {line}
+          </Fragment>
+        ))}
       </p>
     </div>
   );
@@ -124,7 +177,7 @@ function StatusPill({ className }: { className?: string }) {
 /* The ellipse — `sm` and up                                                  */
 /* -------------------------------------------------------------------------- */
 
-function LoopEllipse() {
+function LoopEllipse({ copy }: { copy: DiagramCopy }) {
   return (
     <m.div
       className="relative w-full max-w-[42rem]"
@@ -159,10 +212,10 @@ function LoopEllipse() {
         <div className="shadow-card rounded-b-squircle flex h-full flex-col items-center justify-center gap-1.5 rounded-t-[50%] bg-[#FDFDFD] px-[4%] pt-[10%] pb-[6%]">
           <PersonCircle className="aspect-square w-[34%] text-[#194BE4]" strokeWidth={1.8} />
           <p className="font-display text-[1.25rem] leading-none text-ink-900 xl:text-[1.5rem]">
-            {YOU_NODE.title}
+            {copy.you.title}
           </p>
           <m.div className="w-full" variants={pillPop}>
-            <StatusPill className="px-1.5" />
+            <StatusPill pill={copy.you.pill} className="px-1.5" />
           </m.div>
         </div>
       </m.div>
@@ -185,6 +238,7 @@ function LoopEllipse() {
             <LoopCircle node={node} />
             <NodeLabels
               node={node}
+              copy={copy.nodes[node.pillar]}
               className={cn(
                 "absolute top-[calc(100%+0.65rem)] left-1/2 -translate-x-1/2 text-center",
                 node.id === "recharge" ? "w-52 xl:w-68" : "w-36 xl:w-44",
@@ -221,7 +275,7 @@ function Connector({ gradient }: { gradient: string }) {
   );
 }
 
-function LoopRail() {
+function LoopRail({ copy }: { copy: DiagramCopy }) {
   return (
     <RevealGroup stagger={0.08}>
       <RevealItem>
@@ -231,9 +285,9 @@ function LoopRail() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-display text-[1.25rem] leading-none text-ink-900">
-              {YOU_NODE.title}
+              {copy.you.title}
             </p>
-            <StatusPill className="mt-2 inline-block px-3" />
+            <StatusPill pill={copy.you.pill} className="mt-2 inline-block px-3" />
           </div>
         </div>
       </RevealItem>
@@ -243,7 +297,11 @@ function LoopRail() {
           <Connector gradient={STACK_CONNECTORS[index]} />
           <div className="flex items-start gap-4">
             <LoopCircle node={node} className="size-16 shrink-0" />
-            <NodeLabels node={node} className="min-w-0 flex-1" />
+            <NodeLabels
+              node={node}
+              copy={copy.nodes[node.pillar]}
+              className="min-w-0 flex-1"
+            />
           </div>
         </RevealItem>
       ))}
@@ -251,7 +309,9 @@ function LoopRail() {
   );
 }
 
-export function LoopDiagram({ className }: { className?: string }) {
+export async function LoopDiagram({ className }: { className?: string }) {
+  const copy = resolveCopy(await getDictionary());
+
   return (
     <div className={className}>
       {/* The RECHARGE label block hangs below the aspect box — it is absolutely
@@ -260,10 +320,10 @@ export function LoopDiagram({ className }: { className?: string }) {
           nearly zero at `xl`, where the box is wide enough that the title fits
           on one line and the block lands inside the box on its own. */}
       <div className="hidden pb-9 sm:block xl:pb-1">
-        <LoopEllipse />
+        <LoopEllipse copy={copy} />
       </div>
       <div className="sm:hidden">
-        <LoopRail />
+        <LoopRail copy={copy} />
       </div>
     </div>
   );

@@ -11,10 +11,22 @@ import { PersonCircle, SpeechBubbleDots, Waveform, type IconProps } from "@/comp
  * colours and sequence position from here. Duplicating the strings in two
  * components is how the two variants would silently drift apart.
  *
- * Copy is verbatim from §3.3 with one agreed change: the RECHARGE title is
- * `Personalised` rather than the deck's `Personalized`, standardising on the
- * deck's own British body voice.
+ * Copy is **not** here. Each node names the shared pillar its copy comes
+ * from (`common.pillars.*`) and `LoopDiagram` — a Server Component — reads the
+ * catalogue and hands the strings to both forms. That keeps this module free
+ * of any catalogue import, which matters: `LoopArcs` is the section's one
+ * `"use client"` file and it imports `DIAGRAM_W` / `DIAGRAM_H` from here. A
+ * static catalogue import reachable from the client graph would bundle all
+ * three locales into the browser chunk with no error and no warning.
  */
+
+/**
+ * The three Recharge pillars, as named in `common.pillars`. Declared as a
+ * literal union rather than imported from the catalogue types so this file
+ * stays catalogue-free; the lookup in `LoopDiagram` is what makes a rename
+ * a `tsc` error.
+ */
+export type PillarKey = "insights" | "coaching" | "experiences";
 
 /**
  * Geometry lives in the diagram's own unit space — a 515 x 322 box measured off
@@ -27,12 +39,8 @@ export const DIAGRAM_H = 322;
 
 export type LoopNode = {
   id: "reconnect" | "realign" | "recharge";
-  /** Micro-eyebrow, 12px / 600 / +0.14em. */
-  label: string;
-  /** 15px / 600 / ink-800. */
-  title: string;
-  /** 14px / 400 / ink-500. */
-  sub: string;
+  /** Whose label, title and sub this node renders. */
+  pillar: PillarKey;
   Icon: ComponentType<IconProps>;
   /** Icon stroke colour, measured per node in §3.3. */
   iconClass: string;
@@ -55,9 +63,7 @@ export type LoopNode = {
 export const LOOP_NODES: readonly LoopNode[] = [
   {
     id: "reconnect",
-    label: "RECONNECT",
-    title: "Personal Insights",
-    sub: "Understand yourself.",
+    pillar: "insights",
     Icon: PersonCircle,
     iconClass: "text-[#164EF3]",
     labelClass: "text-blue-ink",
@@ -69,9 +75,7 @@ export const LOOP_NODES: readonly LoopNode[] = [
   },
   {
     id: "realign",
-    label: "REALIGN",
-    title: "AI-guided Coaching",
-    sub: "Find what you need.",
+    pillar: "coaching",
     Icon: SpeechBubbleDots,
     iconClass: "text-[#34AC6C]",
     labelClass: "text-green-500",
@@ -83,9 +87,7 @@ export const LOOP_NODES: readonly LoopNode[] = [
   },
   {
     id: "recharge",
-    label: "RECHARGE",
-    title: "Personalised Recharge Experiences",
-    sub: "Feel better in the moment.",
+    pillar: "experiences",
     Icon: Waveform,
     iconClass: "text-[#F94082]",
     labelClass: "text-rose-400",
@@ -97,10 +99,11 @@ export const LOOP_NODES: readonly LoopNode[] = [
   },
 ] as const;
 
-/** The centre `You` squircle — measured x 218→333, y 35→182 in diagram units. */
+/**
+ * The centre `You` squircle — measured x 218→333, y 35→182 in diagram units.
+ * Geometry only; its title and status pill are `sections.r3Loop.you`.
+ */
 export const YOU_NODE = {
-  title: "You",
-  pill: ["Right now:", "I need a reset"],
   left: 218,
   top: 35,
   width: 115,

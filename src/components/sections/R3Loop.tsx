@@ -6,8 +6,9 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { GradText, RCubed } from "@/components/ui/GradText";
+import { defaultMarks, RichText, type MarkRenderers } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SECTION_IDS } from "@/lib/nav";
 
 import { ExperienceCard } from "./r3/ExperienceCard";
@@ -32,7 +33,23 @@ import { LoopDiagram } from "./r3/LoopDiagram";
  * ramp runs continuously blue → teal → rose across the eight glyphs instead of
  * restarting. `How` and `helps` stay `ink-900`.
  */
-export function R3Loop() {
+
+/**
+ * The lead's emphasis is heavier than the shared `strong` mark: this one run
+ * is `font-semibold text-ink-800`, measured off the deck, where the default
+ * is a plain `font-medium`. Overriding the renderer here — rather than
+ * minting a second mark name in the catalogue — keeps the translator's view
+ * of the string as "this clause is emphasised" and nothing more.
+ */
+const LEAD_MARKS: MarkRenderers = {
+  ...defaultMarks,
+  strong: (text) => <strong className="font-semibold text-ink-800">{text}</strong>,
+};
+
+export async function R3Loop() {
+  const m = await getDictionary();
+  const copy = m.sections.r3Loop;
+
   return (
     <Section id={SECTION_IDS.r3Loop}>
       <ParallaxLayer distance={70}>
@@ -44,32 +61,29 @@ export function R3Loop() {
           <div className="min-w-0">
             <RevealGroup stagger={0.07}>
               <RevealItem>
+                {/* The `R³` segment in the catalogue is textless — it carries
+                    a `rcubed` mark and no `text`, because the superscript is
+                    drawn, not spelled. `defaultMarks` renders it. */}
                 <Eyebrow>
-                  THE <RCubed /> RECHARGE LOOP
+                  <RichText value={copy.eyebrow} where="sections.r3Loop.eyebrow" />
                 </Eyebrow>
               </RevealItem>
 
               <RevealItem>
                 <h2 className="text-h2 mt-5">
-                  How <GradText>Recharge</GradText> helps
+                  <RichText value={copy.headline} where="sections.r3Loop.headline" />
                 </h2>
               </RevealItem>
 
               <RevealItem>
-                <p className="text-body mt-6 text-ink-600">
-                  One connected loop to help you understand yourself,{" "}
-                  <br className="hidden sm:inline" />
-                  find what you need and{" "}
-                  <strong className="font-semibold text-ink-800">
-                    feel better in the moment.
-                  </strong>
+                <p className="text-body mt-6 text-balance text-ink-600">
+                  <RichText value={copy.lead} marks={LEAD_MARKS} where="sections.r3Loop.lead" />
                 </p>
               </RevealItem>
 
               <RevealItem>
-                <p className="text-body mt-6 font-semibold text-ink-800">
-                  There is no fixed starting point. <br className="hidden sm:inline" />
-                  Start wherever you are.
+                <p className="text-body mt-6 text-balance font-semibold text-ink-800">
+                  {copy.noStart}
                 </p>
               </RevealItem>
             </RevealGroup>
@@ -94,7 +108,7 @@ export function R3Loop() {
             {/* Neutral grey, not rose — §3.3 is explicit about it. */}
             <Heart className="size-[26px] text-[#99A4B5]" strokeWidth={1.9} />
             <p className="font-display text-[1.375rem] leading-snug text-ink-900 sm:text-[1.625rem]">
-              Start where you are. Move with what you need.
+              {copy.closing}
             </p>
           </div>
           <ScrollCue variant="plain" className="mt-6" />

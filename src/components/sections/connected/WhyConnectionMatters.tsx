@@ -3,7 +3,10 @@ import type { ComponentType } from "react";
 import { Clock, Heart, Search, Target, type IconProps } from "@/components/icons";
 import { RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { MicroEyebrow } from "@/components/ui/Eyebrow";
+import { HardLines } from "@/components/ui/RichText";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import type { Messages } from "@/lib/i18n/types";
 
 /**
  * The `WHY CONNECTION MATTERS` strip that closes the section.
@@ -19,74 +22,76 @@ import { cn } from "@/lib/cn";
  * COPY NOTE: cell 4's body is the one string on this page that departs from
  * the deck. The render reads "…without waiting as you perfect time or place.",
  * a dropped clause; the agreed correction restores "…without waiting for the
- * perfect time or place." Every other string here is verbatim.
+ * perfect time or place." That correction now lives in the catalogue, at
+ * `sections.connected.why.benefits.inTheMoment.body`, and is what every
+ * locale is translated from.
  */
 
+/** The four benefit cells, as keyed in `sections.connected.why.benefits`. */
+type BenefitKey = keyof Messages["sections"]["connected"]["why"]["benefits"];
+
+/** Presentation only — title and body come from the catalogue. */
 type Benefit = {
+  key: BenefitKey;
   icon: ComponentType<IconProps>;
   tint: string;
   glyph: string;
-  title: string;
   titleColour: string;
-  body: string;
 };
 
 const BENEFITS: readonly Benefit[] = [
   {
+    key: "lessSearching",
     icon: Search,
     tint: "bg-blue-tint-100",
     glyph: "text-blue-icon",
-    title: "Less searching",
     titleColour: "text-blue-ink",
-    body: "Insights, guidance and experiences in one connected place.",
   },
   {
+    key: "moreRelevant",
     icon: Target,
     tint: "bg-green-tint-100",
     glyph: "text-green-ink",
-    title: "More relevant",
     titleColour: "text-green-ink",
-    body: "Support shaped around the moment and what matters to you.",
   },
   {
+    key: "inTheMoment",
     icon: Clock,
     tint: "bg-rose-tint-100",
     glyph: "text-rose-500",
-    title: "In the moment",
-    body: "Start when you need support, without waiting for the perfect time or place.",
     titleColour: "text-rose-ink",
   },
   {
+    key: "overTime",
     icon: Heart,
     tint: "bg-violet-tint-100",
     glyph: "text-violet-500",
-    title: "More personal over time",
     titleColour: "text-violet-ink",
-    body: "Your experience can become more relevant as you use Recharge.",
   },
 ];
 
-export function WhyConnectionMatters() {
+export async function WhyConnectionMatters() {
+  const m = await getDictionary();
+  const copy = m.sections.connected.why;
+
   return (
     <RevealGroup className="rounded-card bg-surface-card/70 px-6 py-7 shadow-card sm:px-7 lg:px-8">
       <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,0.85fr)_repeat(4,minmax(0,1fr))] lg:gap-x-0">
         <RevealItem className="sm:col-span-2 lg:col-span-1 lg:pr-6">
-          <MicroEyebrow className="text-ink-500">WHY CONNECTION MATTERS</MicroEyebrow>
-          <p className="mt-3 text-meta text-ink-500">
-            <span className="block">Support often lives in</span>
-            <span className="block">different places.</span>
-          </p>
-          <p className="mt-4 text-meta font-semibold text-ink-800">
-            <span className="block">Recharge brings it</span>
-            <span className="block">together around you.</span>
-          </p>
+          <MicroEyebrow className="text-ink-500">{copy.eyebrow}</MicroEyebrow>
+          <HardLines value={[copy.problem]} paragraphClassName="mt-3 text-meta text-ink-500" />
+          <HardLines
+            value={[copy.answer]}
+            paragraphClassName="mt-4 text-meta font-semibold text-ink-800"
+          />
         </RevealItem>
 
         {BENEFITS.map((benefit) => {
           const Glyph = benefit.icon;
+          const text = copy.benefits[benefit.key];
           return (
             <RevealItem
-              key={benefit.title}
+              key={benefit.key}
               className={cn(
                 "relative max-lg:border-t max-lg:border-hairline-faint max-lg:pt-6",
                 // Vertically inset 1px divider, desktop only.
@@ -104,10 +109,10 @@ export function WhyConnectionMatters() {
                 </span>
                 <span className="min-w-0">
                   <span className={cn("block text-meta font-semibold", benefit.titleColour)}>
-                    {benefit.title}
+                    {text.title}
                   </span>
                   <span className="mt-1.5 block text-meta leading-relaxed text-ink-500">
-                    {benefit.body}
+                    {text.body}
                   </span>
                 </span>
               </div>

@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GradRun } from "@/components/ui/GradText";
+import { defaultMarks, RichText, type MarkRenderers } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
-import { CTA, SECTION_IDS } from "@/lib/nav";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary, getLocale } from "@/lib/i18n/dictionaries";
+import { SECTION_IDS } from "@/lib/nav";
 
 /**
  * Hero.
@@ -25,6 +28,12 @@ import { CTA, SECTION_IDS } from "@/lib/nav";
  * separately, so they are passed as explicit stops. `discomfort` is a flat
  * violet rather than a gradient, which is what the render shows.
  *
+ * Those measured stops stay in this file — see `HERO_MARKS`. The catalogue
+ * carries only a `mark` *name* per run (`grad-1` / `grad-2` / `grad-3` /
+ * `violet`), never a colour, so a translator moving `better sleep,` to a
+ * different position in the sentence cannot take the wrong ramp with it, and
+ * re-measuring the JPEG never means editing three JSON files.
+ *
  * Entrances here are CSS animations, not Motion. Motion serialises its
  * `initial` variant into the server HTML as an inline `opacity:0`, which means
  * the most important content on the site would stay invisible if scripting
@@ -32,6 +41,26 @@ import { CTA, SECTION_IDS } from "@/lib/nav";
  * Below-the-fold sections still use Motion, where the trade-off is acceptable
  * and the `scripting: none` net in globals.css covers the gap.
  */
+
+/**
+ * The four treatments the hero headline names.
+ *
+ * Each `stops` string is the range measured off `.docs/First Page.jpeg` for
+ * that run and is reproduced here byte-for-byte from the pre-catalogue markup.
+ * `violet` is a flat fill, not a ramp — the render shows `discomfort` as one
+ * colour — so it is a plain `<span>` rather than a one-stop `GradRun`.
+ *
+ * Spread over `defaultMarks` rather than replacing it: the shared `grad`,
+ * `strong` and `rcubed` marks stay available, so a future translation that
+ * reaches for one of them renders instead of failing the build.
+ */
+const HERO_MARKS: MarkRenderers = {
+  ...defaultMarks,
+  "grad-1": (text) => <GradRun stops="#1663DA 0%, #0F8FCB 100%">{text}</GradRun>,
+  "grad-2": (text) => <GradRun stops="#0A81B9 0%, #295A9D 55%, #46397E 100%">{text}</GradRun>,
+  "grad-3": (text) => <GradRun stops="#7A4B81 0%, #C56F97 100%">{text}</GradRun>,
+  violet: (text) => <span className="text-[#82458C]">{text}</span>,
+};
 
 /** Staggered entrance delays, in milliseconds. */
 const RISE = {
@@ -92,7 +121,10 @@ function HeroPhoto() {
   );
 }
 
-export function Hero() {
+export async function Hero() {
+  const locale = await getLocale();
+  const m = await getDictionary();
+
   return (
     <Section
       id={SECTION_IDS.hero}
@@ -110,53 +142,60 @@ export function Hero() {
             className="animate-rise"
             style={{ animationDelay: `${RISE.eyebrow}ms` }}
           >
-            Your personal wellbeing companion
+            {m.sections.hero.eyebrow}
           </Eyebrow>
 
           {/*
-            Five hard line breaks at the deck's reference width. Below `lg` the
-            text reflows naturally — forcing the deck's breaks at 390px would
-            strand single words on their own lines.
+            The deck breaks this headline five times at its reference width.
+            Those breaks were `hidden lg:inline` <br>s placed between English
+            words — two of the four fell *inside* a phrase rather than on a
+            gradient-run boundary, so they cannot be expressed as catalogue
+            lines and they would be wrong for Han text regardless. Wrapping is
+            therefore left to the `text-wrap: balance` globals.css already
+            applies to every h1/h2/h3 — which those `<br>`s were in fact
+            overriding at `lg`. The unconditional breaks the deck does carry
+            are still catalogue lines; this headline simply has none.
           */}
           <h1
             className="text-h1 animate-rise mt-[clamp(0.75rem,3vh,2.5rem)] text-ink-900"
             style={{ animationDelay: `${RISE.headline}ms` }}
           >
-            What if <GradRun stops="#1663DA 0%, #0F8FCB 100%">better sleep,</GradRun>
-            <br className="hidden lg:inline" /> a{" "}
-            <GradRun stops="#0A81B9 0%, #295A9D 55%, #46397E 100%">calmer mind,</GradRun> and
-            <br className="hidden lg:inline" /> relief from{" "}
-            <GradRun stops="#7A4B81 0%, #C56F97 100%">migraine</GradRun>
-            <br className="hidden lg:inline" /> <span className="text-[#82458C]">discomfort</span>{" "}
-            were
-            <br className="hidden lg:inline" /> within reach?
+            <RichText
+              value={m.sections.hero.headline}
+              marks={HERO_MARKS}
+              where="sections.hero.headline"
+            />
           </h1>
 
           <p
-            className="text-lead-serif animate-rise mt-[clamp(1rem,3vh,2.5rem)] font-display text-ink-900"
+            className="text-lead-serif animate-rise mt-[clamp(1rem,3vh,2.5rem)] text-balance font-display text-ink-900"
             style={{ animationDelay: `${RISE.serifLead}ms` }}
           >
-            Recharge your body. Calm your mind.
-            <br className="hidden sm:inline" /> Wake up feeling refreshed.
+            {m.sections.hero.leadSerif}
           </p>
 
           <p
             className="text-lead animate-rise mt-[clamp(0.875rem,2.4vh,2rem)] text-ink-600"
             style={{ animationDelay: `${RISE.sansLead}ms` }}
           >
-            Give yourself the rest and recovery you deserve.
+            {m.sections.hero.leadSans}
           </p>
 
           <div
             className="animate-rise mt-[clamp(1rem,3vh,2.625rem)] flex flex-wrap items-center gap-5"
             style={{ animationDelay: `${RISE.ctas}ms` }}
           >
-            <Button href="/plans" variant="primary" size="md" className="min-w-[225px]">
-              {CTA.tryFree}
+            <Button
+              href={localePath(locale, "/plans")}
+              variant="primary"
+              size="md"
+              className="min-w-[225px]"
+            >
+              {m.common.cta.tryFree}
             </Button>
-            <Button href="/how-it-works" variant="outlineBlue" size="md">
+            <Button href={localePath(locale, "/how-it-works")} variant="outlineBlue" size="md">
               <PlayTriangle className="size-3.5 text-blue-fill" />
-              {CTA.seeHowItWorks}
+              {m.common.cta.seeHowItWorks}
             </Button>
           </div>
 
