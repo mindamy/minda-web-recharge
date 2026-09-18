@@ -1,0 +1,452 @@
+{
+  "meta": {
+    "default": {
+      "title": "Recharge — Your personal wellbeing companion",
+      "titleTemplate": "%s — Recharge",
+      "description": "Recharge brings personal insights, AI-guided coaching and personalised experiences together in one connected wellbeing experience."
+    },
+    "about": {
+      "title": "About",
+      "description": "Recharge brings personal insights, AI-guided coaching and Recharge Experiences together around you."
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "description": "Recognising how you feel is the first step to finding what can help. See how Recharge meets your moment."
+    },
+    "plans": {
+      "title": "Plans",
+      "description": "Try Recharge free for 7 days, then choose the level of support that feels right for you."
+    },
+    "theR3Experience": {
+      "title": "The R³ Experience",
+      "description": "One connected loop to help you understand yourself, find what you need and feel better in the moment."
+    },
+    "trustAndApproach": {
+      "title": "Trust & approach",
+      "description": "Recharge is built around care, clarity and clear boundaries. Support, not diagnosis."
+    },
+    "notFound": {
+      "title": "Page not found"
+    }
+  },
+
+  "common": {
+    "brand": {
+      "wordmark": "Recharge",
+      "homeLabel": "Recharge — home"
+    },
+    "cta": {
+      "tryFree": "Try Recharge Free",
+      "signIn": "Sign In",
+      "seeHowItWorks": "See How It Works",
+      "trialMeta": "7 days · No credit card required"
+    },
+    "pillars": {
+      "insights": {
+        "label": "RECONNECT",
+        "title": "Personal Insights",
+        "sub": "Understand yourself."
+      },
+      "coaching": {
+        "label": "REALIGN",
+        "title": "AI-guided Coaching",
+        "sub": "Find what you need."
+      },
+      "experiences": {
+        "label": "RECHARGE",
+        "title": "Recharge Experiences",
+        "titleLong": "Personalised Recharge Experiences",
+        "sub": "Feel better in the moment."
+      }
+    },
+    "disclaimer": {
+      "medical": "Everyday wellbeing support and reflection, not diagnosis, treatment or cure."
+    },
+    "ask": {
+      "label": "Ask Recharge",
+      "labelDotted": "Ask Recharge.",
+      "guide": "Website guide",
+      "hero": "Not sure where to start? Ask Recharge",
+      "bannerLead": "Not sure where to start?",
+      "bannerBody": "Our AI companion can help you make sense of how you feel and find what might help.",
+      "loop": "Questions about the loop?",
+      "personal": "How does Recharge become personal?",
+      "approach": "Questions about our approach?",
+      "plans": "Not sure which plan fits you?",
+      "plansCta": "Help Me Choose",
+      "start": "Still have a question before you begin?"
+    }
+  },
+
+  "chrome": {
+    "nav": {
+      "landmarkMain": "Main",
+      "landmarkFooter": "Footer",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "items": {
+        "moments": "How It Works",
+        "r3-loop": "The R³ Experience",
+        "plans": "Plans",
+        "trust": "Trust & Approach",
+        "connected": "About"
+      }
+    },
+    "localeSwitcher": {
+      "label": "Language"
+    },
+    "scrollCue": {
+      "label": "Scroll to explore"
+    },
+    "footer": {
+      "copyright": "© {year} Recharge. All rights reserved.",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "trustStrip": {
+      "support": {
+        "title": "Support, not diagnose."
+      },
+      "privacy": {
+        "title": "Your privacy matters.",
+        "body": "We handle your information with care and give you control."
+      },
+      "care": {
+        "title": "Built with care.",
+        "body": "AI, personalisation and human insight working together for you."
+      }
+    }
+  },
+
+  "sections": {
+    "hero": {
+      "eyebrow": "Your personal wellbeing companion",
+      "headline": [
+        [
+          { "text": "What if " },
+          { "text": "better sleep,", "mark": "grad-1" },
+          { "text": " a " },
+          { "text": "calmer mind,", "mark": "grad-2" },
+          { "text": " and relief from " },
+          { "text": "migraine", "mark": "grad-3" },
+          { "text": " " },
+          { "text": "discomfort", "mark": "violet" },
+          { "text": " were within reach?" }
+        ]
+      ],
+      "leadSerif": "Recharge your body. Calm your mind. Wake up feeling refreshed.",
+      "leadSans": "Give yourself the rest and recovery you deserve."
+    },
+
+    "moments": {
+      "eyebrow": "RECOGNISE YOUR MOMENT",
+      "headline": [
+        [{ "text": "What do you need right now?" }],
+        [{ "text": "Your moment matters.", "mark": "grad" }]
+      ],
+      "lead": "We all move through different moments. Recognising how you feel is the first step to finding what can help.",
+      "reassurance": {
+        "title": "It’s normal to have ups and downs.",
+        "body": "Recharge is here to support you, wherever you are in your day."
+      },
+      "cards": {
+        "focus": {
+          "title": "I need to focus",
+          "body": ["I want to be clear,", "productive and in flow."],
+          "alt": "A young man at a desk writing beside a laptop, a bright window behind him."
+        },
+        "reset": {
+          "title": "I need a reset",
+          "body": ["I feel overwhelmed", "and need to reset."],
+          "alt": "A woman reclining on a sofa under a knit throw with her eyes closed."
+        },
+        "runningLow": {
+          "title": "I’m running low",
+          "body": ["I feel drained and", "need to recharge."],
+          "alt": "A woman outdoors in a green jacket holding a water bottle."
+        },
+        "switchOff": {
+          "title": "I can’t switch off",
+          "body": ["My mind is busy", "and I need to unwind."],
+          "alt": "A man at a table at night by a warm lamp, one hand at his temple."
+        },
+        "stuck": {
+          "title": "I feel stuck",
+          "body": ["I need a shift in", "perspective."],
+          "alt": "A woman seated indoors, chin resting on her hand, looking away."
+        },
+        "clarity": {
+          "title": "I want more clarity",
+          "body": ["I’m looking for direction", "and inner clarity."],
+          "alt": "A man outdoors at dusk beside a lake, mountains behind him."
+        }
+      }
+    },
+
+    "r3Loop": {
+      "eyebrow": [[{ "text": "THE " }, { "mark": "rcubed" }, { "text": " RECHARGE LOOP" }]],
+      "headline": [
+        [{ "text": "How " }, { "text": "Recharge", "mark": "grad" }, { "text": " helps" }]
+      ],
+      "lead": [
+        [
+          {
+            "text": "One connected loop to help you understand yourself, find what you need and "
+          },
+          { "text": "feel better in the moment.", "mark": "strong" }
+        ]
+      ],
+      "noStart": "There is no fixed starting point. Start wherever you are.",
+      "closing": "Start where you are. Move with what you need.",
+      "you": {
+        "title": "You",
+        "pill": ["Right now:", "I need a reset"]
+      },
+      "experienceCard": {
+        "body": "Personalised audio experiences designed to support the state you need.",
+        "suggestedLabel": "Suggested for this moment",
+        "track": {
+          "name": "Reset",
+          "duration": "8 min",
+          "body": "A moment to clear some mental noise and make space to reset.",
+          "time": "0:00 / 8:00"
+        },
+        "playLabel": "Play Reset, an 8 minute recharge experience"
+      }
+    },
+
+    "connected": {
+      "eyebrow": "MORE CONNECTED",
+      "headline": [
+        [{ "text": "Wellbeing support" }],
+        [{ "text": "shouldn’t feel fragmented." }]
+      ],
+      "lead": [
+        "Recharge brings personal insights, AI-guided coaching and",
+        "Recharge Experiences together around you."
+      ],
+      "fragmented": {
+        "eyebrow": "FRAGMENTED SUPPORT",
+        "lead": ["Help can come from many", "places, but rarely works together."]
+      },
+      "centrePortrait": {
+        "alt": "A woman sitting indoors beside a houseplant, looking up into soft window light.",
+        "headline": [
+          [{ "text": "One person." }],
+          [{ "text": "One " }, { "text": "connected", "mark": "grad" }, { "text": " experience." }]
+        ],
+        "caption": "Recharge connects the journey."
+      },
+      "unifiedCircle": {
+        "headline": [
+          [{ "text": "One " }, { "text": "connected", "mark": "grad" }],
+          [{ "text": "experience" }]
+        ],
+        "caption": ["Insights. Guidance. Experiences.", "Working together around you."]
+      },
+      "why": {
+        "eyebrow": "WHY CONNECTION MATTERS",
+        "problem": ["Support often lives in", "different places."],
+        "answer": ["Recharge brings it", "together around you."],
+        "benefits": {
+          "lessSearching": {
+            "title": "Less searching",
+            "body": "Insights, guidance and experiences in one connected place."
+          },
+          "moreRelevant": {
+            "title": "More relevant",
+            "body": "Support shaped around the moment and what matters to you."
+          },
+          "inTheMoment": {
+            "title": "In the moment",
+            "body": "Start when you need support, without waiting for the perfect time or place."
+          },
+          "overTime": {
+            "title": "More personal over time",
+            "body": "Your experience can become more relevant as you use Recharge."
+          }
+        }
+      }
+    },
+
+    "rhythm": {
+      "eyebrow": "PERSONAL TO YOUR RHYTHM",
+      "headline": [
+        [{ "text": "Meets you where you are." }],
+        [
+          { "text": "Gets to know " },
+          { "text": "your rhythm", "mark": "grad" },
+          { "text": " over time." }
+        ]
+      ],
+      "lead": "Your needs can change throughout the day and over time. Recharge is designed to respond to the moment, learn from what matters to you, and become more relevant as your experience continues.",
+      "closing": "Everyday moments, at your own pace.",
+      "noTwo": "No two people are the same. No two moments are either.",
+      "strip": {
+        "moment": {
+          "title": "Personal to the Moment",
+          "body": "What do you need right now?"
+        },
+        "you": {
+          "title": "Personal to You",
+          "body": "Your preferences, patterns and responses."
+        },
+        "overTime": {
+          "title": "More Personal Over Time",
+          "body": "The experience can evolve with you."
+        }
+      },
+      "timeline": {
+        "morning": {
+          "title": "Morning",
+          "sub": "Get Ready",
+          "alt": "A woman sitting up in bed, stretching her arms above her head beside a bright window"
+        },
+        "work": { "title": "Work", "sub": "Focus" },
+        "pressure": { "title": "Pressure", "sub": "Reset" },
+        "energyDip": { "title": "Energy Dip", "sub": "Recharge" },
+        "afterWork": {
+          "title": "After Work",
+          "sub": "Unwind",
+          "alt": "A woman on a sofa holding a mug in the evening, a plant and a lamp behind her"
+        },
+        "night": { "title": "Night", "sub": "Rest" }
+      }
+    },
+
+    "trust": {
+      "eyebrow": "TRUST & APPROACH",
+      "headline": [
+        [{ "text": "Support you can trust," }],
+        [{ "text": "every step of the way.", "mark": "grad-italic" }]
+      ],
+      "lead": "Recharge is built around care, clarity and clear boundaries. Here’s what that means for you.",
+      "portraitAlt": "A woman in a cream cable-knit sweater sitting on a pale sofa, holding a mug in both hands and looking up.",
+      "cards": {
+        "support": {
+          "title": ["Support, not diagnose."],
+          "body": [
+            [
+              "Recharge supports everyday",
+              "wellbeing and personal reflection.",
+              "It is not intended to diagnose,",
+              "treat or cure medical or mental",
+              "health conditions, and it does not",
+              "replace professional care when",
+              "that is needed."
+            ]
+          ]
+        },
+        "ai": {
+          "title": ["AI that guides,", "not defines you."],
+          "body": [
+            [
+              "AI can help you reflect, explore",
+              "perspectives and consider",
+              "possible next steps."
+            ],
+            ["You remain in control of", "your choices."]
+          ]
+        },
+        "personalisation": {
+          "title": ["Personalisation", "with purpose."],
+          "body": [
+            [
+              "Recharge is designed to become",
+              "more relevant through the",
+              "information, choices and",
+              "interactions that matter to",
+              "your experience."
+            ]
+          ],
+          "accent": "More relevant, not more intrusive."
+        },
+        "privacy": {
+          "title": ["Privacy", "deserves care."],
+          "body": [
+            [
+              "Personal wellbeing can involve",
+              "information that matters to you.",
+              "Recharge approaches privacy,",
+              "data and user control",
+              "thoughtfully and transparently."
+            ]
+          ]
+        }
+      },
+      "closingLead": "Recharge is designed to support you with care, clarity and respect.",
+      "closingSerif": "Trust should be part of the experience."
+    },
+
+    "plans": {
+      "eyebrow": "FREE TRIAL & PLANS",
+      "headline": [
+        [{ "text": "Choose the Recharge that " }, { "text": "fits you.", "mark": "grad" }]
+      ],
+      "lead": "Try Recharge free for 7 days, then choose the level of support that feels right for you.",
+      "trial": {
+        "eyebrow": "7-DAY FREE TRIAL",
+        "body": "Experience Personal Insights, AI-guided Coaching and Recharge Experiences together before choosing a plan."
+      },
+      "badge": "Most popular",
+      "priceTbd": "Price coming soon",
+      "tiers": {
+        "essential": {
+          "name": "Essential",
+          "tagline": "Start simply.",
+          "features": [
+            "Core Personal Insights",
+            "AI-guided Coaching for lighter use",
+            "Core Recharge Experiences",
+            "Essential personalisation"
+          ],
+          "cta": "Choose Essential"
+        },
+        "rhythm": {
+          "name": "Rhythm",
+          "tagline": "Build an ongoing rhythm.",
+          "features": [
+            "Expanded Personal Insights",
+            "More AI-guided Coaching",
+            "Wider Recharge Experience access",
+            "Personalisation that grows with your use"
+          ],
+          "cta": "Choose Rhythm"
+        },
+        "plus": {
+          "name": "Plus",
+          "tagline": "Go deeper with more support.",
+          "features": [
+            "Deeper Personal Insights",
+            "Highest Coaching access",
+            "Full Recharge Experience access",
+            "Extended personalisation"
+          ],
+          "cta": "Choose Plus"
+        }
+      },
+      "compare": "Compare all features",
+      "disclaimer": "Working plan details. Names, prices and usage limits to be confirmed."
+    },
+
+    "start": {
+      "eyebrow": "START YOUR RECHARGE",
+      "headline": [
+        [{ "text": "Start where" }],
+        [{ "text": "you are.", "mark": "grad" }]
+      ],
+      "lead": "Try Recharge for yourself and discover what works for you.",
+      "explore": "Explore Plans",
+      "portraitAlt": "A woman in loose cream linen sitting cross-legged beside a calm lake at sunrise, looking up towards the light"
+    }
+  },
+
+  "notFound": {
+    "eyebrow": "Not quite here",
+    "headline": [
+      [{ "text": "This page is " }, { "text": "still on its way.", "mark": "grad" }]
+    ],
+    "body": "The link you followed points somewhere we have not built yet. Start where you are — everything else is a scroll away.",
+    "backHome": "Back to Recharge"
+  }
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Moments } from "@/components/sections/Moments";
 import { Start } from "@/components/sections/Start";
+import { routeMetadata } from "@/lib/i18n/metadata";
 
 /**
  * Standalone route for the nav's `How It Works`.
@@ -10,11 +11,9 @@ import { Start } from "@/components/sections/Start";
  * `RECOGNISE YOUR MOMENT`, which is where the product's flow starts. The
  * closing CTA is repeated so a deep-linked visitor still has somewhere to go.
  */
-export const metadata: Metadata = {
-  title: "How it works",
-  description:
-    "Recognising how you feel is the first step to finding what can help. See how Recharge meets your moment.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return routeMetadata("howItWorks", "/how-it-works");
+}
 
 export default function HowItWorksPage() {
   return (
