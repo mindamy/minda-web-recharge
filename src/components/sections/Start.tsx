@@ -9,9 +9,11 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { GradText } from "@/components/ui/GradText";
+import { RichText } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
-import { CTA, SECTION_IDS } from "@/lib/nav";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary, getLocale } from "@/lib/i18n/dictionaries";
+import { SECTION_IDS } from "@/lib/nav";
 
 /**
  * Section 8 — the final CTA, `START YOUR RECHARGE`, per DESIGN-SPEC §3.8.
@@ -22,6 +24,13 @@ import { CTA, SECTION_IDS } from "@/lib/nav";
  * this component draws itself stays deliberately restrained — the arc is a
  * single hairline ring and two trailing dots, and nothing here animates beyond
  * the shared section reveal.
+ *
+ * This section is mounted on all six routes, so its copy assumes no
+ * surrounding page context: nothing here refers to "above", to a preceding
+ * section, or to the page the reader happens to be on.
+ *
+ * Both hrefs are locale-prefixed. Unprefixed, the final CTA would bounce a
+ * reader of `/zh-Hans/about` through a 308 back into English.
  */
 
 /**
@@ -101,7 +110,11 @@ function PortraitArc() {
   );
 }
 
-export function Start() {
+export async function Start() {
+  const locale = await getLocale();
+  const m = await getDictionary();
+  const copy = m.sections.start;
+
   return (
     <Section id={SECTION_IDS.start}>
       <ParallaxLayer distance={80}>
@@ -111,37 +124,45 @@ export function Start() {
       <Container width="wide">
         <div className="grid items-center gap-14 lg:grid-cols-[42fr_58fr] lg:gap-12">
           <Reveal>
-            <Eyebrow>START YOUR RECHARGE</Eyebrow>
+            <Eyebrow>{copy.eyebrow}</Eyebrow>
 
             {/* `you are.` is one gradient run across the whole phrase, never
-                per-word, and the run is never animated. */}
+                per-word, and the run is never animated — the catalogue names
+                the `grad` mark and `defaultMarks` supplies the treatment. The
+                break between the two lines is unconditional, so it is copy
+                and lives in the catalogue as a second line. */}
             <h2 className="text-h1 mt-5">
-              Start where
-              <br />
-              <GradText>you are.</GradText>
+              <RichText value={copy.headline} where="sections.start.headline" />
             </h2>
 
-            <p className="text-lead mt-6 text-ink-600">
-              Try Recharge for yourself and
-              <br className="hidden sm:inline" /> discover what works for you.
-            </p>
+            {/* The break after "and" was `<br className="hidden sm:inline" />`,
+                responsive layout rather than copy, so the catalogue stores one
+                flat sentence and the column re-breaks it. */}
+            <p className="text-lead mt-6 text-ink-600">{copy.lead}</p>
 
             {/* 19px sans label, set inline so it wins over the `size` variant's
                 own type classes rather than racing them in the cascade. */}
             <Button
-              href="/plans"
+              href={localePath(locale, "/plans")}
               variant="primary"
               size="lg"
               className="mt-8 w-full sm:w-[333px]"
               style={{ fontSize: "1.1875rem" }}
             >
-              {CTA.tryFree}
+              {m.common.cta.tryFree}
             </Button>
 
-            <p className="text-btn-sm mt-5 font-normal text-ink-500">{CTA.trialMeta}</p>
+            <p className="text-btn-sm mt-5 font-normal text-ink-500">
+              {m.common.cta.trialMeta}
+            </p>
 
-            <Button href="/plans" variant="ghost" size="none" className="group mt-5">
-              Explore Plans
+            <Button
+              href={localePath(locale, "/plans")}
+              variant="ghost"
+              size="none"
+              className="group mt-5"
+            >
+              {copy.explore}
               <ArrowRight className="ease-soft size-5 transition-transform duration-150 group-hover:translate-x-0.5" />
             </Button>
 
@@ -162,7 +183,7 @@ export function Start() {
               <ImageReveal className="rounded-card-lg relative aspect-[4/5] w-full overflow-hidden lg:aspect-square lg:[mask-image:linear-gradient(to_bottom,transparent_0%,black_14%,black_100%)]">
                 <Image
                   src="/images/cta-portrait.jpg"
-                  alt="A woman in loose cream linen sitting cross-legged beside a calm lake at sunrise, looking up towards the light"
+                  alt={copy.portraitAlt}
                   fill
                   sizes="(min-width: 1024px) 58vw, (min-width: 640px) 34rem, 100vw"
                   className="object-cover object-[50%_28%]"

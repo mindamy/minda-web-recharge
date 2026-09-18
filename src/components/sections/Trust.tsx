@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Fragment, type ComponentType } from "react";
+import type { ComponentType } from "react";
 
 import { TrustAurora } from "@/components/aurora";
 import { AskRechargeApproach } from "@/components/chrome/AskRecharge";
@@ -16,8 +16,10 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GradText } from "@/components/ui/GradText";
+import { HardLines, RichText, defaultMarks, type MarkRenderers } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SECTION_IDS } from "@/lib/nav";
 
 /**
@@ -35,99 +37,56 @@ import { SECTION_IDS } from "@/lib/nav";
  * into the image because the supplied crop excludes it.
  */
 
+/**
+ * The one mark this section adds to {@link defaultMarks}.
+ *
+ * `grad-italic` is the gradient run *and* serif italic — the combination that
+ * appears only on this headline. The treatment stays here, in the component
+ * that measured it, while the catalogue carries nothing but the mark's name:
+ * spread rather than replace, so `grad`, `strong` and `rcubed` keep working
+ * if this section's copy ever grows one.
+ */
+const trustMarks: MarkRenderers = {
+  ...defaultMarks,
+  "grad-italic": (text) => <GradText className="italic">{text}</GradText>,
+};
+
 type TrustCard = {
+  /** Catalogue key under `sections.trust.cards`. */
+  copyKey: "support" | "ai" | "personalisation" | "privacy";
   Icon: ComponentType<IconProps>;
   tint: string;
   stroke: string;
-  /** Title, split at the deck's hard line breaks. */
-  title: readonly string[];
-  /** Body paragraphs; each is a list of the deck's hard lines. */
-  body: readonly (readonly string[])[];
   /**
    * Card 1 carries a visibly larger title-to-body gap than its siblings
    * (~14px extra in the render).
    */
   wideTitleGap?: boolean;
-  /** Card 3 only — a rose emphasis line pinned above the lower padding. */
-  accent?: string;
 };
 
+/**
+ * Visual data only — icon, tint and the one spacing exception. Titles,
+ * bodies and card 3's accent line live in the catalogue, where each title and
+ * body keeps the deck's *unconditional* hard line breaks as arrays. Those
+ * breaks are copy: the cards are sized around them.
+ */
 const TRUST_CARDS: readonly TrustCard[] = [
   {
+    copyKey: "support",
     Icon: HandshakeHeart,
     tint: "bg-green-tint-100",
     stroke: "text-green-ink",
-    title: ["Support, not diagnose."],
-    body: [
-      [
-        "Recharge supports everyday",
-        "wellbeing and personal reflection.",
-        "It is not intended to diagnose,",
-        "treat or cure medical or mental",
-        "health conditions, and it does not",
-        "replace professional care when",
-        "that is needed.",
-      ],
-    ],
     wideTitleGap: true,
   },
+  { copyKey: "ai", Icon: HeadBrain, tint: "bg-violet-tint-100", stroke: "text-violet-ink" },
   {
-    Icon: HeadBrain,
-    tint: "bg-violet-tint-100",
-    stroke: "text-violet-ink",
-    title: ["AI that guides,", "not defines you."],
-    body: [
-      ["AI can help you reflect, explore", "perspectives and consider", "possible next steps."],
-      ["You remain in control of", "your choices."],
-    ],
-  },
-  {
+    copyKey: "personalisation",
     Icon: PersonHeart,
     tint: "bg-rose-tint-100",
     stroke: "text-rose-ink",
-    // British spelling, per the deck's own body voice.
-    title: ["Personalisation", "with purpose."],
-    body: [
-      [
-        "Recharge is designed to become",
-        "more relevant through the",
-        "information, choices and",
-        "interactions that matter to",
-        "your experience.",
-      ],
-    ],
-    accent: "More relevant, not more intrusive.",
   },
-  {
-    Icon: ShieldLock,
-    tint: "bg-blue-tint-100",
-    stroke: "text-blue-icon",
-    title: ["Privacy", "deserves care."],
-    body: [
-      [
-        "Personal wellbeing can involve",
-        "information that matters to you.",
-        "Recharge approaches privacy,",
-        "data and user control",
-        "thoughtfully and transparently.",
-      ],
-    ],
-  },
+  { copyKey: "privacy", Icon: ShieldLock, tint: "bg-blue-tint-100", stroke: "text-blue-icon" },
 ];
-
-/** Joins the deck's hard line breaks without introducing stray whitespace. */
-function HardLines({ lines }: { lines: readonly string[] }) {
-  return (
-    <>
-      {lines.map((line, i) => (
-        <Fragment key={line}>
-          {i > 0 && <br />}
-          {line}
-        </Fragment>
-      ))}
-    </>
-  );
-}
 
 /**
  * The single open arc over the portrait, opening downward.
@@ -176,7 +135,10 @@ function PortraitArc() {
   );
 }
 
-export function Trust() {
+export async function Trust() {
+  const m = await getDictionary();
+  const copy = m.sections.trust;
+
   return (
     <Section id={SECTION_IDS.trust}>
       <ParallaxLayer distance={70}>
@@ -186,19 +148,22 @@ export function Trust() {
       <Container width="narrow">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,46fr)_minmax(0,54fr)] lg:items-start lg:gap-10">
           <Reveal>
-            <Eyebrow gradient="reverse">TRUST &amp; APPROACH</Eyebrow>
+            <Eyebrow gradient="reverse">{copy.eyebrow}</Eyebrow>
 
             <h2 className="text-h2 mt-5">
-              Support you can trust,
-              <br />
-              <GradText className="italic">every step of the way.</GradText>
+              <RichText
+                value={copy.headline}
+                marks={trustMarks}
+                where="sections.trust.headline"
+              />
             </h2>
 
-            <p className="text-body mt-6 text-ink-600">
-              Recharge is built around care, clarity and
-              <br className="hidden sm:inline" /> clear boundaries. Here&rsquo;s what that
-              means for you.
-            </p>
+            {/* The deck's break after "and" was
+                `<br className="hidden sm:inline" />` — responsive layout, not
+                copy — so the catalogue stores one flat sentence and the
+                measure re-breaks it. The typographic apostrophe in
+                "Here’s" now comes from the catalogue rather than `&rsquo;`. */}
+            <p className="text-body mt-6 text-ink-600">{copy.lead}</p>
           </Reveal>
 
           {/*
@@ -219,7 +184,7 @@ export function Trust() {
               <div className="absolute inset-0">
                 <Image
                   src="/images/trust-portrait.jpg"
-                  alt="A woman in a cream cable-knit sweater sitting on a pale sofa, holding a mug in both hands and looking up."
+                  alt={copy.portraitAlt}
                   fill
                   sizes="(min-width: 1024px) 400px, (min-width: 640px) 360px, 100vw"
                   className="object-cover object-[50%_35%]"
@@ -235,55 +200,64 @@ export function Trust() {
             alignment and stretch to a shared height — card 3 is one accent
             line taller than its siblings. */}
         <RevealGroup className="mt-14 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {TRUST_CARDS.map(({ Icon, tint, stroke, title, body, wideTitleGap, accent }) => (
-            <RevealItem key={title.join(" ")}>
-              <article className="rounded-card-lg bg-surface-card shadow-card card-lift flex h-full flex-col p-7">
-                <span
-                  className={cn(
-                    "flex size-[58px] items-center justify-center rounded-full",
-                    tint,
-                  )}
-                >
-                  <Icon className={cn("size-6.5", stroke)} strokeWidth={1.8} />
-                </span>
+          {TRUST_CARDS.map(({ copyKey, Icon, tint, stroke, wideTitleGap }) => {
+            const card = copy.cards[copyKey];
 
-                <h3
-                  className={cn(
-                    "text-card-title mt-7.5 font-sans leading-[1.5] text-ink-800",
-                  )}
-                >
-                  <HardLines lines={title} />
-                </h3>
+            return (
+              <RevealItem key={copyKey}>
+                <article className="rounded-card-lg bg-surface-card shadow-card card-lift flex h-full flex-col p-7">
+                  <span
+                    className={cn(
+                      "flex size-[58px] items-center justify-center rounded-full",
+                      tint,
+                    )}
+                  >
+                    <Icon className={cn("size-6.5", stroke)} strokeWidth={1.8} />
+                  </span>
 
-                <div
-                  className={cn(
-                    "text-card-body space-y-1.5 text-ink-500",
-                    wideTitleGap ? "mt-10" : "mt-6",
-                  )}
-                >
-                  {body.map((paragraph) => (
-                    <p key={paragraph[0]}>
-                      <HardLines lines={paragraph} />
+                  <h3
+                    className={cn(
+                      "text-card-title mt-7.5 font-sans leading-[1.5] text-ink-800",
+                    )}
+                  >
+                    {/* A title is plain lines, so it is lifted into the
+                        shared renderer's segment shape rather than given a
+                        second local line-joiner. */}
+                    <RichText
+                      value={card.title.map((line) => [{ text: line }])}
+                      where={`sections.trust.cards.${copyKey}.title`}
+                    />
+                  </h3>
+
+                  {/* `HardLines` emits one `<p>` per paragraph; the spacing
+                      between them stays on this wrapper. */}
+                  <div
+                    className={cn(
+                      "text-card-body space-y-1.5 text-ink-500",
+                      wideTitleGap ? "mt-10" : "mt-6",
+                    )}
+                  >
+                    <HardLines value={card.body} />
+                  </div>
+
+                  {/* Card 3 only. `in` rather than a flag on `TRUST_CARDS`, so
+                      the accent's presence is decided by the catalogue and
+                      cannot drift out of step with it. */}
+                  {"accent" in card ? (
+                    <p className="text-card-body text-rose-ink mt-auto pt-6 font-semibold">
+                      {card.accent}
                     </p>
-                  ))}
-                </div>
-
-                {accent ? (
-                  <p className="text-card-body text-rose-ink mt-auto pt-6 font-semibold">
-                    {accent}
-                  </p>
-                ) : null}
-              </article>
-            </RevealItem>
-          ))}
+                  ) : null}
+                </article>
+              </RevealItem>
+            );
+          })}
         </RevealGroup>
 
         <Reveal className="mt-14 flex flex-col items-center text-center">
-          <p className="text-[0.9375rem] leading-relaxed text-ink-600">
-            Recharge is designed to support you with care, clarity and respect.
-          </p>
+          <p className="text-[0.9375rem] leading-relaxed text-ink-600">{copy.closingLead}</p>
           <p className="font-display mt-4 text-[1.625rem] leading-snug text-ink-900">
-            Trust should be part of the experience.
+            {copy.closingSerif}
           </p>
           <AskRechargeApproach className="mt-6" />
         </Reveal>

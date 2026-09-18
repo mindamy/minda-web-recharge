@@ -17,10 +17,12 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { Button, type ButtonVariants } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow, MicroEyebrow } from "@/components/ui/Eyebrow";
-import { GradText } from "@/components/ui/GradText";
+import { RichText } from "@/components/ui/RichText";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/cn";
-import { CTA, SECTION_IDS } from "@/lib/nav";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary, getLocale } from "@/lib/i18n/dictionaries";
+import { SECTION_IDS } from "@/lib/nav";
 
 /**
  * Section 7 — `FREE TRIAL & PLANS`, per DESIGN-SPEC §3.7.
@@ -42,19 +44,22 @@ import { CTA, SECTION_IDS } from "@/lib/nav";
  *    the single strongest recommendation signal on the page.
  *
  * British spelling is used for `personalisation` throughout, which is the one
- * agreed deviation from the deck's copy.
+ * agreed deviation from the deck's copy — it now round-trips through the
+ * catalogue rather than living in this file.
+ *
+ * Every internal href is locale-prefixed with `localePath`. Without it a plan
+ * CTA clicked from `/zh-Hant/plans` lands on `/plans`, which 308s the reader
+ * back into English — a silent locale loss that no type or build gate catches.
  */
 
 type Plan = {
-  name: string;
-  tagline: string;
+  /** Catalogue key under `sections.plans.tiers`. */
+  copyKey: "essential" | "rhythm" | "plus";
   icon: ComponentType<IconProps>;
   /** The 62px tinted icon circle: fill plus the icon's own stroke colour. */
   iconClassName: string;
   /** Check-glyph colour for the feature list — rose on the flanks, green in the middle. */
   checkClassName: string;
-  features: readonly string[];
-  ctaLabel: string;
   ctaVariant: NonNullable<ButtonVariants["variant"]>;
   /** Surface, border and shadow. Only Rhythm gets the elevated treatment. */
   cardClassName: string;
@@ -65,45 +70,33 @@ type Plan = {
    */
   orderClassName: string;
   featured?: boolean;
+  /** Unprefixed; `localePath` adds the locale segment at render time. */
   href: string;
 };
 
 /**
+ * Visual data only. Names, taglines, feature lists and CTA labels live in the
+ * catalogue under `sections.plans.tiers`, keyed by `copyKey`.
+ *
  * `Recharge Experiences` (plural) on Essential against `Recharge Experience
  * access` (singular) on Rhythm and Plus is as rendered in the deck, not a typo.
  */
 const PLANS: readonly Plan[] = [
   {
-    name: "Essential",
-    tagline: "Start simply.",
+    copyKey: "essential",
     icon: Star,
     iconClassName: "bg-rose-tint-100 text-rose-ink",
     checkClassName: "text-rose-500",
-    features: [
-      "Core Personal Insights",
-      "AI-guided Coaching for lighter use",
-      "Core Recharge Experiences",
-      "Essential personalisation",
-    ],
-    ctaLabel: "Choose Essential",
     ctaVariant: "outlineRose",
     cardClassName: "bg-surface-card-warm border-hairline shadow-card card-lift",
     orderClassName: "order-2 lg:order-1",
     href: "/plans?plan=essential",
   },
   {
-    name: "Rhythm",
-    tagline: "Build an ongoing rhythm.",
+    copyKey: "rhythm",
     icon: WaveTilde,
     iconClassName: "bg-green-tint-50 text-green-500",
     checkClassName: "text-green-500",
-    features: [
-      "Expanded Personal Insights",
-      "More AI-guided Coaching",
-      "Wider Recharge Experience access",
-      "Personalisation that grows with your use",
-    ],
-    ctaLabel: "Choose Rhythm",
     ctaVariant: "outlineBlueCta",
     cardClassName:
       "bg-surface-card-elevated border-border-blue-strong shadow-card-elevated card-lift",
@@ -112,18 +105,10 @@ const PLANS: readonly Plan[] = [
     href: "/plans?plan=rhythm",
   },
   {
-    name: "Plus",
-    tagline: "Go deeper with more support.",
+    copyKey: "plus",
     icon: Plus,
     iconClassName: "bg-rose-tint-100 text-rose-ink",
     checkClassName: "text-rose-500",
-    features: [
-      "Deeper Personal Insights",
-      "Highest Coaching access",
-      "Full Recharge Experience access",
-      "Extended personalisation",
-    ],
-    ctaLabel: "Choose Plus",
     ctaVariant: "outlineRose",
     cardClassName: "bg-surface-card-warm border-hairline shadow-card card-lift",
     orderClassName: "order-3",
@@ -131,7 +116,11 @@ const PLANS: readonly Plan[] = [
   },
 ];
 
-export function Plans() {
+export async function Plans() {
+  const locale = await getLocale();
+  const m = await getDictionary();
+  const copy = m.sections.plans;
+
   return (
     <Section id={SECTION_IDS.plans}>
       <ParallaxLayer distance={70}>
@@ -140,16 +129,13 @@ export function Plans() {
 
       <Container width="narrow">
         <Reveal className="text-center">
-          <Eyebrow>FREE TRIAL & PLANS</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
 
           <h2 className="text-h2 mt-5">
-            Choose the Recharge that <GradText>fits you.</GradText>
+            <RichText value={copy.headline} where="sections.plans.headline" />
           </h2>
 
-          <p className="text-body mx-auto mt-6 max-w-[46rem] text-ink-600">
-            Try Recharge free for 7 days, then choose the level of support that feels
-            right for you.
-          </p>
+          <p className="text-body mx-auto mt-6 max-w-[46rem] text-ink-600">{copy.lead}</p>
         </Reveal>
 
         {/* ── 7-day free-trial banner ─────────────────────────────────────── */}
@@ -161,16 +147,15 @@ export function Plans() {
               </span>
 
               <div className="md:flex-1">
-                <MicroEyebrow className="text-blue-ink">7-DAY FREE TRIAL</MicroEyebrow>
+                <MicroEyebrow className="text-blue-ink">{copy.trial.eyebrow}</MicroEyebrow>
 
-                <h3 className="text-h3 mt-2">{CTA.tryFree}</h3>
+                <h3 className="text-h3 mt-2">{m.common.cta.tryFree}</h3>
 
-                <p className="text-body-sm mt-3 text-ink-500">
-                  Experience Personal Insights, AI-guided Coaching
-                  <br className="hidden sm:inline" /> and Recharge Experiences together
-                  before
-                  <br className="hidden sm:inline" /> choosing a plan.
-                </p>
+                {/* Two `<br className="hidden sm:inline" />` breaks used to
+                    shape this into three lines at `sm` and up. They were
+                    responsive layout rather than copy, so the catalogue holds
+                    one flat sentence and the column re-breaks it. */}
+                <p className="text-body-sm mt-3 text-ink-500">{copy.trial.body}</p>
               </div>
 
               <div className="flex flex-col gap-3 md:items-end">
@@ -181,7 +166,7 @@ export function Plans() {
                   the clamp covers the drop to 19px at `sm` (§4.2).
                 */}
                 <Button
-                  href="/plans"
+                  href={localePath(locale, "/plans")}
                   variant="primary"
                   size="lg"
                   className="font-display w-full md:w-[276px]"
@@ -190,10 +175,10 @@ export function Plans() {
                     fontWeight: 400,
                   }}
                 >
-                  {CTA.tryFree}
+                  {m.common.cta.tryFree}
                 </Button>
 
-                <p className="text-meta text-ink-500 md:text-right">{CTA.trialMeta}</p>
+                <p className="text-meta text-ink-500 md:text-right">{m.common.cta.trialMeta}</p>
               </div>
             </div>
           </div>
@@ -206,10 +191,11 @@ export function Plans() {
         >
           {PLANS.map((plan) => {
             const { icon: Icon } = plan;
+            const tier = copy.tiers[plan.copyKey];
 
             return (
               <RevealItem
-                key={plan.name}
+                key={plan.copyKey}
                 className={cn(
                   "flex",
                   plan.orderClassName,
@@ -231,7 +217,7 @@ export function Plans() {
                 >
                   {plan.featured ? (
                     <p className="bg-blue-tint-50 mx-auto mb-3.5 rounded-full px-3 py-1 text-xs font-medium text-blue-ink">
-                      Most popular
+                      {copy.badge}
                     </p>
                   ) : null}
 
@@ -246,19 +232,19 @@ export function Plans() {
                     </span>
 
                     <div>
-                      <h3 className="text-h3">{plan.name}</h3>
-                      <p className="text-card-body mt-1 text-ink-500">{plan.tagline}</p>
+                      <h3 className="text-h3">{tier.name}</h3>
+                      <p className="text-card-body mt-1 text-ink-500">{tier.tagline}</p>
                     </div>
                   </div>
 
                   <hr className="border-hairline mt-6 border-t" />
 
                   <p className="text-btn-sm mt-5 text-center font-normal text-ink-500">
-                    Price coming soon
+                    {copy.priceTbd}
                   </p>
 
                   <ul className="mt-6 space-y-2">
-                    {plan.features.map((feature) => (
+                    {tier.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3.5">
                         <CheckCircle
                           className={cn(
@@ -278,13 +264,13 @@ export function Plans() {
                       feature-label wrapping. */}
                   <div className="mt-auto pt-7">
                     <Button
-                      href={plan.href}
+                      href={localePath(locale, plan.href)}
                       variant={plan.ctaVariant}
                       size="md"
                       className="w-full"
                       style={{ height: "3rem" }}
                     >
-                      {plan.ctaLabel}
+                      {tier.cta}
                     </Button>
                   </div>
                 </article>
@@ -298,10 +284,10 @@ export function Plans() {
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-center md:gap-8">
             {/* The feature-comparison table lives on the standalone Plans route. */}
             <Link
-              href="/plans#compare"
+              href={localePath(locale, "/plans#compare")}
               className="group text-btn ease-soft flex items-center gap-3.5 text-blue-ink transition-colors duration-150 hover:text-blue-fill"
             >
-              Compare all features
+              {copy.compare}
               <ArrowRight className="ease-soft size-5 transition-transform duration-150 group-hover:translate-x-0.5" />
             </Link>
 
@@ -313,9 +299,7 @@ export function Plans() {
             <AskRechargePlans />
           </div>
 
-          <p className="text-meta mt-11 text-center text-ink-500">
-            Working plan details. Names, prices and usage limits to be confirmed.
-          </p>
+          <p className="text-meta mt-11 text-center text-ink-500">{copy.disclaimer}</p>
         </Reveal>
       </Container>
     </Section>

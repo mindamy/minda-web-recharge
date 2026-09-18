@@ -1,4 +1,4 @@
-import * as m from "motion/react-client";
+import * as motion from "motion/react-client";
 import Image from "next/image";
 import type { CSSProperties, ComponentType } from "react";
 
@@ -6,6 +6,7 @@ import { Laptop, Lightning, MoonStars, StressHead, type IconProps } from "@/comp
 import { Reveal } from "@/components/motion/Reveal";
 import { EASE_SOFT } from "@/components/motion/ease";
 import { cn } from "@/lib/cn";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 import {
   LABEL_X,
@@ -42,29 +43,52 @@ import {
  *
  * Three rails exist because §4.2 #5 calls for three shapes; only ever one is
  * painted, and all three are decoration (`aria-hidden`).
+ *
+ * A Server Component, so it reads the catalogue itself rather than being
+ * prop-drilled from `Rhythm`. The `motion/react-client` namespace is imported
+ * as `motion` so that `m` keeps its site-wide meaning: the message catalogue.
+ *
+ * `./timeline` is deliberately untouched by the i18n migration — it is pure
+ * geometry and holds no user-facing string.
  */
 
+/**
+ * Visual data only. Titles, sub-labels and the two photo `alt`s live in the
+ * catalogue under `sections.rhythm.timeline`, keyed by `copyKey`.
+ *
+ * `copyKey` is narrowed per variant rather than typed as the whole key union,
+ * which is what lets the photo branch read `.alt` without a cast: only the two
+ * photo entries carry one, and the icon entries would be a type error if they
+ * tried.
+ */
 type TimelineNode = {
-  title: string;
-  sub: string;
   /** Diameter at `lg`, per the §3.5 node table. */
   size: number;
   /** Accent, applied to the dot and the sub-label. */
   dot: string;
   label: string;
 } & (
-  | { kind: "photo"; src: string; alt: string; ring: string; ringInset: string }
-  | { kind: "icon"; icon: ComponentType<IconProps>; iconColor: string }
+  | {
+      kind: "photo";
+      copyKey: "morning" | "afterWork";
+      src: string;
+      ring: string;
+      ringInset: string;
+    }
+  | {
+      kind: "icon";
+      copyKey: "work" | "pressure" | "energyDip" | "night";
+      icon: ComponentType<IconProps>;
+      iconColor: string;
+    }
 );
 
 const NODES: readonly TimelineNode[] = [
   {
     kind: "photo",
-    title: "Morning",
-    sub: "Get Ready",
+    copyKey: "morning",
     size: 122,
     src: "/images/rhythm-morning.jpg",
-    alt: "A woman sitting up in bed, stretching her arms above her head beside a bright window",
     ring: "border-blue-100",
     ringInset: "-inset-[4px] lg:-inset-[6px]",
     dot: "bg-blue-fill",
@@ -72,8 +96,7 @@ const NODES: readonly TimelineNode[] = [
   },
   {
     kind: "icon",
-    title: "Work",
-    sub: "Focus",
+    copyKey: "work",
     size: 81,
     icon: Laptop,
     iconColor: "text-blue-icon",
@@ -82,8 +105,7 @@ const NODES: readonly TimelineNode[] = [
   },
   {
     kind: "icon",
-    title: "Pressure",
-    sub: "Reset",
+    copyKey: "pressure",
     size: 81,
     icon: StressHead,
     iconColor: "text-teal-400",
@@ -92,8 +114,7 @@ const NODES: readonly TimelineNode[] = [
   },
   {
     kind: "icon",
-    title: "Energy Dip",
-    sub: "Recharge",
+    copyKey: "energyDip",
     size: 81,
     icon: Lightning,
     iconColor: "text-green-500",
@@ -102,11 +123,9 @@ const NODES: readonly TimelineNode[] = [
   },
   {
     kind: "photo",
-    title: "After Work",
-    sub: "Unwind",
+    copyKey: "afterWork",
     size: 145,
     src: "/images/rhythm-after-work.jpg",
-    alt: "A woman on a sofa holding a mug in the evening, a plant and a lamp behind her",
     ring: "border-rose-200",
     ringInset: "-inset-[4px] lg:-inset-[7px]",
     dot: "bg-rose-400",
@@ -114,8 +133,7 @@ const NODES: readonly TimelineNode[] = [
   },
   {
     kind: "icon",
-    title: "Night",
-    sub: "Rest",
+    copyKey: "night",
     size: 81,
     icon: MoonStars,
     iconColor: "text-rose-400",
@@ -145,7 +163,10 @@ function RailStops() {
   );
 }
 
-export function RhythmTimeline() {
+export async function RhythmTimeline() {
+  const m = await getDictionary();
+  const timeline = m.sections.rhythm.timeline;
+
   return (
     <div
       className="relative h-[var(--stack-h)] w-full lg:h-[var(--rail-h)]"
@@ -209,7 +230,7 @@ export function RhythmTimeline() {
             Purpose is continuity — it reads as a day unfolding rather than as
             six unrelated circles. §2.5 hands this section the deck's busiest
             aurora field, so nothing else here moves. */}
-        <m.path
+        <motion.path
           d={RAIL_PATH_H}
           fill="none"
           stroke="url(#rhythm-rail-h)"
@@ -228,7 +249,7 @@ export function RhythmTimeline() {
       <Reveal className="absolute inset-0" y={16}>
         {NODES.map((node, index) => (
           <div
-            key={node.title}
+            key={node.copyKey}
             style={nodePlacement(index, node.size) as CSSProperties}
             className={cn(
               // Below lg: a full-width row — circle on the rail, labels right.
@@ -262,7 +283,7 @@ export function RhythmTimeline() {
                     <span className="relative block size-22 overflow-hidden rounded-full lg:size-[var(--node-size)]">
                       <Image
                         src={node.src}
-                        alt={node.alt}
+                        alt={timeline[node.copyKey].alt}
                         fill
                         sizes={`(min-width: 1024px) ${node.size}px, 88px`}
                         className="object-cover"
@@ -292,9 +313,9 @@ export function RhythmTimeline() {
               className="absolute top-1/2 -translate-y-1/2 lg:static lg:mt-4 lg:translate-none lg:text-center"
               style={{ left: LABEL_X }}
             >
-              <p className="text-card-title text-ink-800">{node.title}</p>
+              <p className="text-card-title text-ink-800">{timeline[node.copyKey].title}</p>
               <p className={cn("text-[0.9375rem] leading-[1.35] font-medium", node.label)}>
-                {node.sub}
+                {timeline[node.copyKey].sub}
               </p>
             </div>
           </div>
