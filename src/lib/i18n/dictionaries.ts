@@ -24,22 +24,24 @@ import type { ClientMessages, Messages } from "./types";
 type CatalogueLoader = () => Promise<{ default: Messages }>;
 
 /**
- * `Partial<Record<…>>` rather than `Record<…>` **only** until the two Chinese
- * catalogues land (wave 2). An unwired locale falls back to `en-GB` so the
- * routes stay buildable in the meantime.
+ * The locale -> catalogue map.
  *
- * Adding a locale is one line here. Once all three are wired, tighten this to
- * `Record<Locale, CatalogueLoader>` so that adding a locale to `LOCALES`
- * without adding a catalogue becomes a type error too.
+ * `Record<Locale, CatalogueLoader>` — deliberately total, not `Partial`.
+ * Adding a locale to `LOCALES` without adding its catalogue here is a
+ * `tsc --noEmit` failure rather than a page that silently serves English.
  *
- * The annotation is what enforces catalogue parity: `zh-Hans.json` is checked
- * against `Messages` (i.e. against `en-GB.json`) the moment it is added here,
- * and a missing or misspelt key fails `tsc --noEmit`.
+ * This annotation is also what enforces catalogue parity: every loader's
+ * return is checked against `Messages` (i.e. against `en-GB.json`), so a key
+ * that is missing, misspelt, or the wrong kind in a translated file fails the
+ * build instead of rendering blank for a reader who cannot report it.
+ *
+ * Each specifier is a string literal, never a template — a dynamic specifier
+ * makes the bundler emit every catalogue into one chunk.
  */
-const dictionaries: Partial<Record<Locale, CatalogueLoader>> = {
+const dictionaries: Record<Locale, CatalogueLoader> = {
   "en-GB": () => import("@/messages/en-GB.json"),
-  // "zh-Hans": () => import("@/messages/zh-Hans.json"),
-  // "zh-Hant": () => import("@/messages/zh-Hant.json"),
+  "zh-Hans": () => import("@/messages/zh-Hans.json"),
+  "zh-Hant": () => import("@/messages/zh-Hant.json"),
 };
 
 /**
