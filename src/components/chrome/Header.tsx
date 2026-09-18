@@ -10,6 +10,7 @@ import { localePath } from "@/lib/i18n/config";
 import { useMessages } from "@/lib/i18n/MessagesProvider";
 import { NAV_ITEMS, SPY_SECTION_IDS, splitLocalePath, type SectionId } from "@/lib/nav";
 
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 import { NavLabel } from "./NavLabel";
 
@@ -203,7 +204,11 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-6 lg:flex">
+        <div className="hidden items-center gap-4 lg:flex xl:gap-6">
+          {/* Sits with the CTA cluster rather than in the nav list: it is not
+              a destination in the site's story, it is a control over how the
+              story is read — the same category as Sign In. */}
+          <LanguageSwitcher />
           <Button href={localePath(locale, "/sign-in")} variant="outline" size="sm">
             {cta.signIn}
           </Button>
@@ -276,6 +281,22 @@ export function Header() {
               >
                 {cta.signIn}
               </Button>
+            </div>
+
+            {/*
+              The switcher is in the sheet as well as the bar, and flat rather
+              than collapsed. The bar at mobile width is a logo and a burger,
+              so without this a reader who has landed in a script they cannot
+              read has no way out of it at all — and a disclosure nested
+              inside the burger would make them find a collapsed control
+              inside a collapsed control to escape.
+            */}
+            <div className="mt-6 border-t border-hairline-faint pt-6">
+              <LanguageSwitcher
+                variant="sheet"
+                className="text-nav"
+                onNavigate={() => setMenuOpen(false)}
+              />
             </div>
           </nav>
         </div>

@@ -5,6 +5,7 @@ import { getDictionary, getLocale } from "@/lib/i18n/dictionaries";
 import { interpolate } from "@/lib/i18n/format";
 import { NAV_ITEMS, type SectionId } from "@/lib/nav";
 
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 
 /**
@@ -91,24 +92,39 @@ export async function Footer() {
           <p className="text-meta text-ink-500">
             {interpolate(m.chrome.footer.copyright, { year: new Date().getFullYear() })}
           </p>
-          <ul className="text-meta flex gap-6 text-ink-500">
-            <li>
-              <Link
-                href={localePath(locale, "/privacy")}
-                className="transition-colors duration-150 hover:text-blue-ink"
-              >
-                {m.chrome.footer.privacy}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={localePath(locale, "/terms")}
-                className="transition-colors duration-150 hover:text-blue-ink"
-              >
-                {m.chrome.footer.terms}
-              </Link>
-            </li>
-          </ul>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+            {/*
+              A second switcher, here as well as in the header, because the
+              foot of the page is where readers look for one — and because
+              this one needs no JavaScript at all: it is three anchors and a
+              label, so it works in the prerendered HTML before hydration and
+              after a hydration failure.
+
+              It renders a Client Component from a Server Component, which is
+              fine: `<MessagesProvider>` is above both in the layout, so
+              `useMessages()` resolves. This file must still never import a
+              catalogue for it.
+            */}
+            <LanguageSwitcher variant="footer" className="text-meta" />
+            <ul className="text-meta flex gap-6 text-ink-500">
+              <li>
+                <Link
+                  href={localePath(locale, "/privacy")}
+                  className="transition-colors duration-150 hover:text-blue-ink"
+                >
+                  {m.chrome.footer.privacy}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={localePath(locale, "/terms")}
+                  className="transition-colors duration-150 hover:text-blue-ink"
+                >
+                  {m.chrome.footer.terms}
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </footer>
