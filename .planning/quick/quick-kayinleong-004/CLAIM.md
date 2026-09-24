@@ -56,7 +56,7 @@ hold without touching `en-GB.json` or `types.ts`.
 | Flag rendering | **Inline SVG**, not emoji | Windows ships no flag glyphs in Segoe UI Emoji: `🇬🇧` renders as the letters `GB` in Chrome on Windows, which is the single largest desktop combination. Inline SVG is deterministic on every platform, crisp at any size, and costs ~1.5 KB gzipped for all seven. |
 | Flag geometry | Uniform `0 0 60 40` (3:2) viewBox | Five of the seven flags (JP, CN, TW, HK, ID) are natively 3:2. GB and MY are natively 2:1 and are redrawn to 3:2 — the same normalisation every flag icon set performs. |
 | Flag semantics | `aria-hidden`, decorative only | A flag is not a language (see the caveat below). The autonym carries the meaning for every reader; the flag is a scanning aid for sighted readers only, and is never the sole label. |
-| Trigger icon | Globe stays; no flag | Below `xl` the trigger is icon-only. A globe says "language"; a flag says "country". Swapping it would trade the control's meaning for its current value. |
+| Trigger icon | Globe stays, **plus** the current flag below `2xl` | Superseded mid-claim by the header fix below. The globe still carries "language"; the flag replaces the autonym as the compact way to say *which*, at 21px instead of up to 128px. |
 
 ## Scope round 2 (user, mid-claim): automatic locale selection
 
@@ -66,17 +66,27 @@ hold without touching `en-GB.json` or `types.ts`.
 |----------|--------|-------|
 | Signal priority | **IP country wins**, device language is the tiebreaker | User's explicit call, made against a recommendation. The trade-off was stated and shown: a Japanese-speaking traveller in Malaysia gets Malay. Recorded here so it reads as a decision, not a bug. |
 | Cookie outranks both | **Yes**, non-negotiable | Not a product question — a correctness requirement. Without it an English-speaking reader in Kuala Lumpur who picks English is flipped back to Malay on every visit, with no way to stop it. |
-| Who writes the cookie | **The switcher, on click** — not middleware | Middleware writing it on any locale-prefixed request would mean opening a shared `/ja-JP` link silently rewrites the recipient's language for the whole site. |
+| Who writes the cookie | **The switcher, on click** — not the proxy | The proxy writing it on any locale-prefixed request would mean opening a shared `/ja-JP` link silently rewrites the recipient's language for the whole site. |
 | Redirect status | **307 temporary**, never 308 | The target depends on request headers. A permanent redirect is cached by the browser and by any CDN, pinning the first-detected locale forever. |
 | Host | **Host-agnostic** | No host chosen yet (`NEXT_PUBLIC_SITE_URL` is still a TODO). Country is read from whichever of the known CDN headers is present, and the IP signal drops out cleanly when none is. |
 
 ### The `next.config.ts` redirect table had to go
 
 It 308'd `/`, `/plans` and four others to `/en-GB/…`. Two independent reasons it could not stay:
-`next.config` redirects run **before** middleware, so detection would never have executed on `/`;
+`next.config` redirects run **before** the proxy (routing chain step 2 vs step 3), so detection
+would never have executed on `/`;
 and they were **permanent**, so any browser that had already followed one had cached
 `/ → /en-GB` indefinitely. Claim 003 recorded "not launched, no traffic", so retiring them
 costs nothing.
+
+### It is `src/proxy.ts`, not `src/middleware.ts`
+
+Next.js 16 deprecated the `middleware` file convention and renamed it to `proxy`
+(`node_modules/next/dist/docs/.../file-conventions/middleware.md`). Three consequences, all
+documented in the file itself: the export must be named `proxy` or the build fails — and in
+dev it only warns, so the symptom is a proxy that silently never runs; shipping both files is
+a hard throw (`E900`), not a precedence rule; and `middleware.ts` alone still works but
+deprecation-warns on every boot. Anyone "adding the middleware back" will break the build.
 
 ## Header collision found and fixed (pre-existing, made worse here)
 
