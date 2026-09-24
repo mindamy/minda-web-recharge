@@ -4,8 +4,8 @@
 - session: claude-code
 - branch: main
 - started: 2026-09-24
-- status: claimed
-- summary: Take the seven-locale catalogue drop (revised Chinese, new Japanese/Indonesian/Malay/Hong Kong) and add a country flag beside every language name in the switcher.
+- status: done
+- summary: Take the seven-locale catalogue drop (revised Chinese, new Japanese/Indonesian/Malay/Hong Kong), add a country flag beside every language name in the switcher, and auto-select a locale from IP country and device language.
 
 ## What will change
 
@@ -58,6 +58,55 @@ hold without touching `en-GB.json` or `types.ts`.
 | Flag semantics | `aria-hidden`, decorative only | A flag is not a language (see the caveat below). The autonym carries the meaning for every reader; the flag is a scanning aid for sighted readers only, and is never the sole label. |
 | Trigger icon | Globe stays; no flag | Below `xl` the trigger is icon-only. A globe says "language"; a flag says "country". Swapping it would trade the control's meaning for its current value. |
 
+## Scope round 2 (user, mid-claim): automatic locale selection
+
+> "auto change language based on user ip / auto detect device language"
+
+| Decision | Choice | Notes |
+|----------|--------|-------|
+| Signal priority | **IP country wins**, device language is the tiebreaker | User's explicit call, made against a recommendation. The trade-off was stated and shown: a Japanese-speaking traveller in Malaysia gets Malay. Recorded here so it reads as a decision, not a bug. |
+| Cookie outranks both | **Yes**, non-negotiable | Not a product question — a correctness requirement. Without it an English-speaking reader in Kuala Lumpur who picks English is flipped back to Malay on every visit, with no way to stop it. |
+| Who writes the cookie | **The switcher, on click** — not middleware | Middleware writing it on any locale-prefixed request would mean opening a shared `/ja-JP` link silently rewrites the recipient's language for the whole site. |
+| Redirect status | **307 temporary**, never 308 | The target depends on request headers. A permanent redirect is cached by the browser and by any CDN, pinning the first-detected locale forever. |
+| Host | **Host-agnostic** | No host chosen yet (`NEXT_PUBLIC_SITE_URL` is still a TODO). Country is read from whichever of the known CDN headers is present, and the IP signal drops out cleanly when none is. |
+
+### The `next.config.ts` redirect table had to go
+
+It 308'd `/`, `/plans` and four others to `/en-GB/…`. Two independent reasons it could not stay:
+`next.config` redirects run **before** middleware, so detection would never have executed on `/`;
+and they were **permanent**, so any browser that had already followed one had cached
+`/ → /en-GB` indefinitely. Claim 003 recorded "not launched, no traffic", so retiring them
+costs nothing.
+
+## Header collision found and fixed (pre-existing, made worse here)
+
+Adding Malay and Indonesian surfaced a bug that was already shipped. At 1280px — the exact
+width at which the desktop nav appears — the header collided in **English**: `How It Works`
+overlapped the wordmark and three nav labels wrapped to two lines.
+
+Claim 003's comment claimed 1280px "fits with room to spare". It had measured the gap between
+the language trigger and the Sign In pill; the binding constraint is the **nav**, on the other
+side of the bar. Natural widths against the 1200px track, re-measured:
+
+| Locale | before | after |
+|--------|--------|-------|
+| en-GB | **−25px** (collided) | +24px |
+| ms-MY | **−209px** (collided) | +40px |
+| id-ID | **−152px** (collided) | +114px |
+| ja-JP | +14px | +62px |
+| zh-Hant / zh-HK | +76px | +203px |
+| zh-Hans | +140px | +203px |
+
+Fix, per the user's choice of the three options offered:
+1. The trigger shows the **flag** below `2xl` and the autonym at `2xl` and above. 21px against
+   up to 128px, and strictly more informative than the globe-only compact state it replaces.
+2. `chrome.nav.items` shortened in `ms-MY` and `id-ID` only —
+   `Kepercayaan & Pendekatan` → `Kepercayaan`, `Tentang Kami` → `Tentang`. Nav labels only;
+   the `meta.*` page titles keep their full wording.
+3. Nav `gap-9` → `gap-8` below `2xl`, for 16px of margin against font-swap variance.
+
+All three are needed: removing any one brings the collision back in at least one locale.
+
 ### Caveat recorded, not hidden
 
 Flags denote countries, not languages, and the mapping is lossy in both directions —
@@ -67,8 +116,170 @@ recorded so the next person knows it was a decision rather than an oversight.
 
 ## What has changed
 
-_(filled in as work completes)_
+### Catalogues
+
+- `src/messages/{zh-Hans,zh-Hant}.json` replaced with the revised copy (~278 and ~279
+  changed lines).
+- `src/messages/{zh-HK,ja-JP,id-ID,ms-MY}.json` added.
+- `src/messages/en-GB.json` untouched — it is the structural source of `Messages` and was
+  not in the drop.
+
+Pre-adoption checks, all run against `en-GB` as the reference and all clean for all six:
+
+| Check | Result |
+|-------|--------|
+| Named key paths (array indices collapsed) | 0 missing, 0 extra in every file |
+| `tsc --noEmit` through `Record<Locale, CatalogueLoader>` | passes for all seven |
+| Interpolation placeholders (`{year}`, `%s`) | present, in the same keys |
+| Rich-text `mark` vocabulary | exactly `grad, grad-1, grad-2, grad-3, grad-italic, rcubed, strong, violet` in all seven — no unknown mark, none dropped |
+| `R³` brand token in `chrome.nav.items["r3-loop"]` | present in all seven |
+
+### Code
+
+- `src/lib/i18n/config.ts` — `LOCALES` grown to seven in switcher order; `LOCALE_LABELS`
+  extended, with the two Traditional entries gaining a region suffix.
+- `src/lib/i18n/dictionaries.ts` — four loaders added. Still one static `import()` per
+  locale; no template specifier, so no context module over `messages/`.
+- `src/components/chrome/FlagIcon.tsx` — new. Inline SVG, one flag per locale, `Record<Locale, …>`
+  so an eighth locale without a flag fails `tsc` rather than rendering a gap.
+- `src/components/chrome/LanguageSwitcher.tsx` — flag beside the autonym in all three
+  variants; menu `min-w` 11rem → 14rem (at 11rem the widest row, `Bahasa Indonesia`,
+  wrapped) plus a `max-h` guard so a short viewport cannot make Japanese unreachable.
+- `src/app/globals.css` — `html:lang(zh-HK)` and `html:lang(ja)` stacks added; the Han
+  metrics block and the italic reset widened to cover `ja`.
+- Comment-only: `layout.tsx` (18 → 42 prerendered routes), `types.ts`, `Header.tsx`,
+  `Footer.tsx`, `loopNodes.ts`, `AskRecharge.tsx`, `NavLabel.tsx`.
+
+### Two things found while working, both recorded rather than silently worked around
+
+1. **`zh-HK` was going to inherit the Simplified font stack.** `:lang(zh)` prefix-matches
+   `zh-HK`, and `:lang(zh-Hant)` does **not** (RFC 4647 extended filtering compares subtag
+   by subtag; `HK` is not `Hant`). So adding the locale without a CSS rule would have served
+   Hong Kong mainland glyph forms — the exact failure the existing SC/TC comment in
+   `globals.css` warns about. Fixed with its own rule, ordered after `html:lang(zh)`.
+
+2. **`cn()` is plain `clsx`, deliberately not tailwind-merge.** So a "size override" passed
+   through `FlagIcon`'s `className` would not override anything — both classes land and the
+   winner is decided by compiled-stylesheet order. `FlagIcon` therefore bakes its size in
+   and documents that `className` is for additive utilities only. This is the same trap
+   already documented at `src/components/sections/Plans.tsx:170`.
 
 ## Verification
 
-_(Regression Report — filled in before status: done)_
+### Regression Report
+
+Regression surface, enumerated before testing: the catalogue loader (every page in every
+locale), the prerender manifest, the client bundle boundary, the header at every breakpoint
+in every locale, per-script typography, the switcher's keyboard and ARIA contract, and — new
+in round 2 — the routing chain, which now has a redirect in front of a wholly static site.
+
+#### Gates
+
+| Gate | Result |
+|------|--------|
+| `npx tsc --noEmit` | clean, whole project |
+| `npx eslint .` | clean, exit 0 |
+| `npx next build` | succeeds; **47 static pages**, of which 42 are the 6 routes × 7 locales. Proxy registered as `ƒ Proxy (Middleware)` |
+| Catalogue parity | all seven check against `Messages = typeof enGB` via `Record<Locale, CatalogueLoader>` |
+
+#### Client bundle boundary — the thing this codebase guards hardest
+
+Grepped the built `.next/static/chunks` for strings that must never reach a browser:
+
+| Probe | Result |
+|-------|--------|
+| `Bagaimana jika` (ms/id body copy) | absent |
+| `あなたの心と体` (ja) | absent |
+| `訂閱計劃` (zh-HK) | absent |
+| `了解自己的感受` (zh-Hans) | absent |
+| `x-vercel-ip-country`, `cf-ipcountry`, `COUNTRY_LOCALES` | absent — `negotiate.ts` stayed server-side |
+| `NEXT_LOCALE` | **present**, correctly: the switcher writes the cookie |
+
+Adding four locales did not widen the flight payload: `selectClientMessages` is unchanged and
+still ships one locale's nav/CTA/brand slice. The seven inline flags plus the whole switcher
+compile to a 20.8 KB chunk, 7.3 KB gzipped.
+
+#### Per-script typography — verified in a live browser, not inferred
+
+| Page | `--stack-sans` head | `--stack-display` head | Verdict |
+|------|--------------------|------------------------|---------|
+| `/zh-HK` | `PingFang HK`, `PingFang TC` | `Songti TC`, `LiSong Pro` | **correct** — `:lang(zh)` did *not* win, so Hong Kong is not getting mainland glyph forms |
+| `/ja-JP` | `Hiragino Sans`, `Hiragino Kaku Gothic ProN` | `Hiragino Mincho ProN`, `Yu Mincho` | **correct** — asserted by regex that no `PingFang`/`Songti`/`SimSun`/`MingLiU`/`JhengHei`/`Heiti`/`LiSong` face appears in either Japanese stack |
+| `/ja-JP` h1 | — | — | `line-height: 60.99px`, i.e. the widened Han-and-kana 1.3, not the Latin 1.1 |
+| `/ja-JP` body | — | — | `font-synthesis-style: none` inherited — no sheared fake italic |
+
+#### Header — the pre-existing collision
+
+Measured per locale at 1280px, before and after (table above under "Header collision").
+All seven now have positive slack and **zero wrapped nav labels**; before the change, three
+locales collided. Also checked: autonym returns at 1600px; mobile sheet at 375px shows all
+seven pills with flags and the correct `aria-current`; footer shows seven flagged links with
+`aria-current="page"` on the active locale.
+
+#### Switcher contract — what was deliberately *not* changed
+
+- Options are still links with real `href`s, still `hrefLang` + `lang`, still `aria-current="page"`.
+- Flags are `aria-hidden`, so no accessible name changed anywhere. Below `2xl` the trigger's
+  name is `Language`; at `2xl` it is `Language <autonym>`, matching the visible words
+  (WCAG 2.5.3).
+- Arrow/Home/End/Escape wiring, the `focusOnOpen` ref and the close-on-route-change render
+  adjustment are untouched.
+- SVG `clipPath` ids: the Union Jack is the only flag needing one. Verified on a page
+  rendering 14 flags that ids are unique (`uj-r0`, `uj-R2dd99etb`) and every `clip-path`
+  reference resolves — a duplicate id would have silently cross-referenced.
+
+#### Detection — 13 request shapes against the dev server
+
+| Request | Result |
+|---|---|
+| `Accept-Language: ja` on `/` | 307 → `/ja-JP` |
+| `Accept-Language: ja` + country `MY` | 307 → `/ms-MY` — **country beats language**, as decided |
+| `Cookie: NEXT_LOCALE=en-GB` + country `MY` | 307 → `/en-GB` — **cookie beats country** |
+| `cf-ipcountry: HK` | 307 → `/zh-HK` |
+| country `ID` on `/plans` | 307 → `/id-ID/plans` |
+| `Accept-Language: zh-TW` | 307 → `/zh-Hant` |
+| no signals | 307 → `/en-GB` |
+| `cf-ipcountry: XX` + `Accept-Language: ms` | 307 → `/ms-MY` — unknown-country sentinel ignored |
+| country `SG` + `Accept-Language: ja` | 307 → `/ja-JP` — SG deliberately unmapped |
+| `/plans?plan=essential&ref=x` + country `TW` | 307 → `/zh-Hant/plans?plan=essential&ref=x` — query preserved |
+| `/ja-JP/plans`, `/ja-JP` | **200, no redirect** — an explicit locale always wins |
+| `/favicon.ico`, `/icon.svg`, real `_next` asset | 200, not redirected |
+| redirect headers | `307` + `Cache-Control: private, no-store` + `Vary: Accept-Language, Cookie` |
+
+`negotiate.ts` additionally carries a 76-assertion harness covering q-value ordering, `q=0`,
+the `zh-HK`-before-`zh-Hant` trap, the legacy `in` → `id-ID` code, hostile 100 KB headers,
+and prototype-pollution probes (`__proto__`, `constructor`) on both the country lookup and
+the cookie. All 76 pass.
+
+### Ruled out, with reasons
+
+- **Static rendering lost to the proxy** — ruled out by the build output: 42 locale routes
+  still `● (SSG)`. The proxy's matcher excludes all seven locale prefixes, so the site's own
+  pages never invoke it.
+- **`useSearchParams()` creep** — unchanged; the switcher still reads `window.location`.
+- **Catalogue leakage into the client graph** — grepped, above.
+- **Duplicate SVG ids** — checked on a 14-flag page, above.
+- **`en-GB.json` drift** — not edited. The only `src/messages` edits outside the drop are the
+  two `chrome.nav.items` shortenings in `ms-MY`/`id-ID`.
+- **`R³` rendering under the new locales** — `NavLabel` splits on the literal; confirmed the
+  token is present in all seven catalogues. Japanese `R³体験` has an empty prefix, which the
+  existing `indexOf(...) === -1` guard handles correctly.
+- **Rich-text `mark` vocabulary drift** — all seven use exactly the eight marks `en-GB` uses.
+
+### Known and accepted
+
+1. **A traveller gets the wrong language on their first page.** Country outranks
+   `Accept-Language` by explicit decision; a Japanese-speaking visitor in Malaysia sees Malay
+   until they use the switcher, after which the cookie pins their choice permanently.
+2. **A locale-less unknown path costs an extra hop** — `/nonexistent` negotiates, redirects,
+   then 404s at the router. Falls out of the broad negative-lookahead matcher; the narrower
+   alternative duplicates the route table in a third place and fails silently when a route is
+   added.
+3. **`x-locale-reason` is a diagnostic response header** that was not in the brief. It names
+   which input decided (`cookie`/`country`/`language`/`default`) and is free on a response
+   that is already `no-store`. Two lines to remove if it is not wanted.
+4. **Flags are countries, not languages** — see the caveat above. `zh-Hans`/`zh-Hant` carry
+   no region and are shown CN/TW by convention.
+5. **Browsers that already cached the old 308s** from `/` cannot be reached by any change
+   here; they age out when the user clears site data. Claim 003 recorded no traffic, so the
+   population is approximately the developers.
