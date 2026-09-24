@@ -35,7 +35,7 @@ import { NavLabel } from "./NavLabel";
  * It takes the `{ nav, localeSwitcher, cta, brand }` slice that the layout
  * already selected and passed to `<MessagesProvider>`. It must never
  * `import … from "@/messages/…"`: a static catalogue import from the client
- * graph bundles **all three** locales into the browser chunk, with no error,
+ * graph bundles **all seven** locales into the browser chunk, with no error,
  * no warning, and a site that still works perfectly in every language.
  * ---------------------------------------------------------------------------
  */
@@ -168,7 +168,18 @@ export function Header() {
         </Link>
 
         <nav aria-label={nav.landmarkMain} className="hidden xl:block">
-          <ul className="flex items-center gap-9">
+          {/*
+            `gap-8` until `2xl`, not `gap-9` everywhere.
+
+            At 1280px — the width at which this nav appears at all — the bar
+            has 1200px of track for a 223px logo, this nav and the CTA
+            cluster. With the full 36px gaps English clears it by 8px, which
+            is inside the margin a font swap can move. The four gaps give back
+            16px for a 4px change nobody will see, and English ends at 24px of
+            slack with Malay, the widest locale, at 40px. Restored to `gap-9`
+            at `2xl`, where there is room for the design's intended rhythm.
+          */}
+          <ul className="flex items-center gap-8 2xl:gap-9">
             {NAV_ITEMS.map((item) => {
               const active = isHome
                 ? activeSection === item.sectionId

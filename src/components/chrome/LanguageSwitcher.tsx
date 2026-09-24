@@ -5,9 +5,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { cn } from "@/lib/cn";
-import { LOCALE_LABELS, LOCALES, localePath, type Locale } from "@/lib/i18n/config";
+import {
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+  LOCALE_LABELS,
+  LOCALES,
+  localePath,
+  type Locale,
+} from "@/lib/i18n/config";
 import { useMessages } from "@/lib/i18n/MessagesProvider";
 import { splitLocalePath } from "@/lib/nav";
+
+import { FlagIcon } from "./FlagIcon";
 
 /**
  * The language switcher.
@@ -19,7 +28,7 @@ import { splitLocalePath } from "@/lib/nav";
  * page, not a client-side state change. So each option is an anchor. That is
  * what makes middle-click, cmd-click and "open in new tab" work, what lets a
  * bilingual reader keep two locales open side by side, and what lets a
- * crawler find the other two locales from any page. A `<select>` would need
+ * crawler find the other six locales from any page. A `<select>` would need
  * JavaScript to navigate at all, would expose no href to anything, and on iOS
  * would open a native wheel picker that hides the page it is meant to switch.
  *
@@ -37,8 +46,17 @@ import { splitLocalePath } from "@/lib/nav";
  * `LOCALE_LABELS`, not from the catalogue, for exactly that reason — the only
  * catalogue string here is the control's own accessible name.
  *
+ * THE FLAG IS DECORATION ON TOP OF THE AUTONYM, NEVER INSTEAD OF IT. It is
+ * `aria-hidden` (see `FlagIcon`) and adds no accessible text, so nothing is
+ * announced twice and nothing depends on it. It earns its place by making the
+ * seven-item list scannable at a glance — a shape is found faster than a word
+ * in a script you do not read — but a flag is a country and a country is not
+ * a language, so it cannot be the label. Two of the seven tags carry no
+ * region at all (`zh-Hans`, `zh-Hant` are script subtags), which is the
+ * clearest possible demonstration of why.
+ *
  * NEVER IMPORT A CATALOGUE FROM THIS FILE. It is `"use client"`: a static
- * `import … from "@/messages/…"` would bundle all three locales into the
+ * `import … from "@/messages/…"` would bundle all seven locales into the
  * browser chunk with no error and no warning. The label arrives through
  * `useMessages()`, from the slice the layout already selected.
  */
@@ -88,7 +106,7 @@ export function LanguageSwitcher({
  * `?query` and `#hash` are preserved too, and they are read from
  * `window.location` rather than from `useSearchParams()`. That is deliberate:
  * `useSearchParams()` in a component rendered by the root layout would opt
- * every one of the 18 prerendered routes out of static rendering (or demand a
+ * every one of the 42 prerendered routes out of static rendering (or demand a
  * Suspense boundary around the whole header). Neither part is available
  * during SSR in any case, so the suffix starts empty — matching the server
  * HTML exactly, so there is no hydration mismatch — and is filled in after
@@ -126,6 +144,57 @@ function useLocaleHrefs(): { locale: Locale; hrefFor: (target: Locale) => string
 }
 
 const OPTION_TRANSITION = "transition-colors duration-150 ease-soft";
+
+/**
+ * The flag chip, shared by all three variants so they cannot drift.
+ *
+ * The hairline ring is not ornament. Japan is a white field with a red disc
+ * and Indonesia's lower half is white, so on the menu's `bg-white/95` sheet
+ * and on the footer's pale ground both flags would otherwise dissolve into
+ * the background and read as a half-flag floating in space. The ring draws
+ * the edge the flag itself does not have.
+ *
+ * `ring` rather than `border`: a border would sit inside the 21×14 box and
+ * eat 2px of a 14px-tall drawing, which at this size visibly clips Japan's
+ * disc and Malaysia's canton.
+ */
+const FLAG_CHIP = "ring-1 ring-black/10";
+
+/**
+ * Records an explicit language choice, so the proxy stops guessing.
+ *
+ * ---------------------------------------------------------------------------
+ * THIS IS WHAT MAKES AUTO-DETECTION SAFE.
+ *
+ * `src/proxy.ts` redirects a visitor who arrives without a locale prefix
+ * to one negotiated from their IP country, then their `Accept-Language`. Both
+ * are guesses about a person. Without this cookie the guess would be re-made
+ * on every visit, so an English-speaking reader in Kuala Lumpur who switches
+ * to English would be thrown back into Malay the next time they opened the
+ * site — and would have no way to make it stop. `negotiateLocale` therefore
+ * ranks this cookie above every detected signal.
+ *
+ * Written from the click rather than from the proxy, deliberately. If the
+ * proxy set it on any locale-prefixed request, then simply *opening*
+ * a `/ja-JP` link someone shared would silently rewrite the recipient's
+ * language preference for the whole site. Only a press on this control is an
+ * actual decision, and only decisions are recorded.
+ * ---------------------------------------------------------------------------
+ *
+ * No JavaScript, no cookie — and that is an acceptable degradation, not a
+ * hole. The options are real links, so the switch itself still works; the
+ * reader simply lands where detection puts them if they later open a URL with
+ * no locale in it. Every link on the site is locale-prefixed, so that is the
+ * home page on a fresh visit and nothing else.
+ *
+ * `SameSite=Lax` because this is read on a top-level navigation, which Lax
+ * permits; there is nothing cross-site to allow and no reason to widen it.
+ * Not `Secure`, because that would stop it working on `http://localhost`
+ * during development — it carries a language name, not a credential.
+ */
+function rememberLocale(target: Locale) {
+  document.cookie = `${LOCALE_COOKIE}=${target}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
+}
 
 /** Globe, drawn to the same 1.6 stroke as the header's burger. */
 function GlobeIcon() {
@@ -264,7 +333,7 @@ function MenuSwitcher({ className }: { className?: string }) {
           }
         }}
         className={cn(
-          "inline-flex h-[45px] shrink-0 items-center gap-2 rounded-full border px-3.5 xl:px-4",
+          "inline-flex h-[45px] shrink-0 items-center gap-2 rounded-full border px-3.5 2xl:px-4",
           "text-nav font-sans whitespace-nowrap select-none",
           "transition-[background-color,border-color,color] duration-150 ease-soft",
           open
@@ -283,19 +352,47 @@ function MenuSwitcher({ className }: { className?: string }) {
         */}
         <span className="sr-only">{localeSwitcher.label}</span>
         {/*
-          Hidden below `xl`, and not `aria-hidden`: where it is visible it is
-          part of the accessible name, so the name matches the words on screen
-          rather than contradicting them.
+          ---------------------------------------------------------------------
+          THE FLAG IS THE COMPACT FORM OF THE AUTONYM. Exactly one of these two
+          is ever on screen: the flag below `2xl`, the word at `2xl` and above.
 
-          Measured rather than guessed. At 1024px the compact trigger leaves a
-          35px gap to the Sign In pill, and the widest autonym adds 76px — so
-          showing it at `lg` is a 41px overflow, in Traditional Chinese, on
-          the narrowest desktop. At 1280px the gap is 110px and it fits with
-          room to spare. Below `xl` the globe carries the meaning and the
-          current locale is one keystroke away inside the list, stated with a
-          tick and `aria-current`.
+          The previous measurement here was of the wrong thing. It compared the
+          autonym against the gap between this trigger and the Sign In pill and
+          concluded 1280px "fits with room to spare" — but the binding
+          constraint is the *nav*, on the other side of the bar, and at 1280px
+          it was already 25px short in English. The header collided: `How It
+          Works` overlapped the wordmark and three labels wrapped to two lines.
+          That shipped.
+
+          Re-measured at 1280px, natural widths against the 1200px track
+          (logo 223 + nav + cluster):
+
+            en-GB   nav 570  cluster 432   25px over
+            ja-JP   nav 564  cluster 399   14px spare
+            zh-Hant nav 467  cluster 434   76px spare
+            zh-Hans nav 467  cluster 370  140px spare
+            id-ID   nav 664  cluster 465  152px over
+            ms-MY   nav 693  cluster 493  209px over
+
+          Malay and Indonesian are the widest because their nav labels are —
+          `Kepercayaan & Pendekatan` against `Trust & Approach`. Those two
+          labels were shortened in their catalogues at the same time as this
+          change; the two fixes together are what clear 1280px, and removing
+          either brings the collision back.
+
+          The flag costs 21px where the widest autonym costs 128px
+          (`繁體中文（台灣）`), so swapping them buys 91px in the locale that
+          needs it most — and it is strictly *more* informative than what
+          stood here before, which showed nothing but a globe below `xl`.
+          ---------------------------------------------------------------------
+
+          `aria-hidden` on the flag (see `FlagIcon`) keeps the accessible name
+          at just `Language` while it is the visible form. The autonym is not
+          `aria-hidden`, so where the word is on screen the name becomes
+          `Language English` and matches it (WCAG 2.5.3 Label in Name).
         */}
-        <span className="hidden xl:inline">{LOCALE_LABELS[locale]}</span>
+        <FlagIcon locale={locale} className={cn(FLAG_CHIP, "2xl:hidden")} />
+        <span className="hidden 2xl:inline">{LOCALE_LABELS[locale]}</span>
         <svg
           viewBox="0 0 24 24"
           className={cn(
@@ -319,7 +416,18 @@ function MenuSwitcher({ className }: { className?: string }) {
       {open && (
         <div
           id={listId}
-          className="absolute right-0 z-50 mt-2 min-w-[11rem] rounded-2xl border border-hairline-faint bg-white/95 p-1.5 shadow-[0_2px_6px_rgb(15_38_72/0.06),0_16px_32px_rgb(15_38_72/0.1)] backdrop-blur-xl"
+          // `min-w` went from 11rem to 14rem when the list grew from three
+          // options to seven: the widest row is now a 21px flag, a 10px gap
+          // and `Bahasa Indonesia`, and at 11rem that row wrapped.
+          //
+          // The height cap is a guard, not a layout: seven rows measure 332px
+          // and this menu only renders at `xl` and above, where the viewport
+          // is essentially never short enough to clip them. It costs nothing
+          // when the list fits, and on a 1280×500 window (docked devtools) it
+          // is the difference between scrolling to Japanese and not reaching
+          // it at all. Arrow-key focus scrolls the option into view either
+          // way.
+          className="absolute right-0 z-50 mt-2 max-h-[calc(100vh-7rem)] min-w-[14rem] overflow-y-auto rounded-2xl border border-hairline-faint bg-white/95 p-1.5 shadow-[0_2px_6px_rgb(15_38_72/0.06),0_16px_32px_rgb(15_38_72/0.1)] backdrop-blur-xl"
         >
           <ul aria-label={localeSwitcher.label} className="flex flex-col gap-0.5">
             {LOCALES.map((target, index) => {
@@ -336,7 +444,10 @@ function MenuSwitcher({ className }: { className?: string }) {
                     // The current locale's href *is* the current URL, so
                     // `page` is the accurate token — not merely "selected".
                     aria-current={current ? "page" : undefined}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      rememberLocale(target);
+                      setOpen(false);
+                    }}
                     onKeyDown={(event) => {
                       switch (event.key) {
                         case "ArrowDown":
@@ -369,9 +480,14 @@ function MenuSwitcher({ className }: { className?: string }) {
                         : "text-ink-800 hover:bg-blue-tint-50 hover:text-blue-ink",
                     )}
                   >
-                    {LOCALE_LABELS[target]}
+                    <span className="flex items-center gap-2.5">
+                      <FlagIcon locale={target} className={FLAG_CHIP} />
+                      {LOCALE_LABELS[target]}
+                    </span>
                     {/* A tick as well as the tint: the active option must not
-                        be distinguished by colour alone. */}
+                        be distinguished by colour alone. The flag does not
+                        count towards that — it is the same flag whether or
+                        not the option is current. */}
                     {current ? <CheckIcon /> : null}
                   </Link>
                 </li>
@@ -387,11 +503,16 @@ function MenuSwitcher({ className }: { className?: string }) {
 /**
  * Flat variant — no disclosure, nothing to open, nothing to keyboard-trap.
  *
- * Used in the mobile sheet and the footer. Three links in the tab order and a
+ * Used in the mobile sheet and the footer. Seven links in the tab order and a
  * group label; that is the whole component. A reader stranded in a language
  * they cannot read must not have to discover a collapsed control inside
  * another collapsed control to get out of it, which is what nesting a
  * disclosure inside the burger sheet would ask of them.
+ *
+ * Seven wrapping pills is more rows than three was, and that is the right
+ * trade: the alternative — collapsing them behind a disclosure once the list
+ * grew — reintroduces exactly the control-inside-a-control this variant
+ * exists to avoid, and it gets worse as locales are added, not better.
  */
 function InlineSwitcher({
   variant,
@@ -435,9 +556,12 @@ function InlineSwitcher({
                 hrefLang={target}
                 lang={target}
                 aria-current={current ? "page" : undefined}
-                onClick={onNavigate}
+                onClick={() => {
+                  rememberLocale(target);
+                  onNavigate?.();
+                }}
                 className={cn(
-                  "inline-flex items-center gap-1.5",
+                  "inline-flex items-center gap-2",
                   OPTION_TRANSITION,
                   sheet
                     ? cn(
@@ -458,6 +582,7 @@ function InlineSwitcher({
                       ),
                 )}
               >
+                <FlagIcon locale={target} className={FLAG_CHIP} />
                 {LOCALE_LABELS[target]}
                 {current ? <CheckIcon /> : null}
               </Link>
