@@ -55,9 +55,27 @@ export async function localisedMetadata({
     metadataBase: SITE_URL,
     alternates: {
       canonical: localePath(locale, path),
-      languages: Object.fromEntries(
-        LOCALES.map((candidate) => [candidate, localePath(candidate, path)]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          LOCALES.map((candidate) => [candidate, localePath(candidate, path)]),
+        ),
+        /*
+         * `x-default` became load-bearing the moment `src/middleware.ts`
+         * started redirecting locale-less URLs to a negotiated locale.
+         *
+         * It names the URL to send a reader whose language none of the seven
+         * alternates matches, and it is the *unprefixed* path on purpose —
+         * the one URL that runs detection. Pointing it at `/en-GB` instead
+         * would advertise English as the universal fallback and defeat the
+         * detection for exactly the readers it is meant to help.
+         *
+         * Not folded into the `LOCALES` map above, because it is not a
+         * locale: it is a hreflang keyword, and `Locale` must not grow a
+         * member that has no catalogue, no route and no entry in the
+         * switcher.
+         */
+        "x-default": path === "/" || path === "" ? "/" : path,
+      },
     },
   };
 }
