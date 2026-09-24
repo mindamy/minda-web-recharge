@@ -275,18 +275,25 @@
 /* ═══════════════════════════════════════════════════════════════════════
    PER-SCRIPT TYPOGRAPHY
 
-   Neither Playfair Display nor Outfit contains a single Han glyph — both are
-   loaded `subsets: ["latin"]`, and the Google Fonts registry has no CJK
-   subset for either family at any setting. So on /zh-Hans and /zh-Hant every
-   Chinese character was falling through to whatever last-resort face the OS
-   happened to offer. This block chooses that face deliberately, per script.
+   Neither Playfair Display nor Outfit contains a single Han glyph or kana —
+   both are loaded `subsets: ["latin"]`, and the Google Fonts registry has no
+   CJK subset for either family at any setting. So on /zh-Hans, /zh-Hant,
+   /zh-HK and /ja-JP every Han character and every kana was falling through to
+   whatever last-resort face the OS happened to offer. This block chooses that
+   face deliberately, per script.
+
+   /ms-MY and /id-ID are deliberately absent. Malay and Indonesian are Latin
+   script, Outfit and Playfair Display cover them, and the base stacks below
+   are the whole answer for those two locales.
 
    Strategy: system CJK stacks, no webfont. A sliced `Noto Sans SC` costs a
    measured 786 KB over 15 requests for a page of ~230 distinct characters
    (`Noto Sans TC`: 979 KB), and adding a CJK serif for headlines takes
-   zh-Hant past 2.3 MB. System stacks cost zero bytes, zero requests and —
-   because no swap is involved — produce strictly *less* CLS on the Chinese
-   pages than the English ones. Measurements in RESEARCH-typography.md §2.
+   zh-Hant past 2.3 MB. Japanese was not re-measured; `Noto Sans JP` is the
+   same class of asset and none of the arithmetic changes. System stacks cost
+   zero bytes, zero requests and — because no swap is involved — produce
+   strictly *less* CLS on the CJK pages than the English ones. Measurements in
+   RESEARCH-typography.md §2.
 
    Everything here is unlayered on purpose. The compiled sheet emits
    `@layer properties, theme, base, components, utilities`, and an unlayered
@@ -311,10 +318,13 @@
 }
 
 /*
- * `:lang(zh)` prefix-matches `zh-Hans` AND `zh-Hant`, so it must come FIRST
- * and carry the Simplified stack only as the safety net for a bare
- * `lang="zh"`; the Traditional rule below then overrides it. Reversing these
- * two blocks silently serves every Traditional page the Simplified stack.
+ * `:lang(zh)` prefix-matches `zh-Hans`, `zh-Hant` AND `zh-HK`, so it must come
+ * FIRST and carry the Simplified stack only as the safety net for a bare
+ * `lang="zh"`; the Traditional and Hong Kong rules below then override it.
+ * Every `:lang()` rule in this file has the same specificity — one type
+ * selector plus one pseudo-class, (0,1,1) — so source order is the only thing
+ * deciding, and hoisting either of those two above this block silently serves
+ * those pages the Simplified stack.
  *
  * The SC/TC split is not cosmetic. Han unification means one codepoint can
  * carry different regional glyph shapes, so `PingFang SC` renders mainland
@@ -329,8 +339,11 @@
  *
  * The trailing generic (`sans-serif` / `serif`) is load-bearing rather than
  * decorative: Android's fonts.xml maps `serif` + `lang="zh-Hans"` /
- * `lang="zh-Hant"` to the correct *regional* Noto Serif CJK, so the keyword
- * resolves the Song face for us on the one platform that ships no named one.
+ * `lang="zh-Hant"` / `lang="ja"` to the correct *regional* Noto Serif CJK, so
+ * the keyword resolves the Song or Mincho face for us on the one platform
+ * that ships no named one. Android has no HK-specific family, but CLDR
+ * likely-subtags resolve `zh-HK` to `zh-Hant-HK`, so it lands on the
+ * Traditional Noto there rather than the Simplified one.
  */
 html:lang(zh) {
   --stack-sans:
@@ -369,16 +382,111 @@ html:lang(zh-Hant) {
     PMingLiU, MingLiU, serif;
 }
 
-/* ── Han metrics ────────────────────────────────────────────────────────────
+/*
+ * Hong Kong. This rule MUST stay below `html:lang(zh)`. Same specificity,
+ * later in source order, and `:lang(zh)` prefix-matches `zh-HK` — hoist it
+ * above and every Hong Kong page silently gets the Simplified stack and its
+ * mainland glyph forms, which is the one thing a Traditional reader spots on
+ * sight.
+ *
+ * It also has to be its own rule rather than riding on `zh-Hant` above, which
+ * does NOT match `zh-HK`: `:lang()` compares subtag by subtag, not by
+ * substring, so the range `zh-Hant` matches `zh-Hant` and `zh-Hant-*` only
+ * (RFC 4647 §3.3.2 extended filtering — `HK` is not `Hant`, and `zh-HK` has
+ * no `Hant` subtag anywhere for the range to land on). Without this block
+ * Hong Kong falls through the Traditional rule entirely and into the
+ * Simplified one above.
+ *
+ * Hong Kong is not Taiwan typographically. Both write Traditional, but HK has
+ * its own regional glyph standard (常用字字形表, plus HKSCS for the characters
+ * Taiwan never needed), so within each tier of the stack below — platform
+ * face, then Source Han / Noto, then the legacy Windows face — the HK cut goes
+ * ahead of the Taiwan one and Taiwan catches whatever HK misses. That
+ * fall-through has a real cost: a minority of characters then render in Taiwan
+ * forms. It is a far smaller error than the SC/TC one, and the platforms leave
+ * no choice — macOS ships `PingFang HK` but no Song counterpart, so display
+ * starts on `Songti TC`; Windows does the reverse and ships `MingLiU_HKSCS`
+ * (the HKSCS cut of MingLiU) but no HK gothic.
+ *
+ * Do NOT "fix" the overlap by relabelling the locale `zh-Hant-HK`. Engines
+ * disagree on whether `:lang()` is plain prefix matching or full extended
+ * filtering, and that tag resolves differently under each — Traditional-only
+ * under prefix matching, both Traditional and this rule under extended
+ * filtering. `zh-HK` behaves identically in both models. The tag is also the
+ * URL segment and the `hreflang` value; see src/lib/i18n/config.ts.
+ */
+html:lang(zh-HK) {
+  --stack-sans:
+    var(--font-outfit), "PingFang HK", "PingFang TC",
+    "Microsoft JhengHei UI", "Microsoft JhengHei",
+    "Source Han Sans HK", "Noto Sans CJK HK", "Noto Sans HK",
+    "Source Han Sans TC", "Noto Sans TC", "Heiti TC", sans-serif;
+  --stack-display:
+    var(--font-playfair), "Songti TC", "LiSong Pro", "Apple LiSung",
+    "Source Han Serif HK", "Noto Serif CJK HK", "Noto Serif HK",
+    "Source Han Serif TC", "Noto Serif CJK TC", "Noto Serif TC",
+    "MingLiU_HKSCS", PMingLiU, MingLiU, serif;
+}
+
+/*
+ * Japanese. `:lang(ja)` prefix-matches `ja-JP` exactly the way `:lang(zh)`
+ * covers the Chinese tags, so the bare subtag is both correct today and still
+ * correct if a second Japanese tag is ever added.
+ *
+ * The fall-through problem is identical to Chinese — neither brand face has a
+ * kana or a kanji — but the answer is not. Kanji carry their own regional
+ * glyph forms under Han unification, so a Chinese face set on Japanese text
+ * renders visibly wrong shapes for ordinary characters (直, 今 and 骨 among
+ * them) and Japanese readers notice as fast as a Traditional reader notices
+ * Simplified forms. There is therefore deliberately no `PingFang`, `Songti`,
+ * `SimSun` or any other SC/TC face below: where the Chinese stacks would
+ * borrow one, this one runs out and hands the job to the generic instead.
+ */
+html:lang(ja) {
+  --stack-sans:
+    var(--font-outfit), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic UI", "Yu Gothic", Meiryo,
+    "Source Han Sans JP", "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
+
+  /* Display goes to Mincho (明朝) for precisely the reason the Song comment
+     above gives, transposed: Mincho is the Japanese analogue of a Latin serif
+     — modulated strokes, triangular うろこ terminals, real thick/thin contrast
+     — and 明朝 for display against ゴシック for text is standard Japanese
+     practice, not an imported Western convention. Collapse both onto one
+     gothic and every Japanese section reads as flat as a Chinese one would.
+
+     The weight warning on Song applies unchanged here: keep CJK headlines at
+     the `font-weight: 400` this design sets on h1/h2/h3. Heavy Mincho at
+     display size reads as signage, and Android ships NotoSerifCJK at 400 only,
+     so anything else is synthesised there.
+
+     `ProN` is the JIS X 0213:2004 glyph set; the older `Pro` cuts are JIS90
+     and differ on a handful of shapes, so prefer the N. `MS Mincho` sits last
+     with the other legacy platform faces (cf. SimSun and MingLiU above) — it
+     is a bitmap-era screen face, and any Source Han or Noto install beats
+     it. */
+  --stack-display:
+    var(--font-playfair), "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+    "Source Han Serif JP", "Noto Serif CJK JP", "Noto Serif JP",
+    "MS Mincho", serif;
+}
+
+/* ── Han and kana metrics ──────────────────────────────────────────────────
    The type scale above is tuned to Outfit's measured 0.51em x-height: half
    the em box is empty, which is what lets an h1 survive `line-height: 1.1`.
-   Han ink fills essentially the whole em box, so at 1.1 the h1 clamp ceiling
-   puts a 61.6px line box around ~56px of ink and adjacent lines nearly touch.
-   Width goes the other way — Chinese runs 40-70% shorter for the same
-   meaning — so every dimension tuned to Latin is wrong twice over.
+   Han and kana ink fills essentially the whole em box, so at 1.1 the h1 clamp
+   ceiling puts a 61.6px line box around ~56px of ink and adjacent lines nearly
+   touch. Width goes the other way — Chinese runs 40-70% shorter for the same
+   meaning, Japanese less so because kana spend more characters on the same
+   content — so every dimension tuned to Latin is wrong twice over.
 
-   Both scripts reach these through `var()`: the plain (non-inline) `@theme`
-   emits real custom properties and each `.text-*` utility compiles to
+   Japanese is on this rule rather than in a copy of it: these are properties
+   of the em box and the fullwidth body, not of Chinese, and they are wrong for
+   Latin-tuned leading in exactly the same way. Widening the selector keeps the
+   two from drifting apart silently.
+
+   All four CJK locales reach these through `var()`: the plain (non-inline)
+   `@theme` emits real custom properties and each `.text-*` utility compiles to
    `line-height: var(--tw-leading, var(--text-h1--line-height))`, so
    redefining the token here reaches every call site with no component edits.
    The exception is an explicit `leading-*` utility, which sets `--tw-leading`
@@ -386,8 +494,12 @@ html:lang(zh-Hant) {
 
    These numbers are typographic judgement, not measurement. They are the
    right *shape* — looser leading, no tracking — and want a look with real
-   translated copy at real viewport widths before being treated as final. */
-html:lang(zh) {
+   translated copy at real viewport widths before being treated as final. That
+   caveat is heaviest on Japanese, which was never in front of a reviewer at
+   all: a kana-heavy run is optically lighter than a solid kanji one, so if any
+   locale wants a value of its own it is this one. */
+html:lang(zh),
+html:lang(ja) {
   --text-h1--line-height: 1.3;
   --text-h2--line-height: 1.32;
   --text-h3--line-height: 1.35;
@@ -400,20 +512,21 @@ html:lang(zh) {
   --text-meta--line-height: 1.6;
 
   /* The eyebrow's 1.2 assumed a single Latin line. `TRUST & APPROACH` already
-     wraps to two, and two Han lines at 1.2 collide. */
+     wraps to two, and two Han or kana lines at 1.2 collide. */
   --text-eyebrow--line-height: 1.5;
   --text-micro--line-height: 1.5;
 
-  /* Tracking goes to zero, not merely down. Han is already evenly set on a
-     fullwidth body, so +0.16em between glyphs reads as deliberate 疏排
-     spacing — which in Chinese signals something else entirely, not a kicker.
-     `uppercase` on the same elements is a no-op for Han, so the tracking is
-     doing all of the damage on its own. Secondary win: CSS adds tracking
-     after the final character too, which pushes a centred eyebrow (Plans)
-     visibly off-axis.
+  /* Tracking goes to zero, not merely down. Han and kana are already evenly
+     set on a fullwidth body, so +0.16em between glyphs reads as deliberate
+     疏排 spacing — which in Chinese signals something else entirely, not a
+     kicker. Japanese sets on the same body and reads the same extra space as
+     deliberate 字間調整, with the same result. `uppercase` on the same
+     elements is a no-op for both scripts, so the tracking is doing all of the
+     damage on its own. Secondary win: CSS adds tracking after the final
+     character too, which pushes a centred eyebrow (Plans) visibly off-axis.
 
      `--text-wordmark--letter-spacing` is deliberately NOT reset: the wordmark
-     is the brand token `Recharge`, which stays Latin in all three catalogues,
+     is the brand token `Recharge`, which stays Latin in all seven catalogues,
      so its -0.005em optical correction is still the correct value here. */
   --text-eyebrow--letter-spacing: 0em;
   --text-micro--letter-spacing: 0em;
@@ -421,16 +534,20 @@ html:lang(zh) {
 
   /* 12px and 13px Han sit below the comfortable legibility floor — Han needs
      more vertical resolution than Latin at the same nominal size, and the
-     hinting of whichever system face resolves is not ours to control. This
+     hinting of whichever system face resolves is not ours to control. The
+     kanji in Japanese copy are the same ink at the same size, so the floor is
+     set by them there and the kana ride along above it. This
      brings `--text-micro` level with `--text-eyebrow`; they are never
      adjacent (micro is in-card, eyebrow above a section headline), and the
      legibility is worth more than the 2px of hierarchy. */
   --text-micro: 0.875rem;
   --text-meta: 0.875rem;
 
-  /* There is no Han italic. Browsers fake one by shearing the glyphs, which
-     is the most recognisably wrong thing that can happen to Chinese type.
-     Inherited, so this covers the whole subtree. */
+  /* There is no Han italic, and no kana italic either — Japanese marks
+     emphasis with 傍点 or a switch to katakana, never with a slant. Browsers
+     fake one by shearing the glyphs, which is the most recognisably wrong
+     thing that can happen to Chinese or Japanese type. Inherited, so this
+     covers the whole subtree. */
   font-synthesis-style: none;
 }
 
@@ -440,19 +557,25 @@ html:lang(zh) {
  * italic, and a future face with a real italic would start shearing again by
  * proxy. Kill the declaration too.
  *
- * Scoped, not global: Latin italic must keep working. The one call site is
- * Trust's `grad-italic` mark (`<GradText className="italic">`), which is a
- * gradient run *and* italic — losing the italic leaves the gradient, which is
- * the stronger of the two emphasis devices anyway, so the line still reads as
- * emphasised. The element defaults are here because Tailwind's preflight does
- * not reset them, so an `<em>` in translated copy would otherwise shear.
+ * Scoped, not global: Latin italic must keep working, so /en-GB, /ms-MY and
+ * /id-ID are untouched. The one call site is Trust's `grad-italic` mark
+ * (`<GradText className="italic">`), which is a gradient run *and* italic —
+ * losing the italic leaves the gradient, which is the stronger of the two
+ * emphasis devices anyway, so the line still reads as emphasised. The element
+ * defaults are here because Tailwind's preflight does not reset them, so an
+ * `<em>` in translated copy would otherwise shear.
+ *
+ * The two arms below must stay in step with the `font-synthesis-style`
+ * selector in the block above: either property alone leaves half the problem.
  */
-html:lang(zh) :is(.italic, i, em, cite, dfn, address, var) {
+html:lang(zh) :is(.italic, i, em, cite, dfn, address, var),
+html:lang(ja) :is(.italic, i, em, cite, dfn, address, var) {
   font-style: normal;
 }
 
 /*
- * DELIBERATELY NOT SET: `html:lang(zh) p { text-wrap: pretty }`.
+ * DELIBERATELY NOT SET: `html:lang(zh) p { text-wrap: pretty }`, and for the
+ * same reasons no `html:lang(ja)` equivalent.
  *
  * It looks like the right call — a lone glyph stranded on the last line is a
  * real Chinese fault and `pretty` is the property that names it — and it was
@@ -473,6 +596,12 @@ html:lang(zh) :is(.italic, i, em, cite, dfn, address, var) {
  * every character, so greedy is already near-optimal and the balancer has
  * nothing to improve. It is never worse, sometimes much better, and does not
  * need scoping away from CJK.
+ *
+ * zh-HK inherits the finding directly — same script, same break behaviour as
+ * the zh-Hant run above. Japanese was not measured. The argument transfers on
+ * its face (kana and kanji also break between nearly every character, and the
+ * browser applies 禁則処理 at the restricted positions either way), but treat
+ * that as reasoning rather than as the measurement the Chinese numbers are.
  */
 
 /* ═══════════════════════════════════════════════════════════════════════
