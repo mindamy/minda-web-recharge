@@ -31,7 +31,7 @@ import { Logo } from "./Logo";
  *
  *    A Client Component must NOT do this. It receives an already-selected
  *    slice through `<MessagesProvider>` and reads it with `useMessages()`. A
- *    static catalogue import from any `"use client"` file bundles all three
+ *    static catalogue import from any `"use client"` file bundles all seven
  *    locales into the browser chunk with no error and no warning.
  *
  * 2. **Every internal href is locale-prefixed** with `localePath(locale, …)`.

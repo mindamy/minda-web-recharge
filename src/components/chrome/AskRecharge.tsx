@@ -57,7 +57,7 @@ function BubbleCircle({
  * The `Ask Recharge` destination, locale-prefixed.
  *
  * `/ask` is a bare literal like every other route slug — slugs stay English
- * in all three locales — so this is a string prefix that cannot miss. It was
+ * in every locale — so this is a string prefix that cannot miss. It was
  * previously a module-level `ASK_HREF` constant, which is exactly the shape
  * that silently kept pointing at the unprefixed route.
  */

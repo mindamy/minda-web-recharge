@@ -17,7 +17,7 @@ import { PersonCircle, SpeechBubbleDots, Waveform, type IconProps } from "@/comp
  * of any catalogue import, which matters: `LoopArcs` is the section's one
  * `"use client"` file and it imports `DIAGRAM_W` / `DIAGRAM_H` from here. A
  * static catalogue import reachable from the client graph would bundle all
- * three locales into the browser chunk with no error and no warning.
+ * seven locales into the browser chunk with no error and no warning.
  */
 
 /**

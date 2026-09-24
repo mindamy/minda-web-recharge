@@ -45,7 +45,7 @@ export type RichText = readonly RichLine[];
  * embedded in the HTML, so this stays deliberately small — nav, CTA and brand
  * labels, not section prose. A server parent selects it and passes it to
  * `MessagesProvider`; no `"use client"` file may import a catalogue directly,
- * because a static JSON import from the client graph bundles **all three**
+ * because a static JSON import from the client graph bundles **all seven**
  * locales with no warning.
  */
 export type ClientMessages = {

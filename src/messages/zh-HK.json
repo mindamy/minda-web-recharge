@@ -1,0 +1,442 @@
+{
+  "meta": {
+    "default": {
+      "title": "Recharge｜你的專屬身心健康伙伴",
+      "titleTemplate": "%s｜Recharge",
+      "description": "Recharge 結合自我洞察、AI 引導及個人化體驗，讓不同的身心支援互相配合。"
+    },
+    "about": {
+      "title": "關於 Recharge",
+      "description": "Recharge 以你的需要為本，連繫自我洞察、AI 引導及 Recharge 體驗。"
+    },
+    "howItWorks": {
+      "title": "如何使用",
+      "description": "了解自己的感受，是找到合適支援的第一步。看看 Recharge 如何回應你此刻的需要。"
+    },
+    "plans": {
+      "title": "訂閱計劃",
+      "description": "免費試用 Recharge 7 日，再按自己的需要選擇合適的訂閱計劃。"
+    },
+    "theR3Experience": {
+      "title": "R³ 體驗",
+      "description": "將不同體驗連成一個循環，幫助你了解自己、找到所需，讓此刻感覺好一點。"
+    },
+    "trustAndApproach": {
+      "title": "信任與理念",
+      "description": "Recharge 用心提供支援，清楚說明服務內容及界限。我們提供日常身心支援，不作診斷。"
+    },
+    "notFound": {
+      "title": "找不到網頁"
+    }
+  },
+
+  "common": {
+    "brand": {
+      "wordmark": "Recharge",
+      "homeLabel": "Recharge 主頁"
+    },
+    "cta": {
+      "tryFree": "免費試用",
+      "signIn": "登入",
+      "seeHowItWorks": "了解如何使用",
+      "trialMeta": "免費試用 7 日 · 毋須信用卡"
+    },
+    "pillars": {
+      "insights": {
+        "label": "RECONNECT",
+        "title": "自我洞察",
+        "sub": "更了解自己。"
+      },
+      "coaching": {
+        "label": "REALIGN",
+        "title": "AI 引導",
+        "sub": "找到適合自己的支援。"
+      },
+      "experiences": {
+        "label": "RECHARGE",
+        "title": "Recharge 體驗",
+        "titleLong": "個人化 Recharge 體驗",
+        "sub": "讓此刻感覺好一點。"
+      }
+    },
+    "disclaimer": {
+      "medical": "提供日常身心支援，幫助你整理感受，不用於診斷、治療或治癒疾病。"
+    },
+    "ask": {
+      "label": "問問 Recharge",
+      "labelDotted": "問問 Recharge。",
+      "guide": "網站指南",
+      "hero": "不知道從何開始？問問 Recharge",
+      "bannerLead": "不知道從何開始？",
+      "bannerBody": "我們的 AI 伙伴可以幫你整理此刻的感受，尋找可能適合你的支援。",
+      "loop": "想進一步了解 R³ 循環？",
+      "personal": "Recharge 如何提供個人化體驗？",
+      "approach": "對我們的理念有疑問？",
+      "plans": "不肯定哪個計劃適合你？",
+      "plansCta": "幫我選計劃",
+      "start": "開始之前還有疑問嗎？"
+    }
+  },
+
+  "chrome": {
+    "nav": {
+      "landmarkMain": "主要導覽",
+      "landmarkFooter": "頁尾導覽",
+      "openMenu": "開啟選單",
+      "closeMenu": "關閉選單",
+      "items": {
+        "moments": "如何使用",
+        "r3-loop": "R³ 體驗",
+        "plans": "訂閱計劃",
+        "trust": "信任與理念",
+        "connected": "關於我們"
+      }
+    },
+    "localeSwitcher": {
+      "label": "語言"
+    },
+    "scrollCue": {
+      "label": "向下瀏覽"
+    },
+    "footer": {
+      "copyright": "© {year} Recharge 版權所有。",
+      "privacy": "私隱政策",
+      "terms": "服務條款"
+    },
+    "trustStrip": {
+      "support": {
+        "title": "提供支援，不作診斷。"
+      },
+      "privacy": {
+        "title": "你的私隱很重要。",
+        "body": "我們妥善處理你的個人資料，讓你掌握資料的使用方式。"
+      },
+      "care": {
+        "title": "用心打造。",
+        "body": "結合 AI、個人化體驗及對人的理解，為你提供支援。"
+      }
+    }
+  },
+
+  "sections": {
+    "hero": {
+      "eyebrow": "你的專屬身心健康伙伴",
+      "headline": [
+        [
+          { "text": "如果能" },
+          { "text": "睡得更好", "mark": "grad-1" },
+          { "text": "、" },
+          { "text": "心情更平靜", "mark": "grad-2" },
+          { "text": "，也能舒緩" },
+          { "text": "偏頭痛", "mark": "grad-3" },
+          { "text": "帶來的不適", "mark": "violet" },
+          { "text": "，生活會有甚麼不同？" }
+        ]
+      ],
+      "leadSerif": "為身體充電，讓心情平靜下來，醒來時精神煥發。",
+      "leadSans": "給自己好好休息、恢復精神的時間。你值得這份照顧。"
+    },
+
+    "moments": {
+      "eyebrow": "留意此刻的感受",
+      "headline": [
+        [{ "text": "你現在需要甚麼？" }],
+        [{ "text": "你此刻的感受，很重要。", "mark": "grad" }]
+      ],
+      "lead": "一天之中，我們的狀態會有變化。了解自己的感受，是找到合適支援的第一步。",
+      "reassurance": {
+        "title": "狀態有起伏，是很正常的。",
+        "body": "無論一天中的哪個時刻，Recharge 都在這裏為你提供支援。"
+      },
+      "cards": {
+        "focus": {
+          "title": "我想集中精神",
+          "body": ["我想思路更清晰，", "做事更有效率、更投入。"],
+          "alt": "一名年輕男子坐在書桌前，在手提電腦旁寫字，身後是明亮的窗戶。"
+        },
+        "reset": {
+          "title": "我想調整一下狀態",
+          "body": ["事情太多，有點應付不來，", "我需要停一停、調整一下。"],
+          "alt": "一名女子閉着眼睛，蓋着針織毛氈，斜靠在梳化上。"
+        },
+        "runningLow": {
+          "title": "我快沒電了",
+          "body": ["感覺精力耗盡，", "我想為自己充充電。"],
+          "alt": "一名女子穿着綠色外套站在戶外，手裏拿着水樽。"
+        },
+        "switchOff": {
+          "title": "我總是放鬆不下來",
+          "body": ["腦裏的念頭停不下來，", "我想讓自己放鬆一下。"],
+          "alt": "一名男子晚上坐在桌旁，旁邊是發出暖光的枱燈，一隻手按着太陽穴。"
+        },
+        "stuck": {
+          "title": "我覺得停滯不前",
+          "body": ["我想換個角度，", "重新看待眼前的事情。"],
+          "alt": "一名女子坐在室內，用手托着下巴，望向別處。"
+        },
+        "clarity": {
+          "title": "我想理清思緒",
+          "body": ["我想找到方向，", "也想釐清心裏的想法。"],
+          "alt": "黃昏時，一名男子站在湖邊，身後是連綿的群山。"
+        }
+      }
+    },
+
+    "r3Loop": {
+      "eyebrow": [[{ "mark": "rcubed" }, { "text": " RECHARGE 循環" }]],
+      "headline": [
+        [{ "text": "Recharge", "mark": "grad" }, { "text": " 如何幫助你" }]
+      ],
+      "lead": [
+        [
+          { "text": "將不同體驗連成一個循環，幫助你了解自己、找到所需，" },
+          { "text": "讓此刻感覺好一點。", "mark": "strong" }
+        ]
+      ],
+      "noStart": "毋須從指定的一步開始，按你此刻的需要選擇就可以。",
+      "closing": "從此刻開始，按自己的需要調整。",
+      "you": {
+        "title": "你",
+        "pill": ["此刻：", "我想調整一下狀態"]
+      },
+      "experienceCard": {
+        "body": "按你的需要提供個人化音頻體驗，幫助你調整至想要的狀態。",
+        "suggestedLabel": "為此刻的你推薦",
+        "track": {
+          "name": "調整狀態",
+          "duration": "8 分鐘",
+          "body": "留一點時間，放下紛亂的思緒，給自己調整狀態的空間。",
+          "time": "0:00 / 8:00"
+        },
+        "playLabel": "播放《調整狀態》，一段 8 分鐘的 Recharge 體驗"
+      }
+    },
+
+    "connected": {
+      "eyebrow": "讓支援互相連繫",
+      "headline": [
+        [{ "text": "照顧身心的支援，" }],
+        [{ "text": "不應各自分散。" }]
+      ],
+      "lead": [
+        "Recharge 連繫自我洞察、AI 引導及 Recharge 體驗，",
+        "共同回應你的需要。"
+      ],
+      "fragmented": {
+        "eyebrow": "分散的支援",
+        "lead": ["支援可能來自不同地方，", "卻未必能互相配合。"]
+      },
+      "centrePortrait": {
+        "alt": "一名女子坐在室內盆栽旁，抬頭望向窗邊柔和的光線。",
+        "headline": [
+          [{ "text": "以你為中心。" }],
+          [{ "text": "一段" }, { "text": "連貫", "mark": "grad" }, { "text": "的體驗。" }]
+        ],
+        "caption": "Recharge 將每一段體驗連繫起來。"
+      },
+      "unifiedCircle": {
+        "headline": [
+          [{ "text": "一段" }, { "text": "連貫", "mark": "grad" }],
+          [{ "text": "的體驗" }]
+        ],
+        "caption": ["自我洞察、AI 引導、Recharge 體驗，", "互相配合，以你的需要為本。"]
+      },
+      "why": {
+        "eyebrow": "為何要讓支援互相連繫",
+        "problem": ["你需要的支援，", "往往分散在不同地方。"],
+        "answer": ["Recharge 將這些支援連繫起來，", "共同回應你的需要。"],
+        "benefits": {
+          "lessSearching": {
+            "title": "減少四處尋找",
+            "body": "自我洞察、AI 引導及 Recharge 體驗，在同一個地方互相配合。"
+          },
+          "moreRelevant": {
+            "title": "更貼近你",
+            "body": "按你此刻的狀態及重視的事，提供更切合需要的支援。"
+          },
+          "inTheMoment": {
+            "title": "有需要就能開始",
+            "body": "需要支援時就能開始，不必等到時間、地點都剛好合適。"
+          },
+          "overTime": {
+            "title": "逐漸更了解你",
+            "body": "隨着持續使用，Recharge 可以逐漸提供更切合你的體驗。"
+          }
+        }
+      }
+    },
+
+    "rhythm": {
+      "eyebrow": "配合你的生活節奏",
+      "headline": [
+        [{ "text": "回應你此刻的需要。" }],
+        [
+          { "text": "逐漸了解" },
+          { "text": "你的節奏", "mark": "grad" },
+          { "text": "。" }
+        ]
+      ],
+      "lead": "你的需要會隨着一天中的不同時刻，以及生活的變化而改變。Recharge 旨在回應你此刻的狀態，了解你重視的事，並在持續使用的過程中，逐漸提供更切合你的體驗。",
+      "closing": "日常每一刻，都按自己的節奏來。",
+      "noTwo": "每個人都不同，每個時刻也是。",
+      "strip": {
+        "moment": {
+          "title": "配合此刻",
+          "body": "你現在需要甚麼？"
+        },
+        "you": {
+          "title": "切合你的需要",
+          "body": "你的喜好、日常模式及體驗反應。"
+        },
+        "overTime": {
+          "title": "逐漸更切合你",
+          "body": "體驗可以隨你的變化而調整。"
+        }
+      },
+      "timeline": {
+        "morning": {
+          "title": "早晨",
+          "sub": "準備迎接一天",
+          "alt": "一名女子坐在明亮窗邊的床上，舉起雙臂伸展。"
+        },
+        "work": { "title": "工作", "sub": "專注" },
+        "pressure": { "title": "面對壓力時", "sub": "調整狀態" },
+        "energyDip": { "title": "精神不足時", "sub": "充電" },
+        "afterWork": {
+          "title": "下班後",
+          "sub": "放鬆",
+          "alt": "傍晚，一名女子坐在梳化上捧着杯子，身後有盆栽和一盞燈。"
+        },
+        "night": { "title": "夜晚", "sub": "休息" }
+      }
+    },
+
+    "trust": {
+      "eyebrow": "信任與理念",
+      "headline": [
+        [{ "text": "值得信賴的支援，" }],
+        [{ "text": "每一步都陪着你。", "mark": "grad-italic" }]
+      ],
+      "lead": "我們用心提供支援，也清楚說明 Recharge 能做甚麼、不能做甚麼。以下是我們對待你的方式。",
+      "portraitAlt": "一名女子穿着米色麻花針織毛衣，坐在淺色梳化上，雙手捧着杯子，抬頭望向上方。",
+      "cards": {
+        "support": {
+          "title": ["提供支援，不作診斷。"],
+          "body": [
+            [
+              "Recharge 幫助你照顧日常身心狀態，",
+              "整理自己的感受，不用於診斷、治療",
+              "或治癒身體疾病或心理健康問題，",
+              "亦不能取代你所需的專業醫療或心理服務。"
+            ]
+          ]
+        },
+        "ai": {
+          "title": ["AI 提供引導，", "不為你下定義。"],
+          "body": [
+            [
+              "AI 可以幫你整理想法、探索不同觀點，",
+              "一起思考下一步可以怎樣做。"
+            ],
+            ["如何選擇，", "始終由你決定。"]
+          ]
+        },
+        "personalisation": {
+          "title": ["個人化，", "為了更切合你的需要。"],
+          "body": [
+            [
+              "Recharge 結合與你的體驗有關的資料、",
+              "選擇及互動，逐步調整服務，",
+              "讓體驗更切合你的需要。"
+            ]
+          ],
+          "accent": "更切合需要，不過度打擾。"
+        },
+        "privacy": {
+          "title": ["你的私隱，", "值得用心保護。"],
+          "body": [
+            [
+              "照顧身心狀態，可能涉及你重視的",
+              "個人資料。Recharge 以審慎、透明的",
+              "方式處理私隱及資料，",
+              "尊重你對個人資料的控制權。"
+            ]
+          ]
+        }
+      },
+      "closingLead": "Recharge 用心提供支援，清楚說明服務內容，也尊重你的選擇。",
+      "closingSerif": "信任，本來就應是體驗的一部分。"
+    },
+
+    "plans": {
+      "eyebrow": "免費試用及訂閱計劃",
+      "headline": [
+        [{ "text": "選擇" }, { "text": "適合你的", "mark": "grad" }, { "text": " Recharge 計劃。" }]
+      ],
+      "lead": "免費試用 Recharge 7 日，再按自己的需要選擇合適的訂閱計劃。",
+      "trial": {
+        "eyebrow": "7 日免費試用",
+        "body": "先體驗自我洞察、AI 引導及 Recharge 體驗如何互相配合，再選擇適合自己的計劃。"
+      },
+      "badge": "最受歡迎",
+      "priceTbd": "收費即將公布",
+      "tiers": {
+        "essential": {
+          "name": "基本版",
+          "tagline": "輕鬆起步。",
+          "features": [
+            "基本自我洞察功能",
+            "適合較少使用的 AI 引導",
+            "基本 Recharge 體驗",
+            "基本個人化服務"
+          ],
+          "cta": "選擇基本版"
+        },
+        "rhythm": {
+          "name": "節奏版",
+          "tagline": "逐步建立適合自己的日常節奏。",
+          "features": [
+            "更豐富的自我洞察功能",
+            "更多 AI 引導支援",
+            "可使用更多 Recharge 體驗",
+            "隨使用逐步調整的個人化服務"
+          ],
+          "cta": "選擇節奏版"
+        },
+        "plus": {
+          "name": "進階版",
+          "tagline": "深入探索，獲得更多支援。",
+          "features": [
+            "更深入的自我洞察",
+            "最高級別的 AI 引導使用權限",
+            "可使用全部 Recharge 體驗",
+            "更豐富的個人化服務"
+          ],
+          "cta": "選擇進階版"
+        }
+      },
+      "compare": "比較所有功能",
+      "disclaimer": "訂閱計劃內容暫定，名稱、收費及使用限制尚待確認。"
+    },
+
+    "start": {
+      "eyebrow": "展開你的 Recharge 體驗",
+      "headline": [
+        [{ "text": "從此刻的自己" }],
+        [{ "text": "開始就可以。", "mark": "grad" }]
+      ],
+      "lead": "親身體驗 Recharge，找出適合自己的方式。",
+      "explore": "查看訂閱計劃",
+      "portraitAlt": "日出時，一名女子穿着寬鬆的米色亞麻衣服，盤腿坐在平靜的湖邊，抬頭望向光亮處。"
+    }
+  },
+
+  "notFound": {
+    "eyebrow": "網頁尚未推出",
+    "headline": [
+      [{ "text": "這個網頁" }, { "text": "還在準備中。", "mark": "grad" }]
+    ],
+    "body": "你開啟的網頁仍在準備中。不妨先返回 Recharge 主頁，向下瀏覽，探索適合自己的體驗。",
+    "backHome": "返回 Recharge 主頁"
+  }
+}

@@ -1,29 +1,29 @@
 {
   "meta": {
     "default": {
-      "title": "Recharge｜你的专属身心健康伙伴",
+      "title": "Recharge｜你的专属身心关怀伙伴",
       "titleTemplate": "%s｜Recharge",
-      "description": "Recharge 把个人洞察、AI 引导陪伴与个性化体验汇聚在一起，成为一段连贯的身心健康旅程。"
+      "description": "Recharge 将自我洞察、AI 引导和个性化体验融为一体，为你提供连贯的身心支持。"
     },
     "about": {
-      "title": "关于",
-      "description": "Recharge 让个人洞察、AI 引导陪伴与 Recharge 体验围绕着你，连贯地运作。"
+      "title": "关于 Recharge",
+      "description": "Recharge 围绕你的需要，将自我洞察、AI 引导和 Recharge 体验连接起来。"
     },
     "howItWorks": {
-      "title": "运作方式",
-      "description": "察觉自己的感受，是找到帮助的第一步。看看 Recharge 如何回应你此刻的状态。"
+      "title": "如何使用",
+      "description": "了解自己的感受，是找到合适支持的第一步。看看 Recharge 如何回应你当下的需要。"
     },
     "plans": {
-      "title": "方案",
-      "description": "免费体验 Recharge 7 天，再选择最适合你的支持方式。"
+      "title": "订阅方案",
+      "description": "免费试用 Recharge 7 天，再根据自己的需要选择合适的订阅方案。"
     },
     "theR3Experience": {
       "title": "R³ 体验",
-      "description": "一个连贯的循环，帮助你理解自己、找到所需，并在当下感觉更好。"
+      "description": "将不同体验串成一个循环，帮助你了解自己、找到所需，让此刻的状态更好一些。"
     },
     "trustAndApproach": {
       "title": "信任与理念",
-      "description": "Recharge 建立在关怀、清晰与明确的界线之上。陪伴支持，而非诊断。"
+      "description": "Recharge 用心提供支持，清楚说明服务内容与边界，帮助你照顾日常身心状态，不提供诊断。"
     },
     "notFound": {
       "title": "找不到页面"
@@ -38,65 +38,65 @@
     "cta": {
       "tryFree": "免费试用",
       "signIn": "登录",
-      "seeHowItWorks": "运作方式",
-      "trialMeta": "7 天试用，无需信用卡"
+      "seeHowItWorks": "了解如何使用",
+      "trialMeta": "免费试用 7 天 · 无需信用卡"
     },
     "pillars": {
       "insights": {
         "label": "RECONNECT",
-        "title": "个人洞察",
-        "sub": "读懂自己。"
+        "title": "自我洞察",
+        "sub": "更了解自己。"
       },
       "coaching": {
         "label": "REALIGN",
-        "title": "AI 引导陪伴",
-        "sub": "找到你所需要的。"
+        "title": "AI 引导",
+        "sub": "找到适合自己的支持。"
       },
       "experiences": {
         "label": "RECHARGE",
         "title": "Recharge 体验",
         "titleLong": "个性化 Recharge 体验",
-        "sub": "当下就感觉更好。"
+        "sub": "让此刻的状态更好一些。"
       }
     },
     "disclaimer": {
-      "medical": "提供日常身心健康支持与自我觉察，不提供诊断、治疗或治愈。"
+      "medical": "帮助你照顾日常身心状态、梳理感受，不用于诊断、治疗或治愈疾病。"
     },
     "ask": {
       "label": "问问 Recharge",
       "labelDotted": "问问 Recharge。",
-      "guide": "网站导览",
+      "guide": "网站助手",
       "hero": "不知道从哪里开始？问问 Recharge",
       "bannerLead": "不知道从哪里开始？",
-      "bannerBody": "我们的 AI 伙伴可以陪你理清此刻的感受，并找到可能有帮助的方式。",
-      "loop": "对这个循环有疑问？",
-      "personal": "Recharge 如何变得更懂你？",
+      "bannerBody": "我们的 AI 伙伴可以帮你梳理当下的感受，寻找可能适合你的支持。",
+      "loop": "想进一步了解 R³ 循环？",
+      "personal": "Recharge 如何提供个性化体验？",
       "approach": "对我们的理念有疑问？",
-      "plans": "不确定哪个方案适合你？",
-      "plansCta": "帮我选择",
+      "plans": "不知道选哪个订阅方案？",
+      "plansCta": "帮我选方案",
       "start": "开始之前还有疑问吗？"
     }
   },
 
   "chrome": {
     "nav": {
-      "landmarkMain": "主要内容",
-      "landmarkFooter": "页尾",
+      "landmarkMain": "主导航",
+      "landmarkFooter": "页脚导航",
       "openMenu": "打开菜单",
       "closeMenu": "关闭菜单",
       "items": {
-        "moments": "运作方式",
+        "moments": "如何使用",
         "r3-loop": "R³ 体验",
-        "plans": "方案",
-        "trust": "信任理念",
-        "connected": "关于"
+        "plans": "订阅方案",
+        "trust": "信任与理念",
+        "connected": "关于我们"
       }
     },
     "localeSwitcher": {
       "label": "语言"
     },
     "scrollCue": {
-      "label": "向下滚动探索"
+      "label": "向下浏览"
     },
     "footer": {
       "copyright": "© {year} Recharge 版权所有。",
@@ -105,79 +105,79 @@
     },
     "trustStrip": {
       "support": {
-        "title": "陪伴支持，而非诊断。"
+        "title": "提供支持，不做诊断。"
       },
       "privacy": {
         "title": "你的隐私很重要。",
-        "body": "我们谨慎处理你的信息，并把控制权交给你。"
+        "body": "我们妥善处理你的信息，让你自主掌握个人信息的使用。"
       },
       "care": {
         "title": "用心打造。",
-        "body": "AI、个性化与人的洞察，一起为你运作。"
+        "body": "结合 AI、个性化体验与对人的理解，为你提供支持。"
       }
     }
   },
 
   "sections": {
     "hero": {
-      "eyebrow": "你的专属身心健康伙伴",
+      "eyebrow": "你的专属身心关怀伙伴",
       "headline": [
         [
-          { "text": "如果" },
-          { "text": "更好的睡眠", "mark": "grad-1" },
+          { "text": "如果能" },
+          { "text": "睡得更好", "mark": "grad-1" },
           { "text": "、" },
-          { "text": "更平静的心", "mark": "grad-2" },
-          { "text": "，以及" },
+          { "text": "心情更平静", "mark": "grad-2" },
+          { "text": "，还能减轻" },
           { "text": "偏头痛", "mark": "grad-3" },
-          { "text": "不适", "mark": "violet" },
-          { "text": "的缓解，都已触手可及呢？" }
+          { "text": "带来的不适", "mark": "violet" },
+          { "text": "，生活会有什么不同？" }
         ]
       ],
-      "leadSerif": "为身体充电。让心安静下来。醒来时神清气爽。",
-      "leadSans": "给自己应得的休息与恢复。"
+      "leadSerif": "给身体充充电，让心静下来，醒来时精神满满。",
+      "leadSans": "好好休息，慢慢恢复。你值得这样照顾自己。"
     },
 
     "moments": {
-      "eyebrow": "察觉你的此刻",
+      "eyebrow": "关注当下的感受",
       "headline": [
         [{ "text": "你现在需要什么？" }],
-        [{ "text": "你的此刻，值得被看见。", "mark": "grad" }]
+        [{ "text": "你此刻的感受，很重要。", "mark": "grad" }]
       ],
-      "lead": "我们每天都会经过不同的时刻。察觉自己的感受，是找到帮助的第一步。",
+      "lead": "一天之中，我们的状态会有变化。了解自己的感受，是找到合适支持的第一步。",
       "reassurance": {
-        "title": "有起有落，都很正常。",
-        "body": "无论你在一天中的哪个时刻，Recharge 都在这里陪着你。"
+        "title": "状态有起伏，很正常。",
+        "body": "无论一天中的哪个时刻，Recharge 都在这里为你提供支持。"
       },
       "cards": {
         "focus": {
-          "title": "我需要专注",
-          "body": ["我想保持清晰、高效，", "进入心流状态。"],
+          "title": "我想集中注意力",
+          "body": ["我想理清思路，", "做事更高效、更投入。"],
           "alt": "一位年轻男子坐在书桌前，在笔记本电脑旁书写，身后是明亮的窗户。"
         },
         "reset": {
-          "title": "我需要重整",
-          "body": ["我感到有些不堪负荷，", "需要重新调整。"],
-          "alt": "一位女性闭着眼睛，盖着针织毯靠在沙发上。"
+          "title": "我想调整一下状态",
+          "body": ["事情太多，有点招架不住，", "我需要缓一缓。"],
+          "alt": "一位女性闭着眼睛，盖着针织毯斜靠在沙发上。"
         },
         "runningLow": {
           "title": "我快没电了",
-          "body": ["我感觉被掏空了，", "需要充充电。"],
+          "body": ["感觉精力耗尽，", "我想给自己充充电。"],
           "alt": "一位女性穿着绿色外套在户外，手里拿着水瓶。"
         },
         "switchOff": {
-          "title": "我停不下来",
+          "title": "我总是放松不下来",
           "body": ["脑子转个不停，", "我需要放松下来。"],
           "alt": "一位男性夜里坐在桌边，旁边是暖色台灯，一只手按着太阳穴。"
         },
         "stuck": {
           "title": "我感觉卡住了",
-          "body": ["我需要换一个", "看事情的角度。"],
+          "body": ["我想换个角度，", "重新看待眼前的事。"],
           "alt": "一位女性坐在室内，手托着下巴，目光望向别处。"
         },
         "clarity": {
-          "title": "我想更清晰一些",
-          "body": ["我在寻找方向，", "也想看清自己的内心。"],
-          "alt": "一位男性黄昏时站在湖边的户外，身后是连绵的山。"
+          "title": "我想理清思绪",
+          "body": ["我想找到方向，", "也想弄清内心的想法。"],
+          "alt": "黄昏时，一位男性站在湖边，身后是连绵的群山。"
         }
       }
     },
@@ -189,78 +189,78 @@
       ],
       "lead": [
         [
-          { "text": "一个连贯的循环，帮助你理解自己、找到所需，并" },
-          { "text": "在当下感觉更好。", "mark": "strong" }
+          { "text": "将不同体验串成一个循环，帮助你了解自己、找到所需，" },
+          { "text": "让此刻的状态更好一些。", "mark": "strong" }
         ]
       ],
-      "noStart": "没有固定的起点。你在哪里，就从哪里开始。",
-      "closing": "从你所在的地方开始，跟着你的需要走。",
+      "noStart": "不必从固定的一步开始，按你当下的需要选择就好。",
+      "closing": "从当下开始，按自己的需要调整。",
       "you": {
         "title": "你",
-        "pill": ["此刻：", "我需要重整"]
+        "pill": ["此刻：", "我想调整一下状态"]
       },
       "experienceCard": {
-        "body": "个性化音频体验，为你需要的状态而设计。",
-        "suggestedLabel": "为此刻推荐",
+        "body": "根据你的需要提供个性化音频体验，帮助你调整到想要的状态。",
+        "suggestedLabel": "适合此刻的推荐",
         "track": {
-          "name": "重整",
+          "name": "调整状态",
           "duration": "8 分钟",
-          "body": "用一小段时间清掉脑中的杂音，腾出重整的空间。",
+          "body": "留一点时间，放下纷杂的思绪，给自己一个调整状态的机会。",
           "time": "0:00 / 8:00"
         },
-        "playLabel": "播放《重整》，一段 8 分钟的充电体验"
+        "playLabel": "播放《调整状态》，一段 8 分钟的 Recharge 体验"
       }
     },
 
     "connected": {
-      "eyebrow": "更连贯",
+      "eyebrow": "让支持彼此相连",
       "headline": [
-        [{ "text": "身心健康的支持，" }],
-        [{ "text": "不该是零散的。" }]
+        [{ "text": "照顾身心的支持，" }],
+        [{ "text": "不该各自为营。" }]
       ],
       "lead": [
-        "Recharge 让个人洞察、AI 引导陪伴",
-        "与 Recharge 体验，围绕着你一起运作。"
+        "Recharge 将自我洞察、AI 引导和 Recharge 体验",
+        "连接起来，一起回应你的需要。"
       ],
       "fragmented": {
         "eyebrow": "零散的支持",
-        "lead": ["帮助可能来自很多地方，", "却很少彼此衔接。"]
+        "lead": ["帮助可能来自不同的地方，", "却往往难以衔接。"]
       },
       "centrePortrait": {
         "alt": "一位女性坐在室内的绿植旁，抬头望向柔和的窗光。",
         "headline": [
-          [{ "text": "一个人。" }],
+          [{ "text": "以你为中心。" }],
           [{ "text": "一段" }, { "text": "连贯", "mark": "grad" }, { "text": "的体验。" }]
         ],
-        "caption": "Recharge 把整段旅程连起来。"
+        "caption": "Recharge 让每一段体验相互衔接。"
       },
       "unifiedCircle": {
         "headline": [
           [{ "text": "一段" }, { "text": "连贯", "mark": "grad" }],
           [{ "text": "的体验" }]
         ],
-        "caption": ["洞察。引导。体验。", "围绕着你一起运作。"]
+        "caption": ["自我洞察、AI 引导、Recharge 体验，", "相互配合，围绕你的需要展开。"]
       },
       "why": {
-        "eyebrow": "为什么连贯很重要",
-        "problem": ["支持常常散落在", "不同的地方。"],
-        "answer": ["Recharge 把它们", "围绕着你聚在一起。"],
+        "eyebrow": "为什么要把支持连接起来",
+        "problem": ["你需要的支持，", "往往分散在不同的地方。"],
+        "answer": ["Recharge 把这些支持整合起来，", "一起回应你的需要。"],
         "benefits": {
           "lessSearching": {
-            "title": "少一点寻找",
-            "body": "洞察、引导与体验，都在同一个连贯的地方。"
+            "title": "少一些来回寻找",
+            "body": "自我洞察、AI 引导和 Recharge 体验，在这里相互衔接。"
           },
           "moreRelevant": {
             "title": "更贴近你",
-            "body": "支持会随着此刻，以及你在意的事而调整。"
+            "body": "根据当下的状态和你在意的事，提供更贴合需要的支持。"
           },
           "inTheMoment": {
-            "title": "就在当下",
-            "body": "需要的时候就开始，不必等到完美的时间或地点。"
+            "title": "需要时就能开始",
+            "body": "需要支持时就可以开始，不必等到时间、地点都刚刚好。"
           },
           "overTime": {
-            "title": "越用越懂你",
-            "body": "随着你使用 Recharge，体验会变得更贴近你。"
+            "title": "逐渐更懂你",
+            "body": "随着持续使用，Recharge 可以逐渐提供更贴合你的体验。"
           }
         }
       }
@@ -269,43 +269,43 @@
     "rhythm": {
       "eyebrow": "贴合你的节奏",
       "headline": [
-        [{ "text": "在你所在的地方与你相遇。" }],
+        [{ "text": "回应你当下的需要。" }],
         [
-          { "text": "也会慢慢读懂" },
+          { "text": "慢慢了解" },
           { "text": "你的节奏", "mark": "grad" },
           { "text": "。" }
         ]
       ],
-      "lead": "你的需要会随着一天的推移、随着时间而改变。Recharge 的设计，是回应你的此刻，从你在意的事情中学习，并在你持续使用的过程中变得更贴近你。",
-      "closing": "日常的每个时刻，用你自己的节奏。",
-      "noTwo": "没有两个人是一样的，也没有两个时刻是一样的。",
+      "lead": "你的需要会随着一天中的不同时刻，以及生活的变化而改变。Recharge 旨在回应你当下的状态，了解你在意的事，并在持续使用中逐渐提供更贴合你的体验。",
+      "closing": "日常每一刻，都按自己的节奏来。",
+      "noTwo": "每个人都不同，每个当下也各有不同。",
       "strip": {
         "moment": {
-          "title": "贴合此刻",
+          "title": "回应当下",
           "body": "你现在需要什么？"
         },
         "you": {
-          "title": "贴合你",
-          "body": "你的偏好、习惯与反应。"
+          "title": "贴合你的需要",
+          "body": "你的偏好、日常规律和体验反馈。"
         },
         "overTime": {
-          "title": "越用越贴合",
-          "body": "体验会随着你一起成长。"
+          "title": "逐渐更贴合你",
+          "body": "体验可以随你的变化而调整。"
         }
       },
       "timeline": {
         "morning": {
           "title": "早晨",
-          "sub": "准备好",
-          "alt": "一位女性坐在床上，在明亮的窗边把双臂高举伸展"
+          "sub": "准备出发",
+          "alt": "一位女性坐在明亮窗边的床上，举起双臂伸展。"
         },
         "work": { "title": "工作", "sub": "专注" },
-        "pressure": { "title": "压力", "sub": "重整" },
-        "energyDip": { "title": "低电量", "sub": "充电" },
+        "pressure": { "title": "压力大时", "sub": "调整状态" },
+        "energyDip": { "title": "精力不足时", "sub": "充电" },
         "afterWork": {
           "title": "下班后",
           "sub": "放松",
-          "alt": "一位女性傍晚坐在沙发上手捧马克杯，身后是一盆绿植和一盏灯"
+          "alt": "傍晚，一位女性坐在沙发上捧着杯子，身后有绿植和一盏灯。"
         },
         "night": { "title": "夜晚", "sub": "休息" }
       }
@@ -317,126 +317,126 @@
         [{ "text": "值得信任的支持，" }],
         [{ "text": "一路陪着你。", "mark": "grad-italic" }]
       ],
-      "lead": "Recharge 建立在关怀、清晰与明确的界线之上。以下是这对你的意义。",
-      "portraitAlt": "一位女性穿着米色麻花针织毛衣，坐在浅色沙发上，双手捧着马克杯抬头望着。",
+      "lead": "我们用心提供支持，清楚说明 Recharge 能做什么、不能做什么。以下是我们对待你的方式。",
+      "portraitAlt": "一位女性穿着米色麻花针织毛衣，坐在浅色沙发上，双手捧着杯子，抬头望向上方。",
       "cards": {
         "support": {
-          "title": ["陪伴支持，而非诊断。"],
+          "title": ["提供支持，不做诊断。"],
           "body": [
             [
-              "Recharge 支持日常的身心健康",
-              "与个人反思。它无意诊断、治疗",
-              "或治愈任何医疗或心理健康状况，",
-              "在需要时也不能取代专业照护。"
+              "Recharge 帮助你照顾日常身心状态，",
+              "梳理自己的感受，不用于诊断、治疗",
+              "或治愈身体疾病或心理健康问题，",
+              "也不能替代你需要的专业医疗或心理服务。"
             ]
           ]
         },
         "ai": {
-          "title": ["AI 是引导，", "而不是定义你。"],
+          "title": ["AI 提供引导，", "不为你下定义。"],
           "body": [
             [
-              "AI 可以帮你反思、探索不同",
-              "视角，并思考可能的下一步。"
+              "AI 可以帮你梳理想法、换个角度看问题，",
+              "一起探索接下来可以怎么做。"
             ],
-            ["你始终掌握", "自己的选择。"]
+            ["如何选择，", "始终由你决定。"]
           ]
         },
         "personalisation": {
-          "title": ["有目的的", "个性化。"],
+          "title": ["个性化，", "为了更好地支持你。"],
           "body": [
             [
-              "Recharge 的设计，是通过那些",
-              "对你的体验重要的信息、选择",
-              "与互动，变得更贴近你。"
+              "Recharge 结合与你的体验有关的信息、",
+              "选择和互动，逐步调整服务，",
+              "让体验更贴合你的需要。"
             ]
           ],
-          "accent": "更贴近你，而不是更打扰你。"
+          "accent": "更贴合需要，不过多打扰。"
         },
         "privacy": {
-          "title": ["隐私", "值得被慎重对待。"],
+          "title": ["你的隐私，", "值得认真保护。"],
           "body": [
             [
-              "个人的身心健康，可能牵涉到",
-              "对你而言重要的信息。Recharge",
-              "以审慎与透明的态度，看待隐私、",
-              "数据与用户的掌控权。"
+              "照顾身心状态，可能涉及你在意的",
+              "个人信息。Recharge 以审慎、透明的",
+              "方式对待隐私和数据，",
+              "尊重你对个人信息的控制权。"
             ]
           ]
         }
       },
-      "closingLead": "Recharge 的设计，是以关怀、清晰与尊重来支持你。",
+      "closingLead": "Recharge 用心提供支持，把服务说明白，也尊重你的选择。",
       "closingSerif": "信任，本来就该是体验的一部分。"
     },
 
     "plans": {
-      "eyebrow": "免费试用与方案",
+      "eyebrow": "免费试用与订阅方案",
       "headline": [
-        [{ "text": "选择" }, { "text": "适合你的", "mark": "grad" }, { "text": " Recharge。" }]
+        [{ "text": "选择" }, { "text": "适合你的", "mark": "grad" }, { "text": " Recharge 方案。" }]
       ],
-      "lead": "免费体验 Recharge 7 天，再选择最适合你的支持程度。",
+      "lead": "免费试用 Recharge 7 天，再根据自己的需要选择合适的订阅方案。",
       "trial": {
         "eyebrow": "7 天免费试用",
-        "body": "在选择方案之前，先一起体验个人洞察、AI 引导陪伴与 Recharge 体验。"
+        "body": "先体验自我洞察、AI 引导和 Recharge 体验如何相互配合，再决定选择哪个方案。"
       },
       "badge": "最受欢迎",
       "priceTbd": "价格即将公布",
       "tiers": {
         "essential": {
           "name": "基础版",
-          "tagline": "简单开始。",
+          "tagline": "轻松开始。",
           "features": [
-            "核心个人洞察",
-            "轻量使用的 AI 引导陪伴",
-            "核心 Recharge 体验",
-            "基础个性化"
+            "基础自我洞察功能",
+            "适合轻度使用的 AI 引导",
+            "基础 Recharge 体验",
+            "基础个性化服务"
           ],
           "cta": "选择基础版"
         },
         "rhythm": {
           "name": "节奏版",
-          "tagline": "建立持续的节奏。",
+          "tagline": "逐步建立自己的日常节奏。",
           "features": [
-            "扩展的个人洞察",
-            "更多 AI 引导陪伴",
-            "更广的 Recharge 体验使用范围",
-            "随使用而成长的个性化"
+            "更丰富的自我洞察功能",
+            "更多 AI 引导支持",
+            "可使用更多 Recharge 体验",
+            "随使用逐步优化的个性化服务"
           ],
           "cta": "选择节奏版"
         },
         "plus": {
           "name": "加强版",
-          "tagline": "更深入，也有更多支持。",
+          "tagline": "更深入地探索，获得更多支持。",
           "features": [
-            "更深入的个人洞察",
-            "最高的陪伴使用额度",
-            "完整的 Recharge 体验使用范围",
-            "延展的个性化"
+            "更深入的自我洞察",
+            "最高级别的 AI 引导使用权限",
+            "可使用全部 Recharge 体验",
+            "更丰富的个性化服务"
           ],
           "cta": "选择加强版"
         }
       },
-      "compare": "比较所有功能",
-      "disclaimer": "方案内容仍在规划中。名称、价格与使用额度待确认。"
+      "compare": "对比全部功能",
+      "disclaimer": "订阅方案为暂定内容，名称、价格和使用限制尚待确认。"
     },
 
     "start": {
-      "eyebrow": "开始你的 Recharge",
+      "eyebrow": "开启你的 Recharge 体验",
       "headline": [
-        [{ "text": "就从你" }],
-        [{ "text": "所在的地方开始。", "mark": "grad" }]
+        [{ "text": "从此刻的你" }],
+        [{ "text": "开始就好。", "mark": "grad" }]
       ],
-      "lead": "亲自试试 Recharge，找到适合你的方式。",
-      "explore": "浏览方案",
-      "portraitAlt": "一位女性穿着宽松的米色亚麻衣物，日出时分盘腿坐在平静的湖边，抬头望向光"
+      "lead": "亲自体验 Recharge，找到适合自己的方式。",
+      "explore": "查看订阅方案",
+      "portraitAlt": "日出时，一位女性穿着宽松的米色亚麻衣服，盘腿坐在平静的湖边，抬头望向光亮处。"
     }
   },
 
   "notFound": {
-    "eyebrow": "还不在这里",
+    "eyebrow": "页面尚未上线",
     "headline": [
-      [{ "text": "这个页面" }, { "text": "还在路上。", "mark": "grad" }]
+      [{ "text": "这个页面" }, { "text": "还在准备中。", "mark": "grad" }]
     ],
-    "body": "你点开的链接指向一个我们还没建好的地方。就从你所在的地方开始，其余的内容只差一次滚动。",
-    "backHome": "返回 Recharge"
+    "body": "你访问的页面还在准备中。不妨先回到 Recharge 首页，向下浏览，了解适合你的体验。",
+    "backHome": "返回 Recharge 首页"
   }
 }

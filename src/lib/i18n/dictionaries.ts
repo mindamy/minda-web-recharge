@@ -40,8 +40,12 @@ type CatalogueLoader = () => Promise<{ default: Messages }>;
  */
 const dictionaries: Record<Locale, CatalogueLoader> = {
   "en-GB": () => import("@/messages/en-GB.json"),
+  "ms-MY": () => import("@/messages/ms-MY.json"),
+  "id-ID": () => import("@/messages/id-ID.json"),
   "zh-Hans": () => import("@/messages/zh-Hans.json"),
   "zh-Hant": () => import("@/messages/zh-Hant.json"),
+  "zh-HK": () => import("@/messages/zh-HK.json"),
+  "ja-JP": () => import("@/messages/ja-JP.json"),
 };
 
 /**
@@ -62,7 +66,7 @@ export async function getLocale(): Promise<Locale> {
  * Call it with no argument from any Server Component — there is no prop
  * drilling, and no `params` to thread through. Pass an explicit locale only
  * where there is no root param to read (metadata for a sibling locale, a
- * sitemap enumerating all three).
+ * sitemap enumerating every locale).
  */
 export async function getDictionary(locale?: Locale): Promise<Messages> {
   const target = locale ?? (await getLocale());

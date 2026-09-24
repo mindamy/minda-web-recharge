@@ -28,7 +28,11 @@ const R_CUBED = "R³";
  *   2. The map crosses into the client graph through `ClientMessages`, where
  *      a flat string costs a fraction of a segment array's flight payload.
  *   3. `R³` is a brand token and stays Latin in every locale, so splitting on
- *      it is locale-proof — it is present in `zh-Hans` and `zh-Hant` too.
+ *      it is locale-proof — checked against all seven catalogues, not
+ *      assumed. Japanese is the one that would have caught a lazier
+ *      implementation: `R³体験` has no prefix at all, so `markIndex` is 0 and
+ *      the leading slice is the empty string. That renders correctly here,
+ *      and would not have under an `indexOf(...) > 0` guard.
  *
  * Be aware of what the split costs, because the comment this replaced claimed
  * the opposite: once `RCubed` has run, the rendered subtree is `R` plus a
