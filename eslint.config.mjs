@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Firebase Hosting's deploy staging directory. The CLI copies the whole
+    // build into it, so linting it means linting Turbopack's own output —
+    // thousands of errors in generated chunks that no one can act on.
+    ".firebase/**",
   ]),
 ]);
 

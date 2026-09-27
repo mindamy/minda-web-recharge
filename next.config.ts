@@ -1,58 +1,65 @@
 import type { NextConfig } from "next";
 
 /**
- * THE `redirects()` TABLE THAT USED TO LIVE HERE IS GONE ON PURPOSE. DO NOT
- * PUT IT BACK.
+ * THIS SITE IS A STATIC EXPORT. THERE IS NO SERVER ANYWHERE IN IT.
  *
- * It held six literal sources — `/`, `/how-it-works`, `/the-r3-experience`,
- * `/plans`, `/trust-and-approach`, `/about` — each 308ing to its `/en-GB/…`
- * counterpart. `src/proxy.ts` now owns exactly those paths, redirecting the
- * same URLs to a *negotiated* locale instead of a hardcoded English one.
+ * `output: "export"` writes `out/` as plain HTML, CSS and JS, and that directory is
+ * uploaded verbatim to Firebase Hosting's CDN (`firebase.json`, site `recharge-main`).
+ * Nothing in this project runs per-request. That is a deliberate choice — see
+ * `.planning/quick/quick-kayinleong-005/CLAIM.md` — and it is load-bearing for everything
+ * below.
  *
- * Two reasons it had to be removed rather than left alongside the proxy:
+ * ---------------------------------------------------------------------------
+ * DO NOT ADD A `redirects()` TABLE HERE. IT WILL NOT RUN.
  *
- * 1. IT WOULD HAVE WON, SILENTLY AND ALWAYS. The routing chain is ordered, and
- *    `redirects` from `next.config.js` is step 2 while Proxy is step 3
- *    (`node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`,
- *    "Execution order"). A `redirects()` entry for `/` fires before the proxy
- *    is ever consulted, so the negotiation could not run at all — not "runs
- *    and loses", never runs. The only symptom would be that locale detection
- *    appeared to be broken for every visitor on earth, with nothing in the
- *    proxy to debug, because it was never invoked. The framework's own
- *    redirects reference points at this split: locales in `next.config`
- *    redirects work "only as hardcoded paths", and "for dynamic or per-request
- *    locale handling, use dynamic route segments and proxy".
+ * This file used to own six redirects — `/`, `/how-it-works`, `/the-r3-experience`,
+ * `/plans`, `/trust-and-approach`, `/about`, each sending a locale-less URL to its
+ * `/en-GB/…` counterpart. They were removed once, when `src/proxy.ts` took the paths over,
+ * and they must not come back now that the proxy is gone, because **`redirects` is on the
+ * unsupported list for static export**
+ * (`node_modules/next/dist/docs/01-app/02-guides/static-exports.md`). It is a server
+ * feature; with no server it is not an error, it is simply never consulted. The symptom
+ * would be six dead entries in this file and a bare domain that 404s in production while
+ * working perfectly in `next dev`.
  *
- * 2. THEY WERE PERMANENT, AND PERMANENT MEANS PERMANENT. `permanent: true`
- *    emits a 308, which "instructs clients/search engines to cache the
- *    redirect forever" (`…/05-config/01-next-config-js/redirects.md`). Every
- *    browser that has already followed one is holding `/ → /en-GB` with no
- *    expiry, and will keep short-circuiting to English without ever asking the
- *    server again. Those clients cannot be reached from here by any change to
- *    this file; they age out when the user clears site data, and that is the
- *    entire remedy available. This is why `src/proxy.ts` returns a 307 and
- *    says so in a twenty-line comment — a header-dependent destination must
- *    never be cacheable, and this table is the worked example of what it costs
- *    when it is.
+ * Those six paths are now owned by `firebase.json` → `hosting.redirects`, which is the only
+ * layer left that can answer them. Edit them there.
+ * ---------------------------------------------------------------------------
  *
- * The old table's own defence — six literal sources, no regex, so it could not
- * swallow `/zh-Hans/…` or `/_next/…` — still holds, and is now the proxy's
- * `config.matcher` problem instead. That is where the negative lookahead and
- * its reasoning live.
+ * `src/proxy.ts` IS GONE, AND CANNOT COME BACK WITHOUT UNDOING `output: "export"`.
  *
- * Also worth keeping from the old note, because it constrains the replacement:
- * this path redirects rather than rewrites, deliberately. A rewrite over
- * statically prerendered pages is a documented cause of `usePathname()`
- * hydration mismatch, and this site's header scroll-spy is built entirely on
- * `usePathname()`.
+ * Proxy is also on that unsupported list, and unlike `redirects` it does not fail quietly —
+ * the export build refuses to run while the file exists. It held the locale negotiation
+ * from claim 004 (cookie → IP country → `Accept-Language` → default). What replaced it is a
+ * fixed redirect to `en-GB`, so the bare domain no longer adapts to the visitor at all.
+ * `src/lib/i18n/negotiate.ts` is kept, unwired, so that decision is one file away from being
+ * reversible; its header explains how.
  */
 
 const nextConfig: NextConfig = {
+  output: "export",
+
+  /**
+   * `next/image`'s default loader optimises on demand, which is a server doing work per
+   * request — the one thing this config has just removed. Static export therefore requires
+   * this flag, and the build fails without it rather than silently shipping broken images.
+   *
+   * The cost is real but small here: the six `<Image>` call sites now serve the source file
+   * as-is, and the largest of those (`public/images/hero-sunrise.jpg`) is 231 KB. `width`,
+   * `height` and `sizes` still do their job — layout stability and `srcset` selection are
+   * unaffected; only the resizing and the WebP/AVIF rewrite are lost.
+   */
+  images: {
+    unoptimized: true,
+  },
+
   experimental: {
     /**
-     * The root layout now lives under a top-level dynamic segment, which is
-     * one of the two cases the framework names as requiring a global 404 —
-     * there is no longer a layout at `app/` to compose one from.
+     * The root layout lives under a top-level dynamic segment, which is one of the two cases
+     * the framework names as requiring a global 404 — there is no longer a layout at `app/`
+     * to compose one from. Under export this becomes `out/404.html`, which is exactly the
+     * file Firebase Hosting serves for an unmatched path, so the two conventions line up
+     * without any `errorPage` config.
      */
     globalNotFound: true,
   },

@@ -2,11 +2,31 @@
  * Locale negotiation — choosing a locale for a request that arrived without
  * one.
  *
+ * ---------------------------------------------------------------------------
+ * NOTHING CALLS THIS RIGHT NOW. THAT IS ON PURPOSE, AND IT IS REVERSIBLE.
+ *
+ * Its one caller was `src/proxy.ts`, deleted when the site moved to a static
+ * export for Firebase Hosting (claim 005) — Proxy is on the framework's
+ * unsupported-for-export list and the build refuses to run while the file
+ * exists. The six locale-less entry paths are now answered by a fixed
+ * redirect to `en-GB` in `firebase.json`, so the bare domain no longer adapts
+ * to the visitor at all.
+ *
+ * The module is kept rather than deleted because it is the decision, not the
+ * plumbing: the priority order below was argued out with the product owner,
+ * and the q-value parsing, the country table and the untrusted-input guards
+ * are each backed by the assertion harness the file carries. Re-wiring it is
+ * one adapter — restore `src/proxy.ts` from git (`git log -- src/proxy.ts`),
+ * drop `output: "export"`, and move to a host that runs a server.
+ *
+ * Read the rest of this comment as a description of how it decides, not of
+ * what the deployed site currently does.
+ * ---------------------------------------------------------------------------
+ *
  * Every real URL on this site carries a locale segment (`/en-GB/plans`), so
  * this module exists for exactly one moment: a visitor lands on `/` or on a
- * bare route and something has to pick for them. `src/proxy.ts` redirects;
- * this file decides. (It is `proxy.ts`, not `middleware.ts` — Next.js 16
- * renamed the convention; that file's own comment has the details.)
+ * bare route and something has to pick for them. The caller redirects; this
+ * file decides.
  *
  * **Deliberately framework-free.** Nothing here imports from `next/*`, takes
  * a `NextRequest`, or touches the cookies API. Every function takes plain
@@ -47,15 +67,22 @@
  * the English-speaking expat in Malaysia must not be flipped back to Malay on
  * every single visit.
  *
- * ## No host has been chosen yet
+ * ## Step 2 would not have worked on the current host either
  *
- * `NEXT_PUBLIC_SITE_URL` is still a TODO in `./metadata`, so this code cannot
- * assume Vercel, Cloudflare, Netlify or App Engine. `countryFromHeaders`
- * therefore reads whichever geo header happens to be present and
- * **returns `null` when none is** — that is a normal, expected path, not an
- * error and not something to log. On a host that provides no geolocation the
- * IP signal simply drops out and the decision degrades to `Accept-Language`
- * and then to English. It must never crash and must never guess a country.
+ * Worth knowing before anyone re-wires this expecting the claim-004
+ * behaviour: Firebase Hosting injects **none** of the headers in
+ * `COUNTRY_HEADERS` — it has no Vercel, Cloudflare or App Engine equivalent
+ * to offer. Even with a server in front of it, `countryFromHeaders` would
+ * return `null` on every request there and the country step would be dead
+ * weight, leaving cookie → `Accept-Language` → `en-GB`. That inverts claim
+ * 004's headline decision, which was that country should outrank
+ * `Accept-Language`: with no country available, a Japanese speaker in Kuala
+ * Lumpur gets Japanese.
+ *
+ * `null` is the documented normal path — not an error, not something to log —
+ * and a table that never matches costs nothing. The failure modes worth
+ * guarding are the opposite ones: guessing a country, or throwing when the
+ * header is absent.
  *
  * ## Everything here parses untrusted input
  *

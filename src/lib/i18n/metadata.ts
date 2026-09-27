@@ -26,12 +26,18 @@ import { getDictionary, getLocale } from "./dictionaries";
 /**
  * The origin used to absolutise `alternates`.
  *
- * TODO(deploy): set `NEXT_PUBLIC_SITE_URL` to the real origin. The fallback
- * exists so the build is not blocked before a domain is chosen; shipping it
- * would publish `hreflang` links to a domain nobody owns.
+ * The fallback is the live Firebase Hosting origin, filled in when the site was
+ * first deployed. It is a default, not a lock — `NEXT_PUBLIC_SITE_URL` still
+ * wins, and is how a custom domain takes over without touching this file.
+ *
+ * It matters that the fallback is a real origin rather than a placeholder.
+ * These pages are prerendered, so whatever this resolves to at **build** time
+ * is baked into every canonical and all seven `hreflang` links of all 42
+ * shipped pages. A placeholder does not fail the build; it quietly publishes
+ * a few hundred links to a domain nobody owns.
  */
 export const SITE_URL = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://recharge.example.com",
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://recharge-main.web.app",
 );
 
 /**

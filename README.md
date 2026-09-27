@@ -56,7 +56,14 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:3000.
+Then open **http://localhost:3000/en-GB** — note the locale segment.
+
+> `http://localhost:3000` itself 404s, and so do `/plans`, `/how-it-works` and the other three
+> bare routes. Every real URL on this site carries a locale, and the thing that used to answer
+> the locale-less ones — `src/proxy.ts` — was deleted when the site became a static export.
+> What replaced it is a redirect table in `firebase.json`, which only exists in front of the
+> deployed site. Nothing is broken locally; the front door simply lives in the CDN now. See
+> [Deployment](#deployment).
 
 ## Scripts
 
@@ -71,6 +78,87 @@ Then open http://localhost:3000.
 > `typecheck` runs `next typegen` first on purpose. Next.js 16 generates the typed-routes
 > helpers (`LayoutProps`, `PageProps`) into `.next/types`, and a bare `tsc --noEmit` fails
 > with `Cannot find name 'LayoutProps'` if those have never been generated.
+
+## Deployment
+
+Firebase Hosting, project `mtherapys`, site `recharge-main` — https://recharge-main.web.app
+
+```bash
+FIREBASE_HOSTING_UPLOAD_CONCURRENCY=8 firebase deploy --only hosting
+```
+
+That is the whole procedure. The environment variable is not optional today — see
+[the pages are enormous](#known-problem-the-pages-are-enormous) below. `firebase.json` holds the site, the redirect table and the cache
+headers; `.firebaserc` pins the project; a `predeploy` hook runs `npm run build` first, so the
+uploaded `out/` is never a stale one.
+
+| | |
+|---|---|
+| Output | `output: "export"` in `next.config.ts` → `out/`, 44 HTML files and their assets |
+| Server | **None.** Nothing in this project runs per request |
+| Preview | `firebase hosting:channel:deploy <name> --expires 7d` — same build, temporary URL |
+| Rollback | `firebase hosting:rollback`, or the Hosting console's release list |
+
+### What being static costs, and where the cost is paid
+
+> **There is no locale detection any more.** `src/proxy.ts` decided a visitor's language from
+> their cookie, IP country and `Accept-Language`; Proxy is on the framework's
+> unsupported-for-export list and the build refuses to run while the file exists. The six
+> locale-less entry paths are now six fixed `302`s to `/en-GB/…` in `firebase.json`, so
+> everyone who types the bare domain lands on English and has to use the switcher.
+> `src/lib/i18n/negotiate.ts` is kept, unwired, so the decision is recoverable — its header
+> says how, and notes that the IP-country half would not have worked on Firebase regardless,
+> since Hosting injects no geo header.
+
+> **The redirects are `302`, not `301`.** A permanent redirect from `/` to a language is
+> cached by the browser and by every CDN in between, forever. Today that would merely pin the
+> English we are already sending; the day negotiation comes back it would pin English for
+> every visitor who ever hit the old one. The cost of `302` is a repeated round trip on a
+> 9 KB redirect. Do not "optimise" it.
+
+> **`next/image` is unoptimised.** Static export has no image server, so `images.unoptimized`
+> is set and the six `<Image>` call sites serve their source files as-is. `width`/`height`/
+> `sizes` still work; the resizing and the WebP/AVIF rewrite do not.
+
+> **`NEXT_PUBLIC_SITE_URL` is baked in at build time.** Every canonical and all seven
+> `hreflang` links in the shipped HTML are whatever the origin was when `next build` ran. It
+> defaults to the Hosting origin in `src/lib/i18n/metadata.ts`; export the variable before
+> deploying to move the site to a custom domain.
+
+> **The site ID is the site's name, and `recharge` was not available.** Hosting site IDs are
+> unique across every Firebase project on earth; that one is held by someone else and the API
+> refuses it rather than suffixing it. Hence `recharge-main`. A custom domain mapped onto the
+> site hides the ID from visitors entirely.
+
+### Known problem: the pages are enormous
+
+`out/` is **105 MB** and a single page is **2.26 MB** (871 KB gzipped — the path data is
+high-entropy and barely compresses). Roughly 96% of that is the Aurora artwork: ~1.0 MB of
+inline `<svg>` — 111 `<svg>` elements, 903 `<path>` — plus ~1.1 MB of RSC payload carrying the
+same markup a second time, repeated across all 42 locale pages. This is not cosmetic; it
+already killed one deploy with an upload timeout. The nine Aurora presets take no
+data-dependent props, so they should be built once into static files rather than inlined per
+page. Tracked separately.
+
+Until that is fixed, **deploys must turn the upload concurrency down**:
+
+```bash
+FIREBASE_HOSTING_UPLOAD_CONCURRENCY=8 firebase deploy --only hosting
+```
+
+The CLI defaults to **200** simultaneous uploads (`lib/deploy/hosting/deploy.js`) against a
+per-file timeout of 30 seconds. At 871 KB a file, 200 parallel transfers starve each other and
+every one of them blows that timeout at the same moment. Two deploys died exactly that way,
+around 80 files in:
+
+```
+Error: Task <hash> failed: retries exhausted after 6 attempts, with error:
+Timeout reached making request to https://upload-firebasehosting.googleapis.com/...
+```
+
+It reads like a network fault and is not one — it is a self-inflicted bandwidth problem, and
+it will come back the moment someone copies the bare `firebase deploy` from the Firebase docs.
+Shrinking the pages removes the need for the flag.
 
 ## Routing
 

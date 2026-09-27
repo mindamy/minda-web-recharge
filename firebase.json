@@ -1,0 +1,26 @@
+{
+  "hosting": {
+    "site": "recharge-main",
+    "public": "out",
+    "predeploy": "npm run build",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      { "source": "/", "destination": "/en-GB", "type": 302 },
+      { "source": "/how-it-works", "destination": "/en-GB/how-it-works", "type": 302 },
+      { "source": "/the-r3-experience", "destination": "/en-GB/the-r3-experience", "type": 302 },
+      { "source": "/plans", "destination": "/en-GB/plans", "type": 302 },
+      { "source": "/trust-and-approach", "destination": "/en-GB/trust-and-approach", "type": 302 },
+      { "source": "/about", "destination": "/en-GB/about", "type": 302 }
+    ],
+    "headers": [
+      {
+        "source": "/_next/static/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      }
+    ]
+  }
+}
