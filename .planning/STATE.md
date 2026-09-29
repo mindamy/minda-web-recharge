@@ -2,7 +2,7 @@
 
 - project: Recharge marketing website
 - stack: Next.js (latest stable), TypeScript, Tailwind, motion
-- locales: en-GB (default), ms-MY, id-ID, zh-Hans, zh-Hant, ja-JP — six locale-prefixed routes, JSON catalogues in src/messages/ (zh-HK / Hong Kong removed in quick-006)
+- locales: en-GB (default), ms-MY, id-ID, zh-Hans, ja-JP — five locales, JSON catalogues in src/messages/ (Traditional Chinese removed: zh-HK/Hong Kong in quick-006, zh-Hant/Taiwan in quick-007 — Simplified is now the only Chinese)
 - deployed: https://recharge-main.web.app — Firebase Hosting, project `mtherapys`, site `recharge-main`, static export
 - deploys need `FIREBASE_HOSTING_UPLOAD_CONCURRENCY=8` until the 2.26 MB pages shrink
 - design source: `.docs/Design.pdf` (8 pages) + `.docs/First Page.jpeg` (replaces page 1)
@@ -20,3 +20,4 @@
 | quick-kayinleong-004 | 2026-09-24 | Seven locales, country flags in the switcher, IP + device-language auto-select | done |
 | quick-kayinleong-005 | 2026-09-28 | Deploy to Firebase Hosting as a static export; proxy removed, locale detection retired | done |
 | quick-kayinleong-006 | 2026-09-29 | Refresh 5 catalogues from the localization pack; remove Hong Kong (zh-HK); language switcher in the mobile bar (locale-aware nav breakpoint) | done |
+| quick-kayinleong-007 | 2026-09-29 | Remove the Taiwan (zh-Hant) locale — last Traditional Chinese; site now five locales | done |
