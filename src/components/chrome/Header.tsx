@@ -39,6 +39,17 @@ import { NavLabel } from "./NavLabel";
  * no warning, and a site that still works perfectly in every language.
  * ---------------------------------------------------------------------------
  */
+/**
+ * Locales whose fully-translated header nav labels overflow the bar at `xl`
+ * (1280px) and so defer the horizontal nav to a wider breakpoint, staying on
+ * the burger until then. Measured in quick-kayinleong-006: Malay and Indonesian
+ * run to `Kepercayaan & Pendekatan` / `Tentang Kami`, which collide with the
+ * wordmark below ~1600px. Every other locale clears `xl` exactly as before, so
+ * only these two pay for their longer copy rather than the whole site dropping
+ * to a later breakpoint.
+ */
+const WIDE_NAV_LOCALES = new Set(["ms-MY", "id-ID"]);
+
 export function Header() {
   const pathname = usePathname();
   const { nav, cta, brand } = useMessages();
@@ -68,6 +79,14 @@ export function Header() {
    */
   const { locale, route } = splitLocalePath(pathname);
   const isHome = route === "/";
+
+  // Wide-label locales defer the horizontal nav to `min-[1600px]`; every other
+  // locale keeps the original `xl` (1280px) breakpoint. Written as whole-literal
+  // classes so Tailwind emits both variants (see WIDE_NAV_LOCALES above).
+  const wideNav = WIDE_NAV_LOCALES.has(locale);
+  const navShow = wideNav ? "min-[1600px]:block" : "xl:block";
+  const clusterShow = wideNav ? "min-[1600px]:flex" : "xl:flex";
+  const barHide = wideNav ? "min-[1600px]:hidden" : "xl:hidden";
 
   // `chrome.nav.items` is keyed by the five section ids that have nav
   // entries; `SectionId` covers all eight. Widening to a partial record is
@@ -167,17 +186,25 @@ export function Header() {
           <Logo wordmark={brand.wordmark} />
         </Link>
 
-        <nav aria-label={nav.landmarkMain} className="hidden xl:block">
+        {/*
+          The horizontal nav appears at `xl` (1280px) for most locales; Malay
+          and Indonesian defer it to 1600px (see WIDE_NAV_LOCALES). At `xl` their
+          supplied labels — `Kepercayaan & Pendekatan`, `Tentang Kami` — overflow
+          the bar and collide with the wordmark, and even `2xl` (1536px) leaves
+          Malay ~40px short once the switcher shows its autonym, so 1600px is the
+          measured width where they clear it with the translations intact rather
+          than trimmed. Below the breakpoint the burger sheet carries the links,
+          and the language switcher rides in the bar beside the burger (see the
+          mobile controls below), so nothing is lost.
+        */}
+        <nav aria-label={nav.landmarkMain} className={cn("hidden", navShow)}>
           {/*
-            `gap-8` until `2xl`, not `gap-9` everywhere.
-
-            At 1280px — the width at which this nav appears at all — the bar
-            has 1200px of track for a 223px logo, this nav and the CTA
-            cluster. With the full 36px gaps English clears it by 8px, which
-            is inside the margin a font swap can move. The four gaps give back
-            16px for a 4px change nobody will see, and English ends at 24px of
-            slack with Malay, the widest locale, at 40px. Restored to `gap-9`
-            at `2xl`, where there is room for the design's intended rhythm.
+            `gap-8` until `2xl`, then `gap-9`. At `xl` (1280px) — where this nav
+            first appears for the non-wide locales — the bar has 1200px of track
+            for the 223px logo, this nav and the CTA cluster, and the tighter
+            `gap-8` is what lets English clear it; `gap-9` returns at `2xl` where
+            the design's intended rhythm has room. The wide locales only show the
+            nav from 1600px, comfortably inside the `gap-9` band.
           */}
           <ul className="flex items-center gap-8 2xl:gap-9">
             {NAV_ITEMS.map((item) => {
@@ -215,7 +242,7 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-6 xl:flex">
+        <div className={cn("hidden items-center gap-6", clusterShow)}>
           {/* Sits with the CTA cluster rather than in the nav list: it is not
               a destination in the site's story, it is a control over how the
               story is read — the same category as Sign In. */}
@@ -228,38 +255,49 @@ export function Header() {
           </Button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          aria-label={menuOpen ? nav.closeMenu : nav.openMenu}
-          className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-ink-800 transition-colors duration-150 hover:bg-white/60 xl:hidden"
-        >
-          <svg viewBox="0 0 24 24" className="size-6" fill="none" aria-hidden focusable="false">
-            {menuOpen ? (
-              <path
-                d="M6 6l12 12M18 6L6 18"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                d="M3.5 7h17M3.5 12h17M3.5 17h17"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-              />
-            )}
-          </svg>
-        </button>
+        {/*
+          Bar controls shown until the horizontal nav takes over (`xl`, or 1600px
+          for the wide-label locales). The language switcher sits OUT HERE beside
+          the burger, not only inside the sheet: a reader who has landed in a
+          script they cannot read must be able to change it without first
+          discovering that the way out is hidden behind a burger. It is the same
+          disclosure control the desktop bar uses.
+        */}
+        <div className={cn("flex items-center gap-1.5", barHide)}>
+          <LanguageSwitcher />
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? nav.closeMenu : nav.openMenu}
+            className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-ink-800 transition-colors duration-150 hover:bg-white/60"
+          >
+            <svg viewBox="0 0 24 24" className="size-6" fill="none" aria-hidden focusable="false">
+              {menuOpen ? (
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                />
+              ) : (
+                <path
+                  d="M3.5 7h17M3.5 12h17M3.5 17h17"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {menuOpen && (
         <div
           id="mobile-nav"
-          className="border-t border-hairline-faint bg-white/95 backdrop-blur-xl xl:hidden"
+          className={cn("border-t border-hairline-faint bg-white/95 backdrop-blur-xl", barHide)}
         >
           <nav aria-label={nav.landmarkMain} className="px-6 py-6 sm:px-8">
             <ul className="flex flex-col gap-1">
@@ -292,22 +330,6 @@ export function Header() {
               >
                 {cta.signIn}
               </Button>
-            </div>
-
-            {/*
-              The switcher is in the sheet as well as the bar, and flat rather
-              than collapsed. The bar at mobile width is a logo and a burger,
-              so without this a reader who has landed in a script they cannot
-              read has no way out of it at all — and a disclosure nested
-              inside the burger would make them find a collapsed control
-              inside a collapsed control to escape.
-            */}
-            <div className="mt-6 border-t border-hairline-faint pt-6">
-              <LanguageSwitcher
-                variant="sheet"
-                className="text-nav"
-                onNavigate={() => setMenuOpen(false)}
-              />
             </div>
           </nav>
         </div>
