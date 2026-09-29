@@ -25,14 +25,12 @@ import type { Locale } from "@/lib/i18n/config";
  *
  * FLAGS ARE COUNTRIES; LANGUAGES ARE NOT COUNTRIES. This is the standard
  * objection to flags in a language picker and it is a fair one. Two of the
- * seven locales have no country to point at: `zh-Hans` and `zh-Hant` are
+ * six locales have no country to point at: `zh-Hans` and `zh-Hant` are
  * *script* subtags — Simplified and Traditional Han — with no region subtag
  * at all. Showing them CN and TW is a convention, not a fact, and it was an
  * explicit product decision rather than an oversight: for this audience the
- * mainland/Taiwan flags are the fastest visual key to the two script forms,
- * and `zh-HK` exists separately precisely because Hong Kong is a real region
- * with its own catalogue. The decision is only safe because of the next
- * paragraph.
+ * mainland/Taiwan flags are the fastest visual key to the two script forms.
+ * The decision is only safe because of the next paragraph.
  *
  * THE FLAG IS DECORATION AND MUST NEVER BECOME THE LABEL. Every flag here is
  * `aria-hidden` with `focusable="false"`; the meaning is carried entirely by
@@ -43,11 +41,11 @@ import type { Locale } from "@/lib/i18n/config";
  * "Traditional Chinese", must lose nothing.
  *
  * ---------------------------------------------------------------------------
- * ALL SEVEN ARE DRAWN ON ONE `viewBox="0 0 60 40"` (3:2).
+ * ALL SIX ARE DRAWN ON ONE `viewBox="0 0 60 40"` (3:2).
  *
  * A uniform box is what makes a vertical list of flags look like a list
  * rather than a ransom note, and it lets the caller size them with one pair
- * of utilities. Five of the seven (JP, CN, TW, HK, ID) are natively 3:2 and
+ * of utilities. Four of the six (JP, CN, TW, ID) are natively 3:2 and
  * are therefore drawn at true proportions. GB and MY are natively 2:1 and are
  * *redrawn* to 3:2 — every feature rescaled with the new height — which is
  * the normalisation every flag icon set performs. It is not letterboxing and
@@ -57,8 +55,8 @@ import type { Locale } from "@/lib/i18n/config";
  *
  * Budget: at the default 21x14 CSS px, one SVG unit is a third of a pixel.
  * Detail below about one pixel is invisible and is deliberately dropped —
- * the red star inside each Hong Kong petal, the thin blue ring around the
- * Taiwanese sun. What must survive is silhouette and colour.
+ * for example the thin blue ring around the Taiwanese sun. What must survive
+ * is silhouette and colour.
  */
 
 /**
@@ -231,41 +229,6 @@ function TaiwanArtwork() {
 }
 
 /**
- * Hong Kong: red field, white bauhinia centred.
- *
- * Five petals, each an ellipse whose centre sits 5.6 out from (30,20) and
- * which is then rotated about that centre in 72 degree steps — so the major
- * axis always points radially outward and the five overlap into a solid core.
- * The flower spans 23.6 units, a shade under 3/5 of the hoist.
- *
- * Two details of the real flower are deliberately absent: each petal carries
- * a small red five-pointed star (under half a pixel here — it would only
- * dirty the white) and the petals pinwheel rather than sitting symmetrically.
- * What has to survive is "five white petals on red", and that does.
- */
-const HK_PETAL_ANGLES = [0, 72, 144, 216, 288];
-
-function HongKongArtwork() {
-  return (
-    <>
-      <rect width="60" height="40" fill="#EE1C25" />
-      <g fill="#FFFFFF">
-        {HK_PETAL_ANGLES.map((angle) => (
-          <ellipse
-            key={angle}
-            cx="30"
-            cy="14.4"
-            rx="3.6"
-            ry="6.2"
-            transform={`rotate(${angle} 30 20)`}
-          />
-        ))}
-      </g>
-    </>
-  );
-}
-
-/**
  * Malaysia, renormalised from 2:1 to 3:2.
  *
  * Fourteen stripes over a 40-unit hoist is 40/14 per stripe — an awkward
@@ -339,7 +302,7 @@ const GB_COUNTERCHANGE =
   "M0,0 L0,20 L30,20 Z M30,20 L30,0 L60,0 Z M30,20 L30,40 L0,40 Z M30,20 L60,20 L60,40 Z";
 
 function UnionJackArtwork() {
-  // All seven flags can be on screen at once, and a duplicated SVG id is
+  // All six flags can be on screen at once, and a duplicated SVG id is
   // resolved by document order rather than by proximity — so two menus, or a
   // menu and a footer row, would silently share one clip. `useId` is the
   // SSR-safe unique source; React 19 wraps it in guillemets (`«r0»`), which
@@ -374,8 +337,8 @@ function UnionJackArtwork() {
  * The locale -> artwork map.
  *
  * `Record<Locale, ...>` — total, never `Partial`, for the same reason the
- * `dictionaries` loader map is (see `@/lib/i18n/dictionaries`). Adding an
- * eighth locale to `LOCALES` without drawing its flag is then a
+ * `dictionaries` loader map is (see `@/lib/i18n/dictionaries`). Adding a
+ * seventh locale to `LOCALES` without drawing its flag is then a
  * `tsc --noEmit` failure at this line, rather than one blank gap in a menu
  * that nobody on the team can read anyway.
  *
@@ -390,6 +353,5 @@ const FLAG_ARTWORK: Record<Locale, () => ReactElement> = {
   "id-ID": IndonesiaArtwork,
   "zh-Hans": ChinaArtwork,
   "zh-Hant": TaiwanArtwork,
-  "zh-HK": HongKongArtwork,
   "ja-JP": JapanArtwork,
 };

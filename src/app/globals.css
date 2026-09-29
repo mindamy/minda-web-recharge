@@ -277,8 +277,8 @@
 
    Neither Playfair Display nor Outfit contains a single Han glyph or kana —
    both are loaded `subsets: ["latin"]`, and the Google Fonts registry has no
-   CJK subset for either family at any setting. So on /zh-Hans, /zh-Hant,
-   /zh-HK and /ja-JP every Han character and every kana was falling through to
+   CJK subset for either family at any setting. So on /zh-Hans, /zh-Hant and
+   /ja-JP every Han character and every kana was falling through to
    whatever last-resort face the OS happened to offer. This block chooses that
    face deliberately, per script.
 
@@ -318,13 +318,13 @@
 }
 
 /*
- * `:lang(zh)` prefix-matches `zh-Hans`, `zh-Hant` AND `zh-HK`, so it must come
+ * `:lang(zh)` prefix-matches both `zh-Hans` and `zh-Hant`, so it must come
  * FIRST and carry the Simplified stack only as the safety net for a bare
- * `lang="zh"`; the Traditional and Hong Kong rules below then override it.
- * Every `:lang()` rule in this file has the same specificity — one type
- * selector plus one pseudo-class, (0,1,1) — so source order is the only thing
- * deciding, and hoisting either of those two above this block silently serves
- * those pages the Simplified stack.
+ * `lang="zh"`; the Traditional rule below then overrides it. Every `:lang()`
+ * rule in this file has the same specificity — one type selector plus one
+ * pseudo-class, (0,1,1) — so source order is the only thing deciding, and
+ * hoisting the Traditional rule above this block silently serves those pages
+ * the Simplified stack.
  *
  * The SC/TC split is not cosmetic. Han unification means one codepoint can
  * carry different regional glyph shapes, so `PingFang SC` renders mainland
@@ -341,9 +341,7 @@
  * decorative: Android's fonts.xml maps `serif` + `lang="zh-Hans"` /
  * `lang="zh-Hant"` / `lang="ja"` to the correct *regional* Noto Serif CJK, so
  * the keyword resolves the Song or Mincho face for us on the one platform
- * that ships no named one. Android has no HK-specific family, but CLDR
- * likely-subtags resolve `zh-HK` to `zh-Hant-HK`, so it lands on the
- * Traditional Noto there rather than the Simplified one.
+ * that ships no named one.
  */
 html:lang(zh) {
   --stack-sans:
@@ -380,52 +378,6 @@ html:lang(zh-Hant) {
     var(--font-playfair), "Songti TC", "LiSong Pro", "Apple LiSung",
     "Source Han Serif TC", "Noto Serif CJK TC", "Noto Serif TC",
     PMingLiU, MingLiU, serif;
-}
-
-/*
- * Hong Kong. This rule MUST stay below `html:lang(zh)`. Same specificity,
- * later in source order, and `:lang(zh)` prefix-matches `zh-HK` — hoist it
- * above and every Hong Kong page silently gets the Simplified stack and its
- * mainland glyph forms, which is the one thing a Traditional reader spots on
- * sight.
- *
- * It also has to be its own rule rather than riding on `zh-Hant` above, which
- * does NOT match `zh-HK`: `:lang()` compares subtag by subtag, not by
- * substring, so the range `zh-Hant` matches `zh-Hant` and `zh-Hant-*` only
- * (RFC 4647 §3.3.2 extended filtering — `HK` is not `Hant`, and `zh-HK` has
- * no `Hant` subtag anywhere for the range to land on). Without this block
- * Hong Kong falls through the Traditional rule entirely and into the
- * Simplified one above.
- *
- * Hong Kong is not Taiwan typographically. Both write Traditional, but HK has
- * its own regional glyph standard (常用字字形表, plus HKSCS for the characters
- * Taiwan never needed), so within each tier of the stack below — platform
- * face, then Source Han / Noto, then the legacy Windows face — the HK cut goes
- * ahead of the Taiwan one and Taiwan catches whatever HK misses. That
- * fall-through has a real cost: a minority of characters then render in Taiwan
- * forms. It is a far smaller error than the SC/TC one, and the platforms leave
- * no choice — macOS ships `PingFang HK` but no Song counterpart, so display
- * starts on `Songti TC`; Windows does the reverse and ships `MingLiU_HKSCS`
- * (the HKSCS cut of MingLiU) but no HK gothic.
- *
- * Do NOT "fix" the overlap by relabelling the locale `zh-Hant-HK`. Engines
- * disagree on whether `:lang()` is plain prefix matching or full extended
- * filtering, and that tag resolves differently under each — Traditional-only
- * under prefix matching, both Traditional and this rule under extended
- * filtering. `zh-HK` behaves identically in both models. The tag is also the
- * URL segment and the `hreflang` value; see src/lib/i18n/config.ts.
- */
-html:lang(zh-HK) {
-  --stack-sans:
-    var(--font-outfit), "PingFang HK", "PingFang TC",
-    "Microsoft JhengHei UI", "Microsoft JhengHei",
-    "Source Han Sans HK", "Noto Sans CJK HK", "Noto Sans HK",
-    "Source Han Sans TC", "Noto Sans TC", "Heiti TC", sans-serif;
-  --stack-display:
-    var(--font-playfair), "Songti TC", "LiSong Pro", "Apple LiSung",
-    "Source Han Serif HK", "Noto Serif CJK HK", "Noto Serif HK",
-    "Source Han Serif TC", "Noto Serif CJK TC", "Noto Serif TC",
-    "MingLiU_HKSCS", PMingLiU, MingLiU, serif;
 }
 
 /*
@@ -597,11 +549,10 @@ html:lang(ja) :is(.italic, i, em, cite, dfn, address, var) {
  * nothing to improve. It is never worse, sometimes much better, and does not
  * need scoping away from CJK.
  *
- * zh-HK inherits the finding directly — same script, same break behaviour as
- * the zh-Hant run above. Japanese was not measured. The argument transfers on
- * its face (kana and kanji also break between nearly every character, and the
- * browser applies 禁則処理 at the restricted positions either way), but treat
- * that as reasoning rather than as the measurement the Chinese numbers are.
+ * Japanese was not measured. The argument transfers on its face (kana and
+ * kanji also break between nearly every character, and the browser applies
+ * 禁則処理 at the restricted positions either way), but treat that as
+ * reasoning rather than as the measurement the Chinese numbers are.
  */
 
 /* ═══════════════════════════════════════════════════════════════════════

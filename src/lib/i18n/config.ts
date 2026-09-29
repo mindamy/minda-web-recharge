@@ -15,14 +15,14 @@
  * The supported locales, **in switcher order**.
  *
  * Latin block first, then the CJK block, so a reader scanning for their own
- * script stops scanning early rather than reading all seven. English leads as
+ * script stops scanning early rather than reading all six. English leads as
  * the default and Malay as the home market; nothing else reads this order —
  * `DEFAULT_LOCALE` is set explicitly below, `generateStaticParams` is
  * order-free, and `alternates.languages` is a map.
  *
- * `zh-Hant` and `zh-HK` are both Traditional and are genuinely different
- * catalogues, not one copied over the other: Hong Kong writes 支援 where
- * Taiwan writes 支持, 計劃 for 方案, 7 日 for 7 天, 毋須 for 免綁.
+ * `zh-Hant` is the only Traditional catalogue and carries Taiwan vocabulary —
+ * 支持, 方案, 7 天, 免綁. The separate Hong Kong catalogue that wrote 支援,
+ * 計劃, 7 日, 毋須 was removed in quick-kayinleong-006.
  */
 export const LOCALES = [
   "en-GB",
@@ -30,7 +30,6 @@ export const LOCALES = [
   "id-ID",
   "zh-Hans",
   "zh-Hant",
-  "zh-HK",
   "ja-JP",
 ] as const;
 
@@ -43,10 +42,11 @@ export const DEFAULT_LOCALE: Locale = "en-GB";
  * which is the accessibility convention for a language picker. These are not
  * catalogue entries: they read the same whichever locale the page is in.
  *
- * The two Traditional entries carry a region in parentheses. A bare 繁體中文
- * against one of a pair is ambiguous — a Hong Kong reader has no way to tell
- * which of the two is theirs — and the flags alone cannot resolve it for a
- * reader who is scanning the words.
+ * `zh-Hant` keeps its region in parentheses — 繁體中文（台灣） — even though it
+ * is now the only Traditional entry: the label names the *vocabulary* the
+ * catalogue is written in (Taiwan Traditional), which the flag beside it
+ * cannot say, and a bare 繁體中文 would over-claim to be every Traditional
+ * reader's variant.
  */
 export const LOCALE_LABELS: Record<Locale, string> = {
   "en-GB": "English",
@@ -54,7 +54,6 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   "id-ID": "Bahasa Indonesia",
   "zh-Hans": "简体中文",
   "zh-Hant": "繁體中文（台灣）",
-  "zh-HK": "繁體中文（香港）",
   "ja-JP": "日本語",
 };
 

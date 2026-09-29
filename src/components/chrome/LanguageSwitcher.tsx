@@ -49,14 +49,14 @@ import { FlagIcon } from "./FlagIcon";
  * THE FLAG IS DECORATION ON TOP OF THE AUTONYM, NEVER INSTEAD OF IT. It is
  * `aria-hidden` (see `FlagIcon`) and adds no accessible text, so nothing is
  * announced twice and nothing depends on it. It earns its place by making the
- * seven-item list scannable at a glance — a shape is found faster than a word
+ * six-item list scannable at a glance — a shape is found faster than a word
  * in a script you do not read — but a flag is a country and a country is not
- * a language, so it cannot be the label. Two of the seven tags carry no
+ * a language, so it cannot be the label. Two of the six tags carry no
  * region at all (`zh-Hans`, `zh-Hant` are script subtags), which is the
  * clearest possible demonstration of why.
  *
  * NEVER IMPORT A CATALOGUE FROM THIS FILE. It is `"use client"`: a static
- * `import … from "@/messages/…"` would bundle all seven locales into the
+ * `import … from "@/messages/…"` would bundle all six locales into the
  * browser chunk with no error and no warning. The label arrives through
  * `useMessages()`, from the slice the layout already selected.
  */
@@ -106,7 +106,7 @@ export function LanguageSwitcher({
  * `?query` and `#hash` are preserved too, and they are read from
  * `window.location` rather than from `useSearchParams()`. That is deliberate:
  * `useSearchParams()` in a component rendered by the root layout would opt
- * every one of the 42 prerendered routes out of static rendering (or demand a
+ * every one of the 36 prerendered routes out of static rendering (or demand a
  * Suspense boundary around the whole header). Neither part is available
  * during SSR in any case, so the suffix starts empty — matching the server
  * HTML exactly, so there is no hydration mismatch — and is filled in after
@@ -417,10 +417,10 @@ function MenuSwitcher({ className }: { className?: string }) {
         <div
           id={listId}
           // `min-w` went from 11rem to 14rem when the list grew from three
-          // options to seven: the widest row is now a 21px flag, a 10px gap
+          // options to six: the widest row is now a 21px flag, a 10px gap
           // and `Bahasa Indonesia`, and at 11rem that row wrapped.
           //
-          // The height cap is a guard, not a layout: seven rows measure 332px
+          // The height cap is a guard, not a layout: six rows measure ~285px
           // and this menu only renders at `xl` and above, where the viewport
           // is essentially never short enough to clip them. It costs nothing
           // when the list fits, and on a 1280×500 window (docked devtools) it

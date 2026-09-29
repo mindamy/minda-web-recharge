@@ -129,10 +129,12 @@ export { LOCALE_COOKIE } from "./config";
  *                      alias — the two are close but not interchangeable.
  *   CN     -> zh-Hans  Simplified is the written standard.
  *   TW     -> zh-Hant  Traditional, Taiwan vocabulary.
- *   HK, MO -> zh-HK    Traditional, Hong Kong vocabulary. Macau reads the
- *                      same written register as Hong Kong; sending it to the
- *                      Taiwan catalogue would give it 支持/方案/7 天 where it
- *                      expects 支援/計劃/7 日.
+ *   HK, MO -> zh-Hant  Traditional. Hong Kong and Macau read a Hong Kong
+ *                      register (支援/計劃/7 日) over Taiwan's (支持/方案/7 天),
+ *                      but the dedicated Hong Kong catalogue was removed in
+ *                      quick-kayinleong-006, so they now fall to the nearest
+ *                      remaining Traditional catalogue rather than to
+ *                      Simplified.
  *   JP     -> ja-JP
  *
  * **Singapore is deliberately absent.** English is its working language and
@@ -151,8 +153,8 @@ export const COUNTRY_LOCALES: Readonly<Record<string, Locale>> = {
   ID: "id-ID",
   CN: "zh-Hans",
   TW: "zh-Hant",
-  HK: "zh-HK",
-  MO: "zh-HK",
+  HK: "zh-Hant",
+  MO: "zh-Hant",
   JP: "ja-JP",
 };
 
@@ -300,7 +302,7 @@ export function parseAcceptLanguage(header: string | null | undefined): Locale[]
     /*
      * `Array.prototype.sort` is required to be stable (ES2019), so entries of
      * equal weight keep their header order — which is exactly what an
-     * unweighted `zh-HK, zh-TW` means. Do not swap this for a hand-rolled
+     * unweighted `zh-Hans, zh-Hant` means. Do not swap this for a hand-rolled
      * sort that loses that property.
      */
     matches.sort((a, b) => b.quality - a.quality);
@@ -348,10 +350,10 @@ function qualityOf(params: readonly string[]): number {
  * the old code for compatibility and Java-derived stacks — including some
  * still-shipping Android builds — emit `in` to this day. It costs one line.
  *
- * Deliberately unmapped: `yue` (Cantonese). It looks like it should be
- * `zh-HK`, but its written form is ambiguous — Hong Kong writes Traditional
- * and Guangzhou writes Simplified — and this table maps only what is
- * unambiguous. A bare `yue` falls through to the next entry in the header.
+ * Deliberately unmapped: `yue` (Cantonese). It looks like it should map to a
+ * Hong Kong variant, but its written form is ambiguous — Hong Kong writes
+ * Traditional and Guangzhou writes Simplified — and this table maps only what
+ * is unambiguous. A bare `yue` falls through to the next entry in the header.
  */
 function localeForTag(tag: string): Locale | null {
   const subtags = tag.split("-");
@@ -374,19 +376,21 @@ function localeForTag(tag: string): Locale | null {
 }
 
 /**
- * Which of the three Chinese catalogues a `zh-*` tag wants, from its script
- * and region subtags.
+ * Which of the two Chinese catalogues a `zh-*` tag wants, from its script and
+ * region subtags.
  *
  * The subtags are classified by shape rather than by position, which is what
- * makes `zh-Hant-HK`, `zh-HK` and the extlang form `zh-yue-HK` all land in
+ * makes `zh-Hant`, `zh-Hant-HK` and the extlang form `zh-yue-HK` all land in
  * the same place: a four-letter subtag is a script, a two-letter or
  * three-digit one is a region, and anything else — an extlang like `yue` or
  * `cmn`, a variant, a private-use tail — is ignored.
  *
- * **Region is checked before script, and that order is load-bearing.** A Hong
- * Kong browser sends `zh-Hant-HK`; testing the script first would match
- * `Hant` and hand it the Taiwan catalogue, which is a real and wrong result,
- * not a near-miss — 支持 where it expects 支援.
+ * Traditional is selected by the `Hant` script or by a Traditional-writing
+ * region (Taiwan, Hong Kong, Macau). Hong Kong and Macau no longer have their
+ * own catalogue — it was removed in quick-kayinleong-006 — so they resolve to
+ * the one remaining Traditional catalogue, the same place `Hant` lands. That
+ * is why the check below is a flat OR and, unlike before, no longer depends on
+ * region being read ahead of script.
  *
  * Simplified is the fallback rather than a listed case, which is what makes
  * bare `zh`, `zh-CN`, `zh-SG` and `zh-MY` all correct with no entries at all.
@@ -400,8 +404,9 @@ function chineseLocale(subtags: readonly string[]): Locale {
     else if (region === null && /^([a-z]{2}|\d{3})$/.test(subtag)) region = subtag;
   }
 
-  if (region === "hk" || region === "mo") return "zh-HK";
-  if (script === "hant" || region === "tw") return "zh-Hant";
+  if (script === "hant" || region === "tw" || region === "hk" || region === "mo") {
+    return "zh-Hant";
+  }
   return "zh-Hans";
 }
 

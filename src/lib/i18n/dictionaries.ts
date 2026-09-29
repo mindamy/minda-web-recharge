@@ -44,7 +44,6 @@ const dictionaries: Record<Locale, CatalogueLoader> = {
   "id-ID": () => import("@/messages/id-ID.json"),
   "zh-Hans": () => import("@/messages/zh-Hans.json"),
   "zh-Hant": () => import("@/messages/zh-Hant.json"),
-  "zh-HK": () => import("@/messages/zh-HK.json"),
   "ja-JP": () => import("@/messages/ja-JP.json"),
 };
 
