@@ -4,7 +4,7 @@
 - session: claude-code
 - branch: main
 - started: 2026-09-29
-- status: in-progress
+- status: done
 - summary: Refresh the five translated catalogues from the supplied localization pack, remove the Hong Kong (`zh-HK`) locale end-to-end, and surface the language switcher in the mobile header bar (outside the burger sheet).
 
 ## What will change
@@ -48,8 +48,65 @@ The supplied `ms-MY`/`id-ID` catalogues **re-lengthen** the nav labels that `Lan
 
 ## What has changed
 
-_(filled in as work completes)_
+Three atomic commits under this claim:
+
+| Commit | Part |
+|--------|------|
+| `3664ca9` | A — refresh `id-ID`/`ja-JP`/`ms-MY`/`zh-Hans`/`zh-Hant` catalogues from the pack |
+| `e5a3935` | B — remove the `zh-HK` locale end-to-end |
+| `f293ecf` | C — switcher in the mobile bar + locale-aware nav breakpoint |
+
+### Deviation from the plan: the nav-overflow risk was real, and the user chose the fix
+
+The risk flagged in "What will change" was **confirmed in-browser**: the pack's longer
+`ms-MY`/`id-ID` nav labels overflow the desktop header and collide with the wordmark at
+~1280–1440px (English unaffected). Presented to the user, who chose **"keep the copy, fix the
+layout"** over trimming the labels or shipping the overlap.
+
+Implemented as a **locale-scoped** breakpoint rather than a global one: only `ms-MY` and `id-ID`
+(the two whose translated labels overflow) defer the horizontal nav to a measured
+`min-[1600px]`; every other locale keeps its original `xl` (1280px) nav untouched. A global raise
+was rejected because it would have pushed English — the default and majority locale, which fits
+fine at 1280px — onto the burger for no reason. See `WIDE_NAV_LOCALES` in `Header.tsx`.
+
+The switcher's authored autonym-at-`2xl` behaviour and its whole desktop design are unchanged;
+the fix is purely which breakpoint the header chrome switches at, per locale.
+
+### Deliberate choices worth recording
+
+- **`zh-Hant` label kept as `繁體中文（台灣）`** (not simplified to `繁體中文`). Still accurate, still
+  unambiguous, and relabelling is a copy decision the user did not ask for.
+- **HK/MO → `zh-Hant`** in `negotiate.ts` (not dropped to Simplified), keeping Hong Kong/Macau
+  visitors on Traditional. Type-correctness only — the module has had no importers since claim
+  005, verified again here.
+- **The `sheet` variant of `LanguageSwitcher` is now unused** but left in place (valid union
+  member, no lint cost) so an in-sheet switcher can be re-added without rebuilding it.
 
 ## Verification
 
-_(Regression Report — filled in before status: done)_
+### Regression Report
+
+**Gates (all green):** `npm run typecheck` (`next typegen && tsc --noEmit`), `npm run lint`
+(eslint), `npm run build` (static export → 41 pages: 6 locales × 6 routes + not-found/icons).
+The total `Record<Locale, …>` maps in `dictionaries.ts` and `FlagIcon.tsx` mean tsc would fail
+on any missed `zh-HK` consumer; it passed.
+
+**Regression surfaces audited:**
+
+| Surface | Tested | Result |
+|---------|--------|--------|
+| Catalogue parity | Structural key-diff of all 5 pack files vs `en-GB.json`, then tsc | Exact match; build green |
+| `zh-HK` removal completeness | Repo-wide grep (src + README + globals.css + firebase.json); `out/` after build | No `zh-HK` left except intentional history comments; `out/` has exactly 6 locale dirs |
+| CJK font stacks (`globals.css`) | `zh-Hant` rule untouched; `:lang(zh)` cascade reviewed; `zh-Hant`/`zh-Hans`/`ja` pages built | `zh-HK` rule (now dead) removed; Traditional/Simplified/JP stacks intact |
+| Flags | All 6 render in the switcher dropdown in-browser | Correct; `HongKongArtwork` cleanly removed |
+| `negotiate.ts` | Grep for importers | None — inert module, change is type-correctness only, zero runtime effect |
+| **Mobile switcher (the ask)** | 375px: switcher in bar outside burger; dropdown opens; switches to `ms-MY`; 6 locales, no HK | Works |
+| **Desktop header (regression)** | en-GB @1280 (full nav, unchanged); ms-MY @1280 & 1536 (burger, no collision); ms-MY @1600 & 1920 (full nav, one line, copy intact); id-ID measured | No collision at any width; English untouched |
+| Footer switcher | `variant="footer"` unchanged | Unaffected |
+
+**Ruled out:** English/`zh-*`/`ja` desktop nav regression — English @1280 verified still full-nav
+(locale-scoped breakpoint leaves it on `xl`). Build-artifact leak — `out/`, `.next/` confirmed
+gitignored, not staged.
+
+**Not done here (out of scope):** the pre-existing 2.26 MB/page Aurora payload (README "Known
+problem"); deploying — `firebase deploy` is the user's call (outward-facing).
