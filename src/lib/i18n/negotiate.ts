@@ -127,15 +127,15 @@ export { LOCALE_COOKIE } from "./config";
  *                      so one catalogue serves both.
  *   ID     -> id-ID    Indonesian, its own catalogue rather than a Malay
  *                      alias — the two are close but not interchangeable.
- *   CN     -> zh-Hans  Simplified is the written standard.
- *   TW     -> zh-Hant  Traditional, Taiwan vocabulary.
- *   HK, MO -> zh-Hant  Traditional. Hong Kong and Macau read a Hong Kong
- *                      register (支援/計劃/7 日) over Taiwan's (支持/方案/7 天),
- *                      but the dedicated Hong Kong catalogue was removed in
- *                      quick-kayinleong-006, so they now fall to the nearest
- *                      remaining Traditional catalogue rather than to
- *                      Simplified.
- *   JP     -> ja-JP
+ *   CN         -> zh-Hans  Simplified is the written standard.
+ *   TW, HK, MO -> zh-Hans  Traditional Chinese is no longer on the site (Hong
+ *                      Kong removed in quick-kayinleong-006, Taiwan in
+ *                      quick-kayinleong-007), so these Traditional-writing
+ *                      regions fall to the one remaining Chinese catalogue,
+ *                      Simplified, rather than to English. Their readers get
+ *                      mainland glyph forms — the unavoidable cost of dropping
+ *                      both Traditional variants.
+ *   JP         -> ja-JP
  *
  * **Singapore is deliberately absent.** English is its working language and
  * the language of its schools and business, so an `SG` visitor falls through
@@ -152,9 +152,9 @@ export const COUNTRY_LOCALES: Readonly<Record<string, Locale>> = {
   BN: "ms-MY",
   ID: "id-ID",
   CN: "zh-Hans",
-  TW: "zh-Hant",
-  HK: "zh-Hant",
-  MO: "zh-Hant",
+  TW: "zh-Hans",
+  HK: "zh-Hans",
+  MO: "zh-Hans",
   JP: "ja-JP",
 };
 
@@ -302,7 +302,7 @@ export function parseAcceptLanguage(header: string | null | undefined): Locale[]
     /*
      * `Array.prototype.sort` is required to be stable (ES2019), so entries of
      * equal weight keep their header order — which is exactly what an
-     * unweighted `zh-Hans, zh-Hant` means. Do not swap this for a hand-rolled
+     * unweighted `zh-Hans, ja-JP` means. Do not swap this for a hand-rolled
      * sort that loses that property.
      */
     matches.sort((a, b) => b.quality - a.quality);
@@ -342,18 +342,19 @@ function qualityOf(params: readonly string[]): number {
 /**
  * One lower-cased language tag -> a supported locale, or `null` if none fits.
  *
- * Only Chinese needs its subtags read; for every other language the primary
- * subtag is the whole answer, so `en-AU`, `ms-BN` and `ja-JP` collapse to
- * their one catalogue without a table.
+ * Every language now maps from its primary subtag alone: `en-AU`, `ms-BN`,
+ * `ja-JP` and every `zh-*` tag collapse to their one catalogue without reading
+ * the rest. Chinese used to need its script/region subtags read to choose
+ * between Simplified and Traditional, but Traditional was removed
+ * (quick-kayinleong-006 Hong Kong, quick-kayinleong-007 Taiwan), so every `zh`
+ * tag now resolves to Simplified.
  *
  * `in` is Indonesian. ISO 639 renamed it to `id` in 1989, but the JDK froze
  * the old code for compatibility and Java-derived stacks — including some
  * still-shipping Android builds — emit `in` to this day. It costs one line.
  *
- * Deliberately unmapped: `yue` (Cantonese). It looks like it should map to a
- * Hong Kong variant, but its written form is ambiguous — Hong Kong writes
- * Traditional and Guangzhou writes Simplified — and this table maps only what
- * is unambiguous. A bare `yue` falls through to the next entry in the header.
+ * Deliberately unmapped: `yue` (Cantonese). A bare `yue` falls through to the
+ * next entry in the header rather than being force-mapped to Mandarin.
  */
 function localeForTag(tag: string): Locale | null {
   const subtags = tag.split("-");
@@ -369,45 +370,10 @@ function localeForTag(tag: string): Locale | null {
     case "ja":
       return "ja-JP";
     case "zh":
-      return chineseLocale(subtags.slice(1));
+      return "zh-Hans";
     default:
       return null;
   }
-}
-
-/**
- * Which of the two Chinese catalogues a `zh-*` tag wants, from its script and
- * region subtags.
- *
- * The subtags are classified by shape rather than by position, which is what
- * makes `zh-Hant`, `zh-Hant-HK` and the extlang form `zh-yue-HK` all land in
- * the same place: a four-letter subtag is a script, a two-letter or
- * three-digit one is a region, and anything else — an extlang like `yue` or
- * `cmn`, a variant, a private-use tail — is ignored.
- *
- * Traditional is selected by the `Hant` script or by a Traditional-writing
- * region (Taiwan, Hong Kong, Macau). Hong Kong and Macau no longer have their
- * own catalogue — it was removed in quick-kayinleong-006 — so they resolve to
- * the one remaining Traditional catalogue, the same place `Hant` lands. That
- * is why the check below is a flat OR and, unlike before, no longer depends on
- * region being read ahead of script.
- *
- * Simplified is the fallback rather than a listed case, which is what makes
- * bare `zh`, `zh-CN`, `zh-SG` and `zh-MY` all correct with no entries at all.
- */
-function chineseLocale(subtags: readonly string[]): Locale {
-  let script: string | null = null;
-  let region: string | null = null;
-
-  for (const subtag of subtags) {
-    if (script === null && /^[a-z]{4}$/.test(subtag)) script = subtag;
-    else if (region === null && /^([a-z]{2}|\d{3})$/.test(subtag)) region = subtag;
-  }
-
-  if (script === "hant" || region === "tw" || region === "hk" || region === "mo") {
-    return "zh-Hant";
-  }
-  return "zh-Hans";
 }
 
 /** Which signal decided the locale. Carried so the proxy can log it. */

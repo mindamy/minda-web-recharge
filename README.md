@@ -120,7 +120,7 @@ uploaded `out/` is never a stale one.
 > is set and the six `<Image>` call sites serve their source files as-is. `width`/`height`/
 > `sizes` still work; the resizing and the WebP/AVIF rewrite do not.
 
-> **`NEXT_PUBLIC_SITE_URL` is baked in at build time.** Every canonical and all six
+> **`NEXT_PUBLIC_SITE_URL` is baked in at build time.** Every canonical and all five
 > `hreflang` links in the shipped HTML are whatever the origin was when `next build` ran. It
 > defaults to the Hosting origin in `src/lib/i18n/metadata.ts`; export the variable before
 > deploying to move the site to a custom domain.
@@ -135,7 +135,7 @@ uploaded `out/` is never a stale one.
 `out/` is **105 MB** and a single page is **2.26 MB** (871 KB gzipped — the path data is
 high-entropy and barely compresses). Roughly 96% of that is the Aurora artwork: ~1.0 MB of
 inline `<svg>` — 111 `<svg>` elements, 903 `<path>` — plus ~1.1 MB of RSC payload carrying the
-same markup a second time, repeated across all 36 locale pages. This is not cosmetic; it
+same markup a second time, repeated across all 30 locale pages. This is not cosmetic; it
 already killed one deploy with an upload timeout. The nine Aurora presets take no
 data-dependent props, so they should be built once into static files rather than inlined per
 page. Tracked separately.

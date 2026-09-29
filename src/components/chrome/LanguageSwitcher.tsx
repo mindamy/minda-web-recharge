@@ -24,11 +24,11 @@ import { FlagIcon } from "./FlagIcon";
  * ---------------------------------------------------------------------------
  * LINKS, NOT A `<select>`.
  *
- * Every locale is a real, prerendered, crawlable URL — `/zh-Hant/plans` is a
+ * Every locale is a real, prerendered, crawlable URL — `/zh-Hans/plans` is a
  * page, not a client-side state change. So each option is an anchor. That is
  * what makes middle-click, cmd-click and "open in new tab" work, what lets a
  * bilingual reader keep two locales open side by side, and what lets a
- * crawler find the other six locales from any page. A `<select>` would need
+ * crawler find the other four locales from any page. A `<select>` would need
  * JavaScript to navigate at all, would expose no href to anything, and on iOS
  * would open a native wheel picker that hides the page it is meant to switch.
  *
@@ -49,14 +49,14 @@ import { FlagIcon } from "./FlagIcon";
  * THE FLAG IS DECORATION ON TOP OF THE AUTONYM, NEVER INSTEAD OF IT. It is
  * `aria-hidden` (see `FlagIcon`) and adds no accessible text, so nothing is
  * announced twice and nothing depends on it. It earns its place by making the
- * six-item list scannable at a glance — a shape is found faster than a word
+ * five-item list scannable at a glance — a shape is found faster than a word
  * in a script you do not read — but a flag is a country and a country is not
- * a language, so it cannot be the label. Two of the six tags carry no
- * region at all (`zh-Hans`, `zh-Hant` are script subtags), which is the
+ * a language, so it cannot be the label. One of the five tags carries no
+ * region at all (`zh-Hans` is a script subtag), which is the
  * clearest possible demonstration of why.
  *
  * NEVER IMPORT A CATALOGUE FROM THIS FILE. It is `"use client"`: a static
- * `import … from "@/messages/…"` would bundle all six locales into the
+ * `import … from "@/messages/…"` would bundle all five locales into the
  * browser chunk with no error and no warning. The label arrives through
  * `useMessages()`, from the slice the layout already selected.
  */
@@ -98,7 +98,7 @@ export function LanguageSwitcher({
  * ---------------------------------------------------------------------------
  *
  * The route is preserved, not discarded: a reader switching language from
- * `/en-GB/plans` lands on `/zh-Hant/plans`, not on the home page. Being
+ * `/en-GB/plans` lands on `/zh-Hans/plans`, not on the home page. Being
  * bounced to the top of the site is the single most common failure of a
  * language switcher and the most annoying, because the reader has to find
  * their place again in a language they were already struggling with.
@@ -106,7 +106,7 @@ export function LanguageSwitcher({
  * `?query` and `#hash` are preserved too, and they are read from
  * `window.location` rather than from `useSearchParams()`. That is deliberate:
  * `useSearchParams()` in a component rendered by the root layout would opt
- * every one of the 36 prerendered routes out of static rendering (or demand a
+ * every one of the 30 prerendered routes out of static rendering (or demand a
  * Suspense boundary around the whole header). Neither part is available
  * during SSR in any case, so the suffix starts empty — matching the server
  * HTML exactly, so there is no hydration mismatch — and is filled in after
@@ -117,9 +117,9 @@ export function LanguageSwitcher({
  * always carries the fragment, and a cold load of it keeps the fragment. But
  * on a *client-side* navigation the App Router drops a fragment that has no
  * element to scroll to: from `/en-GB/plans?plan=essential#compare` the
- * address bar settles on `/zh-Hant/plans?plan=essential` (3/3 trials), while
+ * address bar settles on `/zh-Hans/plans?plan=essential` (3/3 trials), while
  * the query is always kept. A fragment that does point at something survives
- * intact — from `/en-GB#plans` the reader lands on `/zh-Hant#plans` at
+ * intact — from `/en-GB#plans` the reader lands on `/zh-Hans#plans` at
  * scrollY 6715, four pixels from where they were (3/3 trials). Since the
  * preserved case is the one that holds the reader's place, and the dropped
  * case points at nothing, this is not worth forcing a full page load for.
@@ -355,35 +355,16 @@ function MenuSwitcher({ className }: { className?: string }) {
           ---------------------------------------------------------------------
           THE FLAG IS THE COMPACT FORM OF THE AUTONYM. Exactly one of these two
           is ever on screen: the flag below `2xl`, the word at `2xl` and above.
+          The autonym is far wider than the 21px flag and would crowd the CTA
+          cluster at narrower widths, so below `2xl` the flag carries the current
+          locale and the full autonyms live in the open menu — strictly more
+          informative than the bare globe that stood here before it.
 
-          The previous measurement here was of the wrong thing. It compared the
-          autonym against the gap between this trigger and the Sign In pill and
-          concluded 1280px "fits with room to spare" — but the binding
-          constraint is the *nav*, on the other side of the bar, and at 1280px
-          it was already 25px short in English. The header collided: `How It
-          Works` overlapped the wordmark and three labels wrapped to two lines.
-          That shipped.
-
-          Re-measured at 1280px, natural widths against the 1200px track
-          (logo 223 + nav + cluster):
-
-            en-GB   nav 570  cluster 432   25px over
-            ja-JP   nav 564  cluster 399   14px spare
-            zh-Hant nav 467  cluster 434   76px spare
-            zh-Hans nav 467  cluster 370  140px spare
-            id-ID   nav 664  cluster 465  152px over
-            ms-MY   nav 693  cluster 493  209px over
-
-          Malay and Indonesian are the widest because their nav labels are —
-          `Kepercayaan & Pendekatan` against `Trust & Approach`. Those two
-          labels were shortened in their catalogues at the same time as this
-          change; the two fixes together are what clear 1280px, and removing
-          either brings the collision back.
-
-          The flag costs 21px where the widest autonym costs 128px
-          (`繁體中文（台灣）`), so swapping them buys 91px in the locale that
-          needs it most — and it is strictly *more* informative than what
-          stood here before, which showed nothing but a globe below `xl`.
+          The bar's real width pressure is the nav on the other side of it: the
+          long Malay and Indonesian labels (`Kepercayaan & Pendekatan`,
+          `Tentang Kami`) overflow at `xl`. That is handled there, not here —
+          those two locales defer the horizontal nav to `min-[1600px]` (see
+          `WIDE_NAV_LOCALES` in `Header`) rather than trimming the copy.
           ---------------------------------------------------------------------
 
           `aria-hidden` on the flag (see `FlagIcon`) keeps the accessible name
@@ -417,10 +398,10 @@ function MenuSwitcher({ className }: { className?: string }) {
         <div
           id={listId}
           // `min-w` went from 11rem to 14rem when the list grew from three
-          // options to six: the widest row is now a 21px flag, a 10px gap
+          // options to five: the widest row is now a 21px flag, a 10px gap
           // and `Bahasa Indonesia`, and at 11rem that row wrapped.
           //
-          // The height cap is a guard, not a layout: six rows measure ~285px
+          // The height cap is a guard, not a layout: five rows measure ~238px
           // and this menu only renders at `xl` and above, where the viewport
           // is essentially never short enough to clip them. It costs nothing
           // when the list fits, and on a 1280×500 window (docked devtools) it

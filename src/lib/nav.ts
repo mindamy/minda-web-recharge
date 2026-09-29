@@ -117,7 +117,7 @@ export const SPY_SECTION_IDS: readonly SectionId[] = [
 /**
  * Splits a locale-prefixed pathname into its locale and its route.
  *
- * Every URL now starts with a locale segment (`/en-GB`, `/zh-Hant/plans`),
+ * Every URL now starts with a locale segment (`/en-GB`, `/zh-Hans/plans`),
  * so any comparison against a bare literal — `pathname === "/"`, or
  * `pathname === item.href` where `href` is `"/plans"` — is permanently false.
  * That failure is silent: types stay happy, the build stays green, and the
@@ -129,7 +129,7 @@ export const SPY_SECTION_IDS: readonly SectionId[] = [
  * with `localePath` at render time.
  *
  *   splitLocalePath("/en-GB")           -> { locale: "en-GB", route: "/" }
- *   splitLocalePath("/zh-Hant/plans")   -> { locale: "zh-Hant", route: "/plans" }
+ *   splitLocalePath("/zh-Hans/plans")   -> { locale: "zh-Hans", route: "/plans" }
  *   splitLocalePath("/plans")           -> { locale: "en-GB", route: "/plans" }
  *
  * The unprefixed fallback covers the frames before hydration settles and

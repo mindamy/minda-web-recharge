@@ -35,7 +35,7 @@ import { NavLabel } from "./NavLabel";
  * It takes the `{ nav, localeSwitcher, cta, brand }` slice that the layout
  * already selected and passed to `<MessagesProvider>`. It must never
  * `import … from "@/messages/…"`: a static catalogue import from the client
- * graph bundles **all six** locales into the browser chunk, with no error,
+ * graph bundles **all five** locales into the browser chunk, with no error,
  * no warning, and a site that still works perfectly in every language.
  * ---------------------------------------------------------------------------
  */

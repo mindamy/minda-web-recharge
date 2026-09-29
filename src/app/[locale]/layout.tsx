@@ -50,7 +50,7 @@ const outfit = Outfit({
 export const dynamicParams = false;
 
 /**
- * One declaration here covers all six pages in all six locales — 36
+ * One declaration here covers all six pages in all five locales — 30
  * prerendered routes — because `generateStaticParams` is valid on a layout,
  * not only on a page.
  */

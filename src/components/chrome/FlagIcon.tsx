@@ -24,28 +24,27 @@ import type { Locale } from "@/lib/i18n/config";
  * ---------------------------------------------------------------------------
  *
  * FLAGS ARE COUNTRIES; LANGUAGES ARE NOT COUNTRIES. This is the standard
- * objection to flags in a language picker and it is a fair one. Two of the
- * six locales have no country to point at: `zh-Hans` and `zh-Hant` are
- * *script* subtags — Simplified and Traditional Han — with no region subtag
- * at all. Showing them CN and TW is a convention, not a fact, and it was an
- * explicit product decision rather than an oversight: for this audience the
- * mainland/Taiwan flags are the fastest visual key to the two script forms.
- * The decision is only safe because of the next paragraph.
+ * objection to flags in a language picker and it is a fair one. One of the
+ * five locales has no country to point at: `zh-Hans` is a *script* subtag —
+ * Simplified Han — with no region subtag at all. Showing it the mainland (CN)
+ * flag is a convention, not a fact, and it was an explicit product decision
+ * rather than an oversight: for this audience the flag is the fastest visual
+ * key to the Chinese option. The decision is only safe because of the next
+ * paragraph.
  *
  * THE FLAG IS DECORATION AND MUST NEVER BECOME THE LABEL. Every flag here is
  * `aria-hidden` with `focusable="false"`; the meaning is carried entirely by
- * the autonym next to it (`LOCALE_LABELS`, which also disambiguates the two
- * Traditional entries in words). Never add a `<title>`, never let a caller
- * render this without the text, and never let it become the accessible name —
- * a reader who cannot see it, or who reads TW as "Taiwan" rather than
- * "Traditional Chinese", must lose nothing.
+ * the autonym next to it (`LOCALE_LABELS`). Never add a `<title>`, never let a
+ * caller render this without the text, and never let it become the accessible
+ * name — a reader who cannot see it, or who reads CN as "China" rather than
+ * "Simplified Chinese", must lose nothing.
  *
  * ---------------------------------------------------------------------------
- * ALL SIX ARE DRAWN ON ONE `viewBox="0 0 60 40"` (3:2).
+ * ALL FIVE ARE DRAWN ON ONE `viewBox="0 0 60 40"` (3:2).
  *
  * A uniform box is what makes a vertical list of flags look like a list
  * rather than a ransom note, and it lets the caller size them with one pair
- * of utilities. Four of the six (JP, CN, TW, ID) are natively 3:2 and
+ * of utilities. Three of the five (JP, CN, ID) are natively 3:2 and
  * are therefore drawn at true proportions. GB and MY are natively 2:1 and are
  * *redrawn* to 3:2 — every feature rescaled with the new height — which is
  * the normalisation every flag icon set performs. It is not letterboxing and
@@ -53,10 +52,9 @@ import type { Locale } from "@/lib/i18n/config";
  * Union Jack's diagonals off their corners and turn Japan's disc into an egg.
  * ---------------------------------------------------------------------------
  *
- * Budget: at the default 21x14 CSS px, one SVG unit is a third of a pixel.
- * Detail below about one pixel is invisible and is deliberately dropped —
- * for example the thin blue ring around the Taiwanese sun. What must survive
- * is silhouette and colour.
+ * Budget: at the default 21x14 CSS px, one SVG unit is a third of a pixel, so
+ * any feature narrower than a pixel is dropped rather than drawn as mud. What
+ * must survive is silhouette and colour.
  */
 
 /**
@@ -127,12 +125,9 @@ const round = (value: number) => Math.round(value * 100) / 100;
  * with `points` inner vertices at `radius * innerRatio`, first vertex
  * pointing straight up.
  *
- * One helper covers all three stars in this file, which is why they are
- * generated rather than pasted as opaque literals: China's five-pointed stars
- * (`innerRatio` 0.382, the pentagram constant), Malaysia's 14-pointed star,
- * and Taiwan's 12-rayed sun — which is a 12-point star with `innerRatio` 0.5,
- * because the flag's own specification puts the white disc at exactly half
- * the ray circle.
+ * One helper covers both stars in this file, which is why they are generated
+ * rather than pasted as opaque literals: China's five-pointed stars
+ * (`innerRatio` 0.382, the pentagram constant) and Malaysia's 14-pointed star.
  */
 function starPath(cx: number, cy: number, radius: number, points = 5, innerRatio = 0.381966) {
   const step = Math.PI / points;
@@ -200,29 +195,6 @@ function ChinaArtwork() {
             transform={`rotate(${star.rotate} ${star.x} ${star.y})`}
           />
         ))}
-      </g>
-    </>
-  );
-}
-
-/**
- * Taiwan: red field, blue canton over the top-left quarter (30x20), white sun
- * centred in it at (15,10).
- *
- * The sun is one 12-point star plus one disc. Because `innerRatio` is 0.5 the
- * star's valleys land at 3.7 — exactly the disc radius — so the two shapes
- * fuse into the serrated ring the flag actually has, with no seam to align.
- * The real flag separates disc from rays with a thin blue ring; at this size
- * that ring is a fifth of a pixel, so it is dropped rather than drawn as mud.
- */
-function TaiwanArtwork() {
-  return (
-    <>
-      <rect width="60" height="40" fill="#FE0000" />
-      <rect width="30" height="20" fill="#000095" />
-      <g fill="#FFFFFF">
-        <path d={starPath(15, 10, 7.4, 12, 0.5)} />
-        <circle cx="15" cy="10" r="3.7" />
       </g>
     </>
   );
@@ -302,7 +274,7 @@ const GB_COUNTERCHANGE =
   "M0,0 L0,20 L30,20 Z M30,20 L30,0 L60,0 Z M30,20 L30,40 L0,40 Z M30,20 L60,20 L60,40 Z";
 
 function UnionJackArtwork() {
-  // All six flags can be on screen at once, and a duplicated SVG id is
+  // All five flags can be on screen at once, and a duplicated SVG id is
   // resolved by document order rather than by proximity — so two menus, or a
   // menu and a footer row, would silently share one clip. `useId` is the
   // SSR-safe unique source; React 19 wraps it in guillemets (`«r0»`), which
@@ -338,7 +310,7 @@ function UnionJackArtwork() {
  *
  * `Record<Locale, ...>` — total, never `Partial`, for the same reason the
  * `dictionaries` loader map is (see `@/lib/i18n/dictionaries`). Adding a
- * seventh locale to `LOCALES` without drawing its flag is then a
+ * sixth locale to `LOCALES` without drawing its flag is then a
  * `tsc --noEmit` failure at this line, rather than one blank gap in a menu
  * that nobody on the team can read anyway.
  *
@@ -352,6 +324,5 @@ const FLAG_ARTWORK: Record<Locale, () => ReactElement> = {
   "ms-MY": MalaysiaArtwork,
   "id-ID": IndonesiaArtwork,
   "zh-Hans": ChinaArtwork,
-  "zh-Hant": TaiwanArtwork,
   "ja-JP": JapanArtwork,
 };
