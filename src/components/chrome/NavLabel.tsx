@@ -28,7 +28,7 @@ const R_CUBED = "R³";
  *   2. The map crosses into the client graph through `ClientMessages`, where
  *      a flat string costs a fraction of a segment array's flight payload.
  *   3. `R³` is a brand token and stays Latin in every locale, so splitting on
- *      it is locale-proof — checked against all five catalogues, not
+ *      it is locale-proof — checked against all six catalogues, not
  *      assumed. Japanese is the one that would have caught a lazier
  *      implementation: `R³体験` has no prefix at all, so `markIndex` is 0 and
  *      the leading slice is the empty string. That renders correctly here,

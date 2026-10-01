@@ -277,8 +277,8 @@
 
    Neither Playfair Display nor Outfit contains a single Han glyph or kana —
    both are loaded `subsets: ["latin"]`, and the Google Fonts registry has no
-   CJK subset for either family at any setting. So on /zh-Hans and /ja-JP
-   every Han character and every kana was falling through to
+   CJK subset for either family at any setting. So on /zh-Hans, /zh-Hant and
+   /ja-JP every Han character and every kana was falling through to
    whatever last-resort face the OS happened to offer. This block chooses that
    face deliberately, per script.
 
@@ -287,10 +287,10 @@
    are the whole answer for those two locales.
 
    Strategy: system CJK stacks, no webfont. A sliced `Noto Sans SC` costs a
-   measured 786 KB over 15 requests for a page of ~230 distinct characters, and
-   adding a CJK serif for headlines takes the Chinese page past 2.3 MB.
-   Japanese was not re-measured; `Noto Sans JP` is the same class of asset and
-   none of the arithmetic changes. System stacks cost
+   measured 786 KB over 15 requests for a page of ~230 distinct characters
+   (`Noto Sans TC`: 979 KB), and adding a CJK serif for headlines takes
+   zh-Hant past 2.3 MB. Japanese was not re-measured; `Noto Sans JP` is the
+   same class of asset and none of the arithmetic changes. System stacks cost
    zero bytes, zero requests and — because no swap is involved — produce
    strictly *less* CLS on the CJK pages than the English ones. Measurements in
    RESEARCH-typography.md §2.
@@ -318,17 +318,18 @@
 }
 
 /*
- * `:lang(zh)` matches `zh-Hans` and a bare `lang="zh"`, carrying the Simplified
- * stack. Simplified is now the only Chinese on the site — the Traditional
- * variants were removed in quick-006 (Hong Kong) and quick-007 (Taiwan) — so
- * there is no second `:lang()` rule to order this against; it serves every
- * Chinese page.
+ * `:lang(zh)` prefix-matches both `zh-Hans` and `zh-Hant`, so it must come
+ * FIRST and carry the Simplified stack only as the safety net for a bare
+ * `lang="zh"`; the Traditional rule below then overrides it. Every `:lang()`
+ * rule in this file has the same specificity — one type selector plus one
+ * pseudo-class, (0,1,1) — so source order is the only thing deciding, and
+ * hoisting the Traditional rule above this block silently serves those pages
+ * the Simplified stack.
  *
- * The stack names Simplified (`SC`) faces specifically — `PingFang SC`,
- * `Source Han Sans SC`, `Noto Sans SC` — not a generic CJK face. Han
- * unification means one codepoint can carry different regional glyph shapes, so
- * a generic face could render mainland characters in Taiwan or Japanese forms;
- * pinning the SC cut keeps the mainland forms a Simplified reader expects.
+ * The SC/TC split is not cosmetic. Han unification means one codepoint can
+ * carry different regional glyph shapes, so `PingFang SC` renders mainland
+ * forms and `PingFang TC` Taiwan forms for the *same* character — a
+ * difference Traditional readers notice immediately.
  *
  * `var(--font-outfit)` / `var(--font-playfair)` stay FIRST in every stack and
  * must not be reordered. CSS font matching runs per character, so `Recharge`,
@@ -338,8 +339,9 @@
  *
  * The trailing generic (`sans-serif` / `serif`) is load-bearing rather than
  * decorative: Android's fonts.xml maps `serif` + `lang="zh-Hans"` /
- * `lang="ja"` to the correct *regional* Noto Serif CJK, so the keyword resolves
- * the Song or Mincho face for us on the one platform that ships no named one.
+ * `lang="zh-Hant"` / `lang="ja"` to the correct *regional* Noto Serif CJK, so
+ * the keyword resolves the Song or Mincho face for us on the one platform
+ * that ships no named one.
  */
 html:lang(zh) {
   --stack-sans:
@@ -364,6 +366,18 @@ html:lang(zh) {
     var(--font-playfair), "Songti SC", "STSong",
     "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC",
     SimSun, NSimSun, serif;
+}
+
+html:lang(zh-Hant) {
+  --stack-sans:
+    var(--font-outfit), "PingFang TC", "PingFang HK",
+    "Microsoft JhengHei UI", "Microsoft JhengHei",
+    "Source Han Sans TC", "Noto Sans CJK TC", "Noto Sans TC",
+    "Heiti TC", sans-serif;
+  --stack-display:
+    var(--font-playfair), "Songti TC", "LiSong Pro", "Apple LiSung",
+    "Source Han Serif TC", "Noto Serif CJK TC", "Noto Serif TC",
+    PMingLiU, MingLiU, serif;
 }
 
 /*
@@ -522,10 +536,11 @@ html:lang(ja) :is(.italic, i, em, cite, dfn, address, var) {
  * carry and Chromium's `pretty` did nothing on Han. Hero's serif lead in a
  * 544px measure:
  *
+ *   zh-Hant   greedy [540, 60]   pretty [510, 90]   balance [300, 300]
  *   zh-Hans   greedy [540, 90]   pretty [540, 90]   balance [330, 300]
  *
- * `pretty` matched greedy exactly — no improvement — while `balance` evens the
- * split. So the paragraphs keep `text-balance` and nothing is overridden here.
+ * `pretty` left a 2-3 glyph orphan that `balance` removes outright. So the
+ * paragraphs keep `text-balance` and nothing is overridden here.
  *
  * `balance` is measurably *safe* on Han, which is the other half of the
  * finding. On the hero h1 and the Trust h2 it produced line breaking

@@ -35,18 +35,23 @@ import { NavLabel } from "./NavLabel";
  * It takes the `{ nav, localeSwitcher, cta, brand }` slice that the layout
  * already selected and passed to `<MessagesProvider>`. It must never
  * `import … from "@/messages/…"`: a static catalogue import from the client
- * graph bundles **all five** locales into the browser chunk, with no error,
+ * graph bundles **all six** locales into the browser chunk, with no error,
  * no warning, and a site that still works perfectly in every language.
  * ---------------------------------------------------------------------------
  */
 /**
- * Locales whose fully-translated header nav labels overflow the bar at `xl`
- * (1280px) and so defer the horizontal nav to a wider breakpoint, staying on
- * the burger until then. Measured in quick-kayinleong-006: Malay and Indonesian
- * run to `Kepercayaan & Pendekatan` / `Tentang Kami`, which collide with the
- * wordmark below ~1600px. Every other locale clears `xl` exactly as before, so
- * only these two pay for their longer copy rather than the whole site dropping
- * to a later breakpoint.
+ * Locales whose translated header nav labels overflow the bar at `xl` (1280px)
+ * and so defer the horizontal nav to a wider breakpoint, staying on the burger
+ * until then. Every other locale clears `xl`, so only these two pay for their
+ * longer copy rather than the whole site dropping to a later breakpoint.
+ *
+ * Malay is the binding case and the threshold is measured, not guessed. With
+ * the quick-008 pack its nav runs 598px at `gap-9` (582 at the `gap-8` used
+ * below `2xl`); against a 223px logo and the 469px flag-form CTA cluster inside
+ * a 1280-80 track that needs ~1354px, so the nav is deferred to 1400px. The
+ * quick-006 pack needed 1600px — this pack shortened `Kepercayaan & Pendekatan`
+ * to `Pendekatan Kami` and `Tentang Kami` to `Tentang`, which bought ~220px.
+ * Re-measure if either label grows again.
  */
 const WIDE_NAV_LOCALES = new Set(["ms-MY", "id-ID"]);
 
@@ -80,13 +85,13 @@ export function Header() {
   const { locale, route } = splitLocalePath(pathname);
   const isHome = route === "/";
 
-  // Wide-label locales defer the horizontal nav to `min-[1600px]`; every other
+  // Wide-label locales defer the horizontal nav to `min-[1400px]`; every other
   // locale keeps the original `xl` (1280px) breakpoint. Written as whole-literal
   // classes so Tailwind emits both variants (see WIDE_NAV_LOCALES above).
   const wideNav = WIDE_NAV_LOCALES.has(locale);
-  const navShow = wideNav ? "min-[1600px]:block" : "xl:block";
-  const clusterShow = wideNav ? "min-[1600px]:flex" : "xl:flex";
-  const barHide = wideNav ? "min-[1600px]:hidden" : "xl:hidden";
+  const navShow = wideNav ? "min-[1400px]:block" : "xl:block";
+  const clusterShow = wideNav ? "min-[1400px]:flex" : "xl:flex";
+  const barHide = wideNav ? "min-[1400px]:hidden" : "xl:hidden";
 
   // `chrome.nav.items` is keyed by the five section ids that have nav
   // entries; `SectionId` covers all eight. Widening to a partial record is
@@ -188,13 +193,10 @@ export function Header() {
 
         {/*
           The horizontal nav appears at `xl` (1280px) for most locales; Malay
-          and Indonesian defer it to 1600px (see WIDE_NAV_LOCALES). At `xl` their
-          supplied labels — `Kepercayaan & Pendekatan`, `Tentang Kami` — overflow
-          the bar and collide with the wordmark, and even `2xl` (1536px) leaves
-          Malay ~40px short once the switcher shows its autonym, so 1600px is the
-          measured width where they clear it with the translations intact rather
-          than trimmed. Below the breakpoint the burger sheet carries the links,
-          and the language switcher rides in the bar beside the burger (see the
+          and Indonesian defer it to 1400px (see WIDE_NAV_LOCALES), because their
+          labels still overflow the `xl` track and wrap to two lines against the
+          wordmark. Below the breakpoint the burger sheet carries the links, and
+          the language switcher rides in the bar beside the burger (see the
           mobile controls below), so nothing is lost.
         */}
         <nav aria-label={nav.landmarkMain} className={cn("hidden", navShow)}>

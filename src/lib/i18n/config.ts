@@ -15,20 +15,22 @@
  * The supported locales, **in switcher order**.
  *
  * Latin block first, then the CJK block, so a reader scanning for their own
- * script stops scanning early rather than reading all five. English leads as
+ * script stops scanning early rather than reading all six. English leads as
  * the default and Malay as the home market; nothing else reads this order —
  * `DEFAULT_LOCALE` is set explicitly below, `generateStaticParams` is
  * order-free, and `alternates.languages` is a map.
  *
- * `zh-Hans` is the only Chinese catalogue now: the Traditional variants were
- * removed in quick-kayinleong-006 (Hong Kong) and quick-kayinleong-007
- * (Taiwan), leaving Simplified as the site's single written Chinese.
+ * `zh-Hant` is the only Traditional catalogue — the separate Hong Kong one was
+ * removed in quick-kayinleong-006, and the locale itself was removed in
+ * quick-kayinleong-007 and restored in quick-kayinleong-008 from the second
+ * localization pack.
  */
 export const LOCALES = [
   "en-GB",
   "ms-MY",
   "id-ID",
   "zh-Hans",
+  "zh-Hant",
   "ja-JP",
 ] as const;
 
@@ -41,14 +43,18 @@ export const DEFAULT_LOCALE: Locale = "en-GB";
  * which is the accessibility convention for a language picker. These are not
  * catalogue entries: they read the same whichever locale the page is in.
  *
- * `简体中文` needs no region tag: it is the only Chinese entry, so there is no
- * second variant for a bare script name to be ambiguous against.
+ * `zh-Hant` is labelled plainly 繁體中文, with no region in parentheses. It is
+ * the only Traditional entry, so there is no sibling for a bare script name to
+ * be ambiguous against — and naming a territory in the picker was deliberately
+ * reversed in quick-kayinleong-008: this control offers a written form of the
+ * language, not a place. Do not reintroduce a region here.
  */
 export const LOCALE_LABELS: Record<Locale, string> = {
   "en-GB": "English",
   "ms-MY": "Bahasa Melayu",
   "id-ID": "Bahasa Indonesia",
   "zh-Hans": "简体中文",
+  "zh-Hant": "繁體中文",
   "ja-JP": "日本語",
 };
 
@@ -86,11 +92,11 @@ export function isLocale(value: unknown): value is Locale {
 /**
  * Prefixes an app-relative path with a locale segment.
  *
- * Route slugs stay in English across every locale (`/zh-Hans/how-it-works`),
+ * Route slugs stay in English across every locale (`/zh-Hant/how-it-works`),
  * so this is a pure string concatenation with no lookup table — and therefore
  * no way for a language switch to land on a 404.
  *
- *   localePath("zh-Hans", "/plans") -> "/zh-Hans/plans"
+ *   localePath("zh-Hant", "/plans") -> "/zh-Hant/plans"
  *   localePath("en-GB", "/")        -> "/en-GB"
  */
 export function localePath(locale: Locale, path: string): string {

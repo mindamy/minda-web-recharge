@@ -32,7 +32,7 @@ import { getDictionary, getLocale } from "./dictionaries";
  *
  * It matters that the fallback is a real origin rather than a placeholder.
  * These pages are prerendered, so whatever this resolves to at **build** time
- * is baked into every canonical and all five `hreflang` links of all 30
+ * is baked into every canonical and all six `hreflang` links of all 36
  * shipped pages. A placeholder does not fail the build; it quietly publishes
  * a few hundred links to a domain nobody owns.
  */
@@ -69,7 +69,7 @@ export async function localisedMetadata({
          * `x-default` became load-bearing the moment `src/middleware.ts`
          * started redirecting locale-less URLs to a negotiated locale.
          *
-         * It names the URL to send a reader whose language none of the five
+         * It names the URL to send a reader whose language none of the six
          * alternates matches, and it is the *unprefixed* path on purpose —
          * the one URL that runs detection. Pointing it at `/en-GB` instead
          * would advertise English as the universal fallback and defeat the

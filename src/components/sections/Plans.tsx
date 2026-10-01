@@ -48,7 +48,7 @@ import { SECTION_IDS } from "@/lib/nav";
  * catalogue rather than living in this file.
  *
  * Every internal href is locale-prefixed with `localePath`. Without it a plan
- * CTA clicked from `/zh-Hans/plans` lands on `/plans`, which 308s the reader
+ * CTA clicked from `/zh-Hant/plans` lands on `/plans`, which 308s the reader
  * back into English — a silent locale loss that no type or build gate catches.
  */
 
@@ -174,7 +174,7 @@ export async function Plans() {
                   second, so the `font-display` class this used to carry never
                   applied and the deck's one serif button has been rendering
                   in Outfit. Invisible in English, where both faces at least
-                  read as Latin; on /zh-Hans it would have put
+                  read as Latin; on /zh-Hans and /zh-Hant it would have put
                   this label in the 黑体 body gothic while the h3 directly
                   above it sits in 宋体, breaking the serif/sans hierarchy in
                   the one place it is most visible.

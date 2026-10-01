@@ -1,163 +1,163 @@
 {
   "meta": {
     "default": {
-      "title": "Recharge — Pendamping personal untuk kesejahteraan Anda",
+      "title": "Recharge — Pendamping kesejahteraan pribadi Anda",
       "titleTemplate": "%s — Recharge",
-      "description": "Recharge menyatukan Pemahaman Diri, Pendampingan AI, dan pengalaman yang dipersonalisasi dalam dukungan terpadu untuk kesejahteraan Anda."
+      "description": "Recharge menyatukan wawasan pribadi, coaching berbasis AI, dan pengalaman yang dipersonalisasi dalam satu tempat untuk kesejahteraan Anda."
     },
     "about": {
       "title": "Tentang Kami",
-      "description": "Recharge memadukan Pemahaman Diri, Pendampingan AI, dan Pengalaman Recharge dengan kebutuhan Anda sebagai pusatnya."
+      "description": "Recharge menghimpun Wawasan Pribadi, Coaching Berbasis AI, dan Pengalaman Recharge dalam satu tempat untuk Anda."
     },
     "howItWorks": {
-      "title": "Cara Kerja",
-      "description": "Mengenali perasaan Anda adalah awal untuk menemukan dukungan yang tepat. Pelajari cara Recharge menyesuaikan dukungan dengan kebutuhan Anda saat ini."
+      "title": "Cara Kerjanya",
+      "description": "Langkah pertama adalah mengenali apa yang sedang dirasakan. Lihat bagaimana Recharge hadir untuk Anda."
     },
     "plans": {
       "title": "Paket",
-      "description": "Nikmati uji coba gratis Recharge selama 7 hari, lalu pilih tingkat dukungan yang sesuai dengan kebutuhan Anda."
+      "description": "Coba gratis 7 hari, lalu pilih tingkat dukungan yang paling sesuai."
     },
     "theR3Experience": {
       "title": "Pengalaman R³",
-      "description": "Satu siklus dukungan terpadu untuk memahami diri, menemukan dukungan yang tepat, dan membantu Anda merasa lebih baik saat ini."
+      "description": "Satu siklus yang menuntun Anda mengenali diri, menemukan yang dibutuhkan, dan merasa lebih baik saat itu juga."
     },
     "trustAndApproach": {
-      "title": "Kepercayaan & Pendekatan",
-      "description": "Kepedulian, kejelasan informasi, dan batas layanan yang tegas menjadi dasar Recharge. Dukungan untuk keseharian, bukan diagnosis."
+      "title": "Pendekatan Kami",
+      "description": "Recharge dibangun di atas kepedulian, kejelasan, dan batasan yang tegas. Kami mendukung, bukan mendiagnosis."
     },
     "notFound": {
-      "title": "Halaman Tidak Ditemukan"
+      "title": "Halaman tidak ditemukan"
     }
   },
   "common": {
     "brand": {
       "wordmark": "Recharge",
-      "homeLabel": "Recharge — Beranda"
+      "homeLabel": "Recharge — beranda"
     },
     "cta": {
       "tryFree": "Coba Recharge Gratis",
       "signIn": "Masuk",
-      "seeHowItWorks": "Lihat Cara Kerja",
+      "seeHowItWorks": "Lihat Cara Kerjanya",
       "trialMeta": "7 hari · Tanpa kartu kredit"
     },
     "pillars": {
       "insights": {
-        "label": "KENALI DIRI KEMBALI",
-        "title": "Pemahaman Diri",
-        "sub": "Pahami diri Anda lebih baik."
+        "label": "RECONNECT",
+        "title": "Wawasan Pribadi",
+        "sub": "Kenali diri sendiri."
       },
       "coaching": {
-        "label": "TEMUKAN ARAH KEMBALI",
-        "title": "Pendampingan AI",
-        "sub": "Temukan dukungan yang Anda butuhkan."
+        "label": "REALIGN",
+        "title": "Coaching Berbasis AI",
+        "sub": "Temukan yang dibutuhkan."
       },
       "experiences": {
-        "label": "PULIHKAN ENERGI",
+        "label": "RECHARGE",
         "title": "Pengalaman Recharge",
         "titleLong": "Pengalaman Recharge yang Dipersonalisasi",
-        "sub": "Merasa lebih baik saat ini."
+        "sub": "Merasa lebih baik, saat itu juga."
       }
     },
     "disclaimer": {
-      "medical": "Dukungan untuk kesejahteraan sehari-hari dan refleksi diri, bukan untuk diagnosis, pengobatan, atau penyembuhan."
+      "medical": "Dukungan kesejahteraan sehari-hari dan refleksi diri, bukan untuk diagnosis, pengobatan, atau penyembuhan."
     },
     "ask": {
       "label": "Tanya Recharge",
       "labelDotted": "Tanya Recharge.",
       "guide": "Panduan situs",
-      "hero": "Perlu arahan untuk memulai? Tanya Recharge",
-      "bannerLead": "Perlu arahan untuk memulai?",
-      "bannerBody": "Pendamping AI kami dapat membantu Anda memahami perasaan Anda dan menemukan dukungan yang mungkin sesuai.",
-      "loop": "Ingin memahami siklus dukungan Recharge?",
-      "personal": "Bagaimana Recharge menyesuaikan pengalaman untuk Anda?",
-      "approach": "Ingin mengenal pendekatan kami lebih jauh?",
-      "plans": "Perlu bantuan memilih paket?",
+      "hero": "Bingung harus mulai dari mana? Tanya Recharge",
+      "bannerLead": "Bingung harus mulai dari mana?",
+      "bannerBody": "Pendamping AI kami siap membantu Anda memahami perasaan dan menemukan cara yang mungkin cocok.",
+      "loop": "Ada pertanyaan tentang siklus ini?",
+      "personal": "Bagaimana Recharge memahami Anda?",
+      "approach": "Ada pertanyaan tentang pendekatan kami?",
+      "plans": "Belum yakin paket mana yang cocok?",
       "plansCta": "Bantu Saya Memilih",
-      "start": "Ada pertanyaan sebelum Anda memulai?"
+      "start": "Ada pertanyaan sebelum mencoba?"
     }
   },
   "chrome": {
     "nav": {
       "landmarkMain": "Navigasi utama",
-      "landmarkFooter": "Bagian bawah halaman",
+      "landmarkFooter": "Footer",
       "openMenu": "Buka menu",
       "closeMenu": "Tutup menu",
       "items": {
-        "moments": "Cara Kerja",
+        "moments": "Cara Kerjanya",
         "r3-loop": "Pengalaman R³",
         "plans": "Paket",
-        "trust": "Kepercayaan & Pendekatan",
-        "connected": "Tentang Kami"
+        "trust": "Pendekatan Kami",
+        "connected": "Tentang"
       }
     },
     "localeSwitcher": {
       "label": "Bahasa"
     },
     "scrollCue": {
-      "label": "Gulir untuk menjelajahi"
+      "label": "Gulir untuk menjelajah"
     },
     "footer": {
-      "copyright": "© {year} Recharge. Seluruh hak cipta dilindungi.",
+      "copyright": "© {year} Recharge. Hak cipta dilindungi.",
       "privacy": "Privasi",
       "terms": "Ketentuan"
     },
     "trustStrip": {
       "support": {
-        "title": "Dukungan, bukan diagnosis."
+        "title": "Mendukung, bukan mendiagnosis."
       },
       "privacy": {
-        "title": "Privasi Anda menjadi perhatian kami.",
-        "body": "Kami mengelola informasi Anda dengan cermat dan memberi Anda kendali atasnya."
+        "title": "Privasi Anda penting.",
+        "body": "Informasi Anda kami tangani dengan cermat, dan kendali tetap di tangan Anda."
       },
       "care": {
-        "title": "Dirancang dengan kepedulian.",
-        "body": "AI, personalisasi, dan pemahaman manusia berpadu untuk mendukung kebutuhan Anda."
+        "title": "Dibuat dengan cermat.",
+        "body": "Perpaduan AI, personalisasi, dan wawasan manusia untuk Anda."
       }
     }
   },
   "sections": {
     "hero": {
-      "eyebrow": "Pendamping personal untuk kesejahteraan Anda",
+      "eyebrow": "Pendamping kesejahteraan pribadi Anda",
       "headline": [
         [
           {
-            "text": "Bagaimana jika Anda bisa "
+            "text": "Bayangkan "
           },
           {
-            "text": "tidur lebih nyenyak,",
+            "text": "tidur lebih nyenyak",
             "mark": "grad-1"
           },
           {
-            "text": " merasa "
+            "text": ", "
           },
           {
-            "text": "lebih tenang,",
+            "text": "pikiran lebih tenang",
             "mark": "grad-2"
           },
           {
-            "text": " serta mengurangi "
+            "text": ", dan "
           },
           {
-            "text": "ketidaknyamanan",
-            "mark": "grad-3"
+            "text": "rasa tidak nyaman",
+            "mark": "violet"
           },
           {
             "text": " akibat "
           },
           {
             "text": "migrain",
-            "mark": "violet"
+            "mark": "grad-3"
           },
           {
-            "text": "?"
+            "text": " yang mereda. Semuanya kini dalam jangkauan."
           }
         ]
       ],
-      "leadSerif": "Pulihkan energi tubuh. Tenangkan pikiran. Sambut pagi dengan kesegaran.",
-      "leadSans": "Berikan diri Anda istirahat dan pemulihan yang layak Anda dapatkan."
+      "leadSerif": "Pulihkan energi. Tenangkan pikiran. Bangun lebih segar.",
+      "leadSans": "Berikan diri Anda istirahat dan pemulihan yang layak."
     },
     "moments": {
-      "eyebrow": "KENALI KEBUTUHAN ANDA SAAT INI",
+      "eyebrow": "KENALI MOMEN ANDA",
       "headline": [
         [
           {
@@ -171,59 +171,59 @@
           }
         ]
       ],
-      "lead": "Kebutuhan dan perasaan kita berubah sepanjang hari. Dengan mengenali apa yang Anda rasakan, Anda dapat mulai menemukan dukungan yang tepat.",
+      "lead": "Setiap hari kita melewati berbagai suasana hati. Mengenalinya adalah langkah pertama untuk menemukan bantuan yang tepat.",
       "reassurance": {
-        "title": "Perubahan suasana hati adalah hal yang wajar.",
-        "body": "Recharge hadir untuk mendukung Anda dalam setiap bagian dari keseharian Anda."
+        "title": "Naik turun itu wajar.",
+        "body": "Pagi, siang, atau malam, Recharge selalu ada."
       },
       "cards": {
         "focus": {
-          "title": "Saya ingin lebih fokus",
+          "title": "Saya perlu fokus",
           "body": [
             "Saya ingin berpikir jernih,",
-            "bekerja produktif, dan berkonsentrasi penuh."
+            "produktif, dan lancar bekerja."
           ],
-          "alt": "Seorang pria muda menulis di meja di samping laptop, dengan jendela terang di belakangnya."
+          "alt": "Seorang pria muda menulis di meja di samping laptop, dengan jendela yang terang di belakangnya."
         },
         "reset": {
-          "title": "Saya perlu menata diri kembali",
+          "title": "Saya butuh jeda",
           "body": [
             "Saya merasa kewalahan",
-            "dan membutuhkan ruang untuk menata diri kembali."
+            "dan perlu menenangkan diri."
           ],
-          "alt": "Seorang wanita bersandar di sofa dengan mata terpejam dan selimut rajut menutupi tubuhnya."
+          "alt": "Seorang wanita bersandar di sofa berselimut rajut dengan mata terpejam."
         },
         "runningLow": {
-          "title": "Energi saya mulai menurun",
+          "title": "Energi saya menipis",
           "body": [
-            "Saya merasa lelah",
-            "dan perlu memulihkan energi."
+            "Saya merasa terkuras",
+            "dan perlu mengisi ulang tenaga."
           ],
-          "alt": "Seorang wanita berjaket hijau memegang botol air di luar ruangan."
+          "alt": "Seorang wanita berjaket hijau di luar ruangan sambil memegang botol minum."
         },
         "switchOff": {
-          "title": "Saya sulit menenangkan pikiran",
+          "title": "Saya sulit rileks",
           "body": [
-            "Pikiran saya terus bekerja,",
-            "dan saya membutuhkan waktu untuk rileks."
+            "Pikiran terus berputar",
+            "dan saya perlu bersantai sejenak."
           ],
-          "alt": "Seorang pria duduk di meja pada malam hari di dekat lampu bercahaya hangat, dengan satu tangan menyentuh pelipis."
+          "alt": "Seorang pria di meja pada malam hari di bawah cahaya lampu yang hangat, satu tangan memegang pelipisnya."
         },
         "stuck": {
-          "title": "Saya merasa sulit melangkah",
+          "title": "Saya merasa buntu",
           "body": [
-            "Saya membutuhkan",
-            "sudut pandang yang baru."
+            "Saya butuh",
+            "sudut pandang baru."
           ],
           "alt": "Seorang wanita duduk di dalam ruangan, bertopang dagu sambil memandang ke arah lain."
         },
         "clarity": {
-          "title": "Saya ingin menemukan kejelasan",
+          "title": "Saya butuh kejelasan",
           "body": [
             "Saya mencari arah",
-            "dan pemahaman diri yang lebih jernih."
+            "dan pikiran yang jernih."
           ],
-          "alt": "Seorang pria berdiri di tepi danau saat senja, dengan pegunungan di belakangnya."
+          "alt": "Seorang pria di tepi danau saat senja, dengan pegunungan di belakangnya."
         }
       }
     },
@@ -231,13 +231,13 @@
       "eyebrow": [
         [
           {
-            "text": "SIKLUS RECHARGE "
+            "text": "SIKLUS "
           },
           {
             "mark": "rcubed"
           },
           {
-            "text": ""
+            "text": " RECHARGE"
           }
         ]
       ],
@@ -251,73 +251,73 @@
             "mark": "grad"
           },
           {
-            "text": " mendukung Anda"
+            "text": " membantu Anda"
           }
         ]
       ],
       "lead": [
         [
           {
-            "text": "Dalam satu siklus terpadu, Recharge membantu Anda memahami diri, menemukan dukungan yang Anda butuhkan, dan "
+            "text": "Satu siklus yang menuntun Anda mengenali diri, menemukan yang dibutuhkan, dan "
           },
           {
-            "text": "merasa lebih baik saat ini.",
+            "text": "merasa lebih baik saat itu juga.",
             "mark": "strong"
           }
         ]
       ],
-      "noStart": "Tidak ada urutan yang harus diikuti. Mulailah dari kebutuhan Anda saat ini.",
-      "closing": "Mulai dari diri Anda hari ini. Lanjutkan sesuai kebutuhan Anda.",
+      "noStart": "Tidak ada titik awal yang baku. Setiap titik bisa menjadi awal.",
+      "closing": "Mulai dari mana pun Anda berada, lalu melangkah sesuai kebutuhan.",
       "you": {
         "title": "Anda",
         "pill": [
           "Saat ini:",
-          "Saya perlu menata diri kembali"
+          "Saya butuh jeda"
         ]
       },
       "experienceCard": {
-        "body": "Pengalaman audio yang dipersonalisasi untuk mendukung kondisi diri yang ingin Anda capai.",
-        "suggestedLabel": "Rekomendasi untuk kebutuhan saat ini",
+        "body": "Pengalaman audio yang dipersonalisasi, dirancang untuk membawa Anda ke kondisi yang dibutuhkan.",
+        "suggestedLabel": "Saran untuk saat ini",
         "track": {
-          "name": "Tata Ulang Diri",
-          "duration": "8 menit",
-          "body": "Luangkan waktu untuk meredakan riuh pikiran dan memberi ruang untuk menata diri kembali.",
+          "name": "Jeda",
+          "duration": "8 mnt",
+          "body": "Luangkan sejenak untuk meredakan riuhnya pikiran dan memberi ruang untuk kembali tenang.",
           "time": "0:00 / 8:00"
         },
-        "playLabel": "Putar Tata Ulang Diri, Pengalaman Recharge selama 8 menit"
+        "playLabel": "Putar Jeda, sesi Recharge 8 menit"
       }
     },
     "connected": {
-      "eyebrow": "DUKUNGAN YANG TERPADU",
+      "eyebrow": "LEBIH TERHUBUNG",
       "headline": [
         [
           {
-            "text": "Dukungan untuk kesejahteraan Anda"
+            "text": "Dukungan kesejahteraan"
           }
         ],
         [
           {
-            "text": "seharusnya saling melengkapi."
+            "text": "seharusnya tidak tercerai-berai."
           }
         ]
       ],
       "lead": [
-        "Recharge menyatukan Pemahaman Diri, Pendampingan AI, dan Pengalaman Recharge",
-        "dalam dukungan terpadu yang berpusat pada Anda."
+        "Recharge menghimpun Wawasan Pribadi, Coaching Berbasis AI, dan",
+        "Pengalaman Recharge dalam satu tempat untuk Anda."
       ],
       "fragmented": {
-        "eyebrow": "DUKUNGAN YANG TERPISAH",
+        "eyebrow": "DUKUNGAN TERPISAH",
         "lead": [
-          "Dukungan tersedia di berbagai tempat,",
-          "namun jarang hadir sebagai satu kesatuan."
+          "Bantuan ada di mana-mana,",
+          "tetapi jarang berjalan seiring."
         ]
       },
       "centrePortrait": {
-        "alt": "Seorang wanita duduk di dalam ruangan di samping tanaman hias, menengadah ke arah cahaya lembut dari jendela.",
+        "alt": "Seorang wanita duduk di dalam ruangan di samping tanaman hias, menatap cahaya lembut dari jendela.",
         "headline": [
           [
             {
-              "text": "Berpusat pada Anda."
+              "text": "Satu pribadi."
             }
           ],
           [
@@ -325,7 +325,7 @@
               "text": "Satu pengalaman yang "
             },
             {
-              "text": "terpadu",
+              "text": "terhubung",
               "mark": "grad"
             },
             {
@@ -333,71 +333,71 @@
             }
           ]
         ],
-        "caption": "Recharge menghubungkan setiap bagian dari perjalanan Anda."
+        "caption": "Recharge menghubungkan setiap langkah."
       },
       "unifiedCircle": {
         "headline": [
           [
             {
-              "text": "Dukungan "
-            },
-            {
-              "text": "terpadu",
-              "mark": "grad"
+              "text": "Satu pengalaman"
             }
           ],
           [
             {
-              "text": "dalam satu pengalaman"
+              "text": "yang "
+            },
+            {
+              "text": "terhubung",
+              "mark": "grad"
             }
           ]
         ],
         "caption": [
-          "Pemahaman. Pendampingan. Pengalaman.",
-          "Saling melengkapi untuk mendukung Anda."
+          "Wawasan. Bimbingan. Pengalaman.",
+          "Bekerja selaras untuk Anda."
         ]
       },
       "why": {
-        "eyebrow": "NILAI DARI DUKUNGAN TERPADU",
+        "eyebrow": "MENGAPA INI PENTING",
         "problem": [
-          "Dukungan sering kali tersedia",
-          "di tempat yang berbeda."
+          "Dukungan sering",
+          "tersebar di mana-mana."
         ],
         "answer": [
           "Recharge menyatukannya",
-          "dengan kebutuhan Anda sebagai pusatnya."
+          "untuk Anda."
         ],
         "benefits": {
           "lessSearching": {
-            "title": "Lebih mudah ditemukan",
-            "body": "Pemahaman diri, pendampingan, dan pengalaman hadir secara terpadu di satu tempat."
+            "title": "Tanpa perlu mencari",
+            "body": "Wawasan, bimbingan, dan pengalaman, semuanya di satu tempat."
           },
           "moreRelevant": {
-            "title": "Lebih sesuai kebutuhan",
-            "body": "Dukungan disesuaikan dengan kondisi Anda saat ini dan hal-hal yang penting bagi Anda."
+            "title": "Lebih relevan",
+            "body": "Dukungan yang disesuaikan dengan situasi dan prioritas Anda."
           },
           "inTheMoment": {
-            "title": "Hadir saat dibutuhkan",
-            "body": "Mulai saat Anda membutuhkan dukungan, tanpa menunggu waktu atau tempat yang sempurna."
+            "title": "Kapan saja",
+            "body": "Siap kapan pun Anda membutuhkannya, tanpa menunggu waktu atau tempat yang sempurna."
           },
           "overTime": {
-            "title": "Semakin personal seiring waktu",
-            "body": "Semakin Anda menggunakan Recharge, pengalaman yang Anda nikmati dapat semakin sesuai dengan kebutuhan Anda."
+            "title": "Makin mengenal Anda",
+            "body": "Pengalaman Anda dapat makin relevan setiap kali Anda menggunakan Recharge."
           }
         }
       }
     },
     "rhythm": {
-      "eyebrow": "SELARAS DENGAN RITME ANDA",
+      "eyebrow": "MENGIKUTI RITME ANDA",
       "headline": [
         [
           {
-            "text": "Memahami kebutuhan Anda hari ini."
+            "text": "Hadir sesuai kondisi Anda."
           }
         ],
         [
           {
-            "text": "Semakin mengenal "
+            "text": "Kian memahami "
           },
           {
             "text": "ritme Anda",
@@ -408,58 +408,58 @@
           }
         ]
       ],
-      "lead": "Kebutuhan Anda dapat berubah sepanjang hari maupun seiring waktu. Recharge dirancang untuk merespons kebutuhan saat ini dan belajar dari hal-hal yang penting bagi Anda, sehingga pengalaman dapat semakin sesuai dengan diri Anda seiring Anda menggunakannya.",
-      "closing": "Dukungan untuk keseharian, sesuai ritme Anda.",
-      "noTwo": "Setiap pribadi berbeda. Begitu pula kebutuhan di setiap momen.",
+      "lead": "Kebutuhan Anda bisa berubah sepanjang hari, juga dari waktu ke waktu. Recharge dirancang untuk merespons kondisi saat itu, belajar dari apa yang Anda prioritaskan, dan menjadi kian relevan dari hari ke hari.",
+      "closing": "Hari-hari Anda, dengan ritme sendiri.",
+      "noTwo": "Tidak ada dua orang yang sama. Begitu pula setiap momen.",
       "strip": {
         "moment": {
-          "title": "Sesuai Kebutuhan Saat Ini",
+          "title": "Sesuai momen",
           "body": "Apa yang Anda butuhkan saat ini?"
         },
         "you": {
-          "title": "Disesuaikan untuk Anda",
-          "body": "Memperhatikan preferensi, pola kebiasaan, dan respons Anda."
+          "title": "Khusus untuk Anda",
+          "body": "Preferensi, pola, dan respons Anda."
         },
         "overTime": {
-          "title": "Semakin Personal Seiring Waktu",
-          "body": "Pengalaman yang dapat berkembang bersama Anda."
+          "title": "Makin mengenal Anda",
+          "body": "Pengalaman yang dapat tumbuh bersama Anda."
         }
       },
       "timeline": {
         "morning": {
           "title": "Pagi",
           "sub": "Bersiap",
-          "alt": "Seorang wanita duduk di tempat tidur sambil meregangkan kedua lengan di atas kepala, di samping jendela yang terang"
+          "alt": "Seorang wanita duduk di tempat tidur, meregangkan kedua tangan ke atas di samping jendela yang terang"
         },
         "work": {
-          "title": "Waktu Kerja",
+          "title": "Bekerja",
           "sub": "Fokus"
         },
         "pressure": {
-          "title": "Saat Tertekan",
-          "sub": "Tata Ulang Diri"
+          "title": "Tekanan",
+          "sub": "Jeda"
         },
         "energyDip": {
-          "title": "Energi Menurun",
-          "sub": "Pulihkan Energi"
+          "title": "Energi menurun",
+          "sub": "Recharge"
         },
         "afterWork": {
-          "title": "Setelah Bekerja",
-          "sub": "Rileks",
-          "alt": "Seorang wanita duduk di sofa sambil memegang cangkir pada petang hari, dengan tanaman dan lampu di belakangnya"
+          "title": "Sepulang kerja",
+          "sub": "Bersantai",
+          "alt": "Seorang wanita di sofa memegang cangkir pada sore hari, dengan tanaman dan lampu di belakangnya"
         },
         "night": {
           "title": "Malam",
-          "sub": "Istirahat"
+          "sub": "Tidur"
         }
       }
     },
     "trust": {
-      "eyebrow": "KEPERCAYAAN & PENDEKATAN",
+      "eyebrow": "PENDEKATAN KAMI",
       "headline": [
         [
           {
-            "text": "Dukungan yang dapat Anda percaya,"
+            "text": "Dukungan tepercaya,"
           }
         ],
         [
@@ -469,115 +469,116 @@
           }
         ]
       ],
-      "lead": "Kepedulian, kejelasan informasi, dan batas layanan yang tegas menjadi dasar Recharge. Inilah komitmen yang membentuk pengalaman Anda.",
-      "portraitAlt": "Seorang wanita mengenakan sweter rajut bermotif kepang berwarna krem, duduk di sofa berwarna terang sambil memegang cangkir dengan kedua tangan dan menengadah.",
+      "lead": "Recharge dibangun di atas kepedulian, kejelasan, dan batasan yang tegas. Inilah artinya bagi Anda.",
+      "portraitAlt": "Seorang wanita bersweter rajut berwarna krem duduk di sofa berwarna pucat, memegang cangkir dengan kedua tangan sambil menengadah.",
       "cards": {
         "support": {
           "title": [
-            "Dukungan, bukan diagnosis."
+            "Mendukung, bukan mendiagnosis."
           ],
           "body": [
             [
               "Recharge mendukung kesejahteraan",
               "sehari-hari dan refleksi diri.",
-              "Layanan ini tidak ditujukan untuk",
-              "mendiagnosis, mengobati, atau menyembuhkan",
-              "gangguan kesehatan fisik maupun mental.",
-              "Recharge juga tidak menggantikan",
-              "perawatan profesional yang Anda butuhkan."
+              "Layanan ini tidak dimaksudkan untuk",
+              "mendiagnosis, mengobati, atau",
+              "menyembuhkan kondisi medis",
+              "maupun kesehatan mental, dan",
+              "tidak menggantikan penanganan",
+              "profesional saat dibutuhkan."
             ]
           ]
         },
         "ai": {
           "title": [
-            "AI memberi arahan,",
-            "bukan menentukan jati diri Anda."
+            "AI yang membimbing,",
+            "bukan menentukan Anda."
           ],
           "body": [
             [
-              "AI dapat membantu Anda berefleksi,",
-              "menelaah berbagai sudut pandang,",
-              "dan mempertimbangkan langkah selanjutnya."
+              "AI dapat membantu Anda merenung,",
+              "melihat sudut pandang baru,",
+              "dan menimbang",
+              "langkah berikutnya."
             ],
             [
-              "Kendali atas pilihan Anda",
-              "tetap berada di tangan Anda."
+              "Keputusan",
+              "tetap di tangan Anda."
             ]
           ]
         },
         "personalisation": {
           "title": [
             "Personalisasi",
-            "dengan tujuan yang jelas."
+            "yang bermakna."
           ],
           "body": [
             [
-              "Recharge dirancang untuk semakin",
-              "sesuai dengan kebutuhan Anda",
-              "melalui informasi, pilihan,",
-              "dan interaksi yang berperan",
-              "dalam pengalaman Anda."
+              "Informasi, pilihan, dan interaksi",
+              "yang penting bagi Anda",
+              "dapat membuat Recharge",
+              "makin relevan."
             ]
           ],
-          "accent": "Semakin sesuai kebutuhan, tetap menghormati ruang pribadi Anda."
+          "accent": "Lebih relevan, tanpa melewati batas."
         },
         "privacy": {
           "title": [
-            "Privasi Anda",
-            "layak mendapat perhatian."
+            "Privasi",
+            "layak dijaga dengan baik."
           ],
           "body": [
             [
               "Kesejahteraan pribadi dapat melibatkan",
               "informasi yang penting bagi Anda.",
-              "Recharge mengelola privasi, data,",
-              "dan kendali pengguna",
-              "dengan cermat dan transparan."
+              "Recharge menangani privasi,",
+              "data, dan kendali pengguna",
+              "secara cermat dan transparan."
             ]
           ]
         }
       },
-      "closingLead": "Recharge dirancang untuk mendukung Anda dengan kepedulian, kejelasan, dan rasa hormat.",
-      "closingSerif": "Kepercayaan adalah bagian dari pengalaman Anda."
+      "closingLead": "Recharge dirancang untuk mendukung Anda dengan penuh kepedulian, kejelasan, dan rasa hormat.",
+      "closingSerif": "Kepercayaan seharusnya menjadi bagian dari pengalaman."
     },
     "plans": {
-      "eyebrow": "UJI COBA GRATIS & PAKET",
+      "eyebrow": "UJI COBA & PAKET",
       "headline": [
         [
           {
-            "text": "Pilih dukungan Recharge yang "
+            "text": "Pilih Recharge yang "
           },
           {
-            "text": "sesuai untuk Anda.",
+            "text": "tepat untuk Anda.",
             "mark": "grad"
           }
         ]
       ],
-      "lead": "Nikmati uji coba gratis Recharge selama 7 hari, lalu pilih tingkat dukungan yang sesuai dengan kebutuhan Anda.",
+      "lead": "Coba gratis 7 hari, lalu pilih tingkat dukungan yang paling sesuai.",
       "trial": {
-        "eyebrow": "UJI COBA GRATIS 7 HARI",
-        "body": "Nikmati Pemahaman Diri, Pendampingan AI, dan Pengalaman Recharge sebagai satu pengalaman terpadu sebelum memilih paket."
+        "eyebrow": "GRATIS 7 HARI",
+        "body": "Rasakan Wawasan Pribadi, Coaching Berbasis AI, dan Pengalaman Recharge secara lengkap sebelum memilih paket."
       },
       "badge": "Paling populer",
-      "priceTbd": "Harga segera diumumkan",
+      "priceTbd": "Harga segera hadir",
       "tiers": {
         "essential": {
           "name": "Essential",
-          "tagline": "Langkah awal yang sederhana.",
+          "tagline": "Langkah awal yang ringan.",
           "features": [
-            "Fitur inti Pemahaman Diri",
-            "Pendampingan AI untuk penggunaan ringan",
-            "Pilihan inti Pengalaman Recharge",
+            "Wawasan Pribadi inti",
+            "Coaching Berbasis AI untuk penggunaan ringan",
+            "Pengalaman Recharge inti",
             "Personalisasi dasar"
           ],
           "cta": "Pilih Essential"
         },
         "rhythm": {
           "name": "Rhythm",
-          "tagline": "Bangun kebiasaan merawat diri.",
+          "tagline": "Bentuk ritme yang konsisten.",
           "features": [
-            "Cakupan Pemahaman Diri yang lebih luas",
-            "Lebih banyak akses Pendampingan AI",
+            "Wawasan Pribadi yang lebih luas",
+            "Lebih banyak Coaching Berbasis AI",
             "Akses Pengalaman Recharge yang lebih luas",
             "Personalisasi yang berkembang seiring penggunaan"
           ],
@@ -585,41 +586,41 @@
         },
         "plus": {
           "name": "Plus",
-          "tagline": "Pemahaman lebih mendalam. Dukungan lebih lengkap.",
+          "tagline": "Dukungan lebih mendalam.",
           "features": [
-            "Pemahaman Diri yang lebih mendalam",
-            "Tingkat akses Pendampingan AI tertinggi",
-            "Akses penuh ke Pengalaman Recharge",
-            "Personalisasi yang lebih menyeluruh"
+            "Wawasan Pribadi yang lebih mendalam",
+            "Akses Coaching tertinggi",
+            "Akses penuh Pengalaman Recharge",
+            "Personalisasi lanjutan"
           ],
           "cta": "Pilih Plus"
         }
       },
-      "compare": "Bandingkan Semua Fitur",
-      "disclaimer": "Rincian paket masih dalam tahap penyusunan. Nama, harga, dan batas penggunaan akan dikonfirmasi."
+      "compare": "Bandingkan semua fitur",
+      "disclaimer": "Detail paket masih dalam tahap penyusunan. Nama, harga, dan batas penggunaan akan dikonfirmasi kemudian."
     },
     "start": {
-      "eyebrow": "MULAI BERSAMA RECHARGE",
+      "eyebrow": "AWALI RECHARGE ANDA",
       "headline": [
         [
           {
-            "text": "Mulailah dari"
+            "text": "Mulai"
           }
         ],
         [
           {
-            "text": "diri Anda hari ini.",
+            "text": "sekarang.",
             "mark": "grad"
           }
         ]
       ],
-      "lead": "Rasakan pengalaman Recharge dan temukan dukungan yang sesuai untuk Anda.",
+      "lead": "Coba Recharge sendiri dan temukan yang paling cocok untuk Anda.",
       "explore": "Jelajahi Paket",
-      "portraitAlt": "Seorang wanita mengenakan pakaian linen longgar berwarna krem, duduk bersila di tepi danau yang tenang saat matahari terbit sambil menengadah ke arah cahaya"
+      "portraitAlt": "Seorang wanita berbaju linen longgar berwarna krem duduk bersila di tepi danau yang tenang saat matahari terbit, menatap ke arah cahaya"
     }
   },
   "notFound": {
-    "eyebrow": "Segera hadir",
+    "eyebrow": "Belum tersedia",
     "headline": [
       [
         {
@@ -631,7 +632,7 @@
         }
       ]
     ],
-    "body": "Tautan ini mengarah ke halaman yang belum tersedia. Kembali ke Recharge dan gulir untuk menjelajahi konten lainnya.",
+    "body": "Halaman yang Anda cari belum tersedia. Konten lainnya bisa dilihat dengan menggulir ke bawah.",
     "backHome": "Kembali ke Recharge"
   }
 }
